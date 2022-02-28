@@ -1,0 +1,179 @@
+---
+title: "Captain's Log"
+author: "Andy Beck"
+date: "2022-02-21"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+Here in this document I will be documenting every action that I perform for this ill-defined "phasing project." Onwards!
+
+## 21 Feb 2022
+
+### Installation of SHAPEIT4
+
+Following the instructions that I found at [this site](https://odelaneau.github.io/shapeit4/#installation), I
+
+1. Downloaded the source code: `wget https://github.com/odelaneau/shapeit4/archive/refs/tags/v4.2.2.tar.gz`
+2. Extracted the source code: `tar zxvf v4.2.2.tar.gz`
+3. Per instructions edited the paths in the `makefile`
+    * Should I have installed my own version of HTSlib? -> edit: going to do this, under $HOME/Tools
+    * BOOST paths did not need to be changed
+4. Compile using `make`
+5. Add path to bin directory to my $PATH environment variable
+
+#### Side-quest: install HTSlib
+
+```{bash, eval=FALSE}
+git clone https://github.com/samtools/htslib.git
+cd htslib
+git submodule update --init --recursive
+autoreconf -i
+./configure
+make
+make prefix=/net/snowwhite/home/beckandy/Tools/htslib install
+```
+
+### Getting Subject Information for 1KGP
+
+From the `data` sub directory:
+
+```
+wget ftp.1000genomes.ebi.ac.uk/vol1/ftp/data_collections/1000G_2504_high_coverage/1000G_698_related_high_coverage.sequence.index
+grep -v '^##' 1000G_698_related_high_coverage.sequence.index > related_subj.tsv
+
+wget ftp.1000genomes.ebi.ac.uk/vol1/ftp/data_collections/1000G_2504_high_coverage/1000G_2504_high_coverage.sequence.index
+grep -v '^##' 1000G_2504_high_coverage.sequence.index > unrelated_subj.tsv
+
+wget ftp.1000genomes.ebi.ac.uk/vol1/ftp/data_collections/1000G_2504_high_coverage/working/1kGP.3202_samples.pedigree_info.txt
+
+wget ftp.1000genomes.ebi.ac.uk/vol1/ftp/phase3/20131219.superpopulations.tsv
+wget ftp.1000genomes.ebi.ac.uk/vol1/ftp/phase3/20131219.populations.tsv
+```
+
+And then from the main directory of this project run
+
+```
+Rscript code/combine_subj_info.R
+```
+
+Using this dataset I randomly sampled a European male from the unrelated sample (HG00260).
+
+### First look at a VCF file
+
+Let's grab the genotypes for two subjects outside the pseudo-autosomal region to verify that all these variants are homozygous:
+
+```
+bcftools view -t ^chrX:10001-2781479 -s HG00260,HG00136 -c1 \
+/net/topmed8/working/call_sets/freeze9/release/subset/1000g/minDP0.minAC1.PASS/freeze9.1000g.chrX.filtered.gtonly.minDP0.minAC1.PASS.bcf |\
+bcftools view -t ^chrX:155701382-156030895 |\
+bcftools query -f '%CHROM  %POS  %REF  %ALT{0} [ %GT]\n' | tr -s ' ' > data/chrX.tsv
+```
+
+```
+bcftools view -t ^chrX:10001-2781479 -s HG00260,HG00136 -c1 \
+/net/topmed8/working/call_sets/freeze9/release/subset/1000g/minDP10.minAC1.PASS.phased/freeze9.1000g.chrX.filtered.gtonly.minDP10.minAC1.PASS.phased.vcf.gz |\
+bcftools view -t ^chrX:155701382-156030895 |\
+bcftools query -f '%CHROM  %POS  %REF  %ALT{0} [ %GT]\n' | tr -s ' ' > data/chrX_phased.tsv
+```
+
+## 23 Feb 2022
+
+### Mask the VCF
+
+The idea stemming from lab meeting was that the heterozygotes might have been due to hard to sequence regions (repetitive regions, etc). Let's use a mask and see if that reduces the number of heterozygotes we see in the two X chromosomes:
+
+```
+zcat /net/wonderland/home/ycsi/Data/Ref/GRCh38/1kg_20160622_genome_mask/PilotMask/20160622.allChr.pilot_mask.bed.gz |\
+awk '{if($1 == "chrX")print $0}' > data/mask_pilot_chrX.bed
+```
+
+NOTE: this version of the bed has un-masked regions -> we want intersections here
+
+```
+bedtools intersect -a /net/topmed8/working/call_sets/freeze9/release/subset/1000g/minDP10.minAC1.PASS.phased/freeze9.1000g.chrX.filtered.gtonly.minDP10.minAC1.PASS.phased.vcf.gz -b /net/snowwhite/home/beckandy/research/phasing/data/mask_pilot_chrX.bed -wa -header |\
+bcftools view -t ^chrX:10001-2781479 -s HG00260,HG00136 -c1 |\
+bcftools view -t ^chrX:155701382-156030895 |\
+bcftools query -f '%CHROM  %POS  %REF  %ALT{0} [ %GT]\n' | tr -s ' ' > data/chrX_phased_mask.tsv
+```
+
+And a different version of the mask (this version of the mask has masked regions)
+
+```
+zcat /net/wonderland/home/ycsi/Data/Ref/GRCh38/mdust.hg38.bed.gz |\
+awk '{if($1 == "chrX")print $0}' > data/mask_pilot_chrX_v2.bed
+```
+
+```
+bedtools intersect -v -a /net/topmed8/working/call_sets/freeze9/release/subset/1000g/minDP10.minAC1.PASS.phased/freeze9.1000g.chrX.filtered.gtonly.minDP10.minAC1.PASS.phased.vcf.gz -b /net/snowwhite/home/beckandy/research/phasing/data/mask_pilot_chrX_v2.bed -wa -header |\
+bcftools view -t ^chrX:10001-2781479 -s HG00260,HG00136 -c1 -Ou |\
+bcftools view -t ^chrX:155701382-156030895 -Ou |\
+bcftools query -f '%CHROM  %POS  %REF  %ALT{0} [ %GT]\n' | tr -s ' ' > data/chrX_phased_mask2.tsv
+```
+
+## 28 Feb 2022
+
+Using the file `data/chrX_phased_mask2.tsv`, generate a list of sites to keep in our VCF:
+
+```{r eval=FALSE}
+library(tidyverse)
+df <- read_delim("data/chrX_phased_mask2.tsv", col_names = c("CHROM", "POS", "REF", "ALT", "G1", "G2"))
+df2 <- df %>%
+  filter(G1 %in% c("0|0", "1|1"),
+         G2 %in% c("0|0", "1|1"))
+df2 %>%
+  select(CHROM, POS) %>%
+  write_tsv("data/chrX_sites_28feb2022.tsv")
+```
+
+**UPDATE: generate list of sites using bcftools chain**
+
+```
+bedtools intersect -v -a /net/topmed8/working/call_sets/freeze9/release/subset/1000g/minDP10.minAC1.PASS.phased/freeze9.1000g.chrX.filtered.gtonly.minDP10.minAC1.PASS.phased.vcf.gz -b /net/snowwhite/home/beckandy/research/phasing/data/mask_pilot_chrX_v2.bed -wa -header |\
+bcftools view -t ^chrX:10001-2781479 -s HG00260,HG00136 -c1 -Ou |\
+bcftools view -t ^chrX:155701382-156030895 -Ou |\
+bcftools query -e 'GT="1|0" || GT="0|1"' -f '%CHROM  %POS\n' | tr -s ' ' > data/chrX_sites_28feb2022_2.tsv
+```
+
+
+```
+bcftools view -R /net/snowwhite/home/beckandy/research/phasing/data/chrX_sites_28feb2022.tsv -s HG00260,HG00136 -Ov /net/topmed8/working/call_sets/freeze9/release/subset/1000g/minDP10.minAC1.PASS.phased/freeze9.1000g.chrX.filtered.gtonly.minDP10.minAC1.PASS.phased.vcf.gz  > data/chrX_test.vcf
+```
+
+### Running SHAPEIT4
+
+We need a genetic map, which we get from the SHAPEIT4 authors:
+
+```
+wget https://github.com/odelaneau/shapeit4/raw/master/maps/genetic_maps.b38.tar.gz
+```
+
+Also, our vcf file needs to be indexed:
+
+```
+# from the data dir
+bcftools index chrX_test_fake.vcf.gz
+```
+
+We also need an indexed reference panel -> probably cheating if we use 1000G?
+
+```
+cp /net/topmed8/working/call_sets/freeze9/release/subset/1000g/minDP10.minAC1.PASS.phased/freeze9.1000g.chrX.filtered.gtonly.minDP10.minAC1.PASS.phased.vcf.gz data/chrX_ref.vcf.gz
+
+bcftools index data/chrX_ref.vcf.gz
+```
+
+And now to phase our fake vcf:
+
+```
+shapeit4.2 --input data/chrX_test_fake.vcf.gz \
+  --map data/chrX.b38.gmap.gz \
+  --reference data/chrX_ref.vcf.gz \
+  --region chrX \
+  --thread 10 \
+  --log output/shapeit.log \
+  --output data/chrX_fake_phased.vcf.gz
+```

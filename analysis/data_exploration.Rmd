@@ -1,0 +1,86 @@
+---
+title: "data_exploration"
+author: "Andy Beck"
+date: "2022-02-22"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+```{r, message=FALSE, warning=FALSE}
+library(tidyverse)
+```
+
+
+## X Chromosome
+
+Here we'll look at the genotypes from two randomly sampled EUR male samples. 
+
+```{r}
+df <- read_delim("data/chrX_phased.tsv", col_names = c("CHROM", "POS", "REF", "ALT", "G1", "G2"))
+
+table(df$G1)
+
+table(df$G2)
+```
+
+Hmmm, looks like we have heterozygous sites in the X chromosome that aren't in the pseudoautosomal region? Let's take a look at these locations in one of the subjects:
+
+```{r}
+chr_range <- c(min(df$POS) - 1, max(df$POS) + 1)
+
+df2 <- df %>%
+  filter(G1 %in% c("1|0", "0|1"))
+
+df_location <- df2 %>%
+  select(POS) %>%
+  mutate(present = 1)
+
+# df_location <- bind_rows(data.frame(POS = min(df$POS) - 1, present = 0), df_location)
+# df_location <- bind_rows(df_location, data.frame(POS = max(df$POS) + 1, present = 0))
+
+# df_location %>%
+#   ggplot(aes(x = POS, y = present)) +
+#   geom_point()
+
+df_location %>%
+  ggplot(aes(x = POS)) + geom_density() +
+  geom_vline(xintercept = 10001, color = "blue") +
+  geom_vline(xintercept = 2781479, color = "blue") +
+  geom_vline(xintercept = 155701382, color = "red") +
+  geom_vline(xintercept = 156030895, color = "red") 
+```
+
+Let's look at what the distribution looks like when we apply the mask `1kg_20160622_genome_mask/PilotMask`:
+
+```{r}
+df <- read_delim("data/chrX_phased_mask.tsv", col_names = c("CHROM", "POS", "REF", "ALT", "G1", "G2"))
+
+table(df$G1)
+
+table(df$G2)
+```
+
+And looking at Yichen's (?) mask:
+
+```{r}
+df <- read_delim("data/chrX_phased_mask2.tsv", col_names = c("CHROM", "POS", "REF", "ALT", "G1", "G2"))
+
+table(df$G1)
+
+table(df$G2)
+```
+
+We'll use this data frame to output a list of sites to include in our final VCF:
+
+```{r}
+df2 <- df %>%
+  filter(G1 %in% c("0|0", "1|1"),
+         G2 %in% c("0|0", "1|1"))
+
+df2 %>%
+  select(CHROM, POS) %>%
+  write_tsv("data/chrX_sites_28feb2022.tsv")
+```
+
+
