@@ -586,13 +586,13 @@ data/sample_pairs_all.csv
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrong39360d2">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongbe3d855">
 <span class="glyphicon glyphicon-ok text-success"
-aria-hidden="true"></span> <strong>Repository version:</strong> 39360d2
+aria-hidden="true"></span> <strong>Repository version:</strong> be3d855
 </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrong39360d2"
+<div id="strongRepositoryversionstrongbe3d855"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -601,7 +601,7 @@ and connecting the code version to the results is critical for
 reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version 39360d2.
+The results in this page were generated with repository version be3d855.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -693,6 +693,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+be3d855
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2022-05-02
+</td>
+<td>
+wflow_publish("analysis/masked_diploid_results.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+6755925
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2022-05-02
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1261,6 +1295,7 @@ Andy Beck
   mean_gc_switch_eagle &lt;- mean(switch_err_eagle$GC)
   mean_gc_switch_shapeit &lt;- mean(switch_err_shapeit$GC)
   
+  
   return(data.frame(pair_id = pair_id,
                     n_switch_eagle = n_switch_eagle,
                     n_switch_shapeit = n_switch_shapeit,
@@ -1325,6 +1360,17 @@ Date
 <tbody>
 <tr>
 <td>
+6755925
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2022-05-02
+</td>
+</tr>
+<tr>
+<td>
 29aa2c1
 </td>
 <td>
@@ -1371,6 +1417,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+6755925
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2022-05-02
+</td>
+</tr>
 <tr>
 <td>
 29aa2c1
@@ -1421,6 +1478,17 @@ Date
 <tbody>
 <tr>
 <td>
+6755925
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2022-05-02
+</td>
+</tr>
+<tr>
+<td>
 29aa2c1
 </td>
 <td>
@@ -1466,6 +1534,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+6755925
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2022-05-02
+</td>
+</tr>
 <tr>
 <td>
 29aa2c1
@@ -1514,6 +1593,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+6755925
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2022-05-02
+</td>
+</tr>
 <tr>
 <td>
 29aa2c1
@@ -1565,6 +1655,17 @@ Date
 <tbody>
 <tr>
 <td>
+6755925
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2022-05-02
+</td>
+</tr>
+<tr>
+<td>
 29aa2c1
 </td>
 <td>
@@ -1613,6 +1714,17 @@ Date
 <tbody>
 <tr>
 <td>
+6755925
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2022-05-02
+</td>
+</tr>
+<tr>
+<td>
 29aa2c1
 </td>
 <td>
@@ -1659,6 +1771,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+6755925
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2022-05-02
+</td>
+</tr>
 <tr>
 <td>
 29aa2c1
@@ -1713,6 +1836,17 @@ Date
 <tbody>
 <tr>
 <td>
+6755925
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2022-05-02
+</td>
+</tr>
+<tr>
+<td>
 29aa2c1
 </td>
 <td>
@@ -1759,6 +1893,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+6755925
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2022-05-02
+</td>
+</tr>
 <tr>
 <td>
 29aa2c1
@@ -1810,6 +1955,17 @@ Date
 <tbody>
 <tr>
 <td>
+6755925
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2022-05-02
+</td>
+</tr>
+<tr>
+<td>
 29aa2c1
 </td>
 <td>
@@ -1823,6 +1979,122 @@ Andy Beck
 </table>
 </div>
 </div>
+</div>
+</div>
+<div id="additional-summary-information" class="section level2">
+<h2>Additional Summary Information</h2>
+<p>Average number of flips and switches per pseudo-diploid:</p>
+<pre class="r"><code>df %&gt;%
+  select(pop, n_switch_eagle, n_switch_cpg_eagle,
+         n_flip_eagle, n_flip_cpg_eagle,
+         n_switch_shapeit, n_switch_cpg_shapeit,
+         n_flip_shapeit, n_flip_cpg_shapeit) %&gt;%
+  group_by(pop) %&gt;%
+  summarize(mean_switch_eagle = mean(n_switch_eagle),
+            mean_switch_cpg_eagle = mean(n_switch_cpg_eagle),
+            mean_switch_shapeit = mean(n_switch_shapeit),
+            mean_switch_cpg_shapeit = mean(n_switch_cpg_shapeit),
+            mean_flip_eagle = mean(n_flip_eagle),
+            mean_flip_cpg_eagle = mean(n_flip_cpg_eagle),
+            mean_flip_shapeit = mean(n_flip_shapeit),
+            mean_flip_cpg_shapeit = mean(n_flip_cpg_shapeit)) %&gt;%
+  knitr::kable()</code></pre>
+<table>
+<colgroup>
+<col width="2%" />
+<col width="10%" />
+<col width="13%" />
+<col width="12%" />
+<col width="14%" />
+<col width="9%" />
+<col width="12%" />
+<col width="10%" />
+<col width="13%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">pop</th>
+<th align="right">mean_switch_eagle</th>
+<th align="right">mean_switch_cpg_eagle</th>
+<th align="right">mean_switch_shapeit</th>
+<th align="right">mean_switch_cpg_shapeit</th>
+<th align="right">mean_flip_eagle</th>
+<th align="right">mean_flip_cpg_eagle</th>
+<th align="right">mean_flip_shapeit</th>
+<th align="right">mean_flip_cpg_shapeit</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">AFR</td>
+<td align="right">1379.625</td>
+<td align="right">112.975</td>
+<td align="right">1331.865</td>
+<td align="right">108.955</td>
+<td align="right">503.79</td>
+<td align="right">41.79</td>
+<td align="right">560.57</td>
+<td align="right">46.605</td>
+</tr>
+<tr class="even">
+<td align="left">EUR</td>
+<td align="right">817.110</td>
+<td align="right">70.150</td>
+<td align="right">780.430</td>
+<td align="right">65.230</td>
+<td align="right">285.71</td>
+<td align="right">24.47</td>
+<td align="right">297.99</td>
+<td align="right">25.260</td>
+</tr>
+</tbody>
+</table>
+<p>Average number flips and switches per 1kb bin:</p>
+<pre class="r"><code>switch_err_eagle &lt;- read_csv(paste0(eagle_switch_dir, &quot;switch_&quot;, 1, &quot;.csv&quot;), show_col_types = FALSE) %&gt;%
+  mutate(bin_id = ceiling(pos_start / 1000),
+         big_bin_id = ceiling(pos_start / 1000000))
+switch_err_shapeit &lt;- read_csv(paste0(shapeit_switch_dir, &quot;switch_&quot;, 1, &quot;.csv&quot;), show_col_types = FALSE) %&gt;%
+  mutate(bin_id = ceiling(pos_start / 1000),
+         big_bin_id = ceiling(pos_start / 1000000))
+switch_err_eagle &lt;- switch_err_eagle %&gt;%
+  left_join({gc_content_1kb %&gt;% select(bin_id, GC)}, by = &quot;bin_id&quot;)
+switch_err_shapeit &lt;- switch_err_shapeit %&gt;%
+  left_join({gc_content_1kb %&gt;% select(bin_id, GC)}, by = &quot;bin_id&quot;)
+flip_pos_eagle &lt;- get_flip_pos(switch_err_eagle)
+flip_pos_shapeit &lt;- get_flip_pos(switch_err_shapeit)
+switch_err_eagle$is_flip &lt;- switch_err_eagle$pos_start %in% flip_pos_eagle
+switch_err_shapeit$is_flip &lt;- switch_err_shapeit$pos_start %in% flip_pos_shapeit
+
+switch_err_eagle %&gt;%
+  select(big_bin_id) %&gt;%
+  group_by(big_bin_id) %&gt;%
+  summarize(n_switch = n()) %&gt;%
+  pull(n_switch) %&gt;%
+  mean()
+
+
+bin_summary &lt;- function(pair_id, eagle_dir, shapeit_dir, gc_content_1kb){
+  switch_err_eagle &lt;- read_csv(paste0(eagle_dir, &quot;switch_&quot;, pair_id, &quot;.csv&quot;), show_col_types = FALSE) %&gt;%
+    mutate(bin_id = ceiling(pos_start / 1000),
+           big_bin_id = ceiling(pos_start / 1000000))
+  switch_err_shapeit &lt;- read_csv(paste0(shapeit_dir, &quot;switch_&quot;, pair_id, &quot;.csv&quot;), show_col_types = FALSE) %&gt;%
+    mutate(bin_id = ceiling(pos_start / 1000),
+           big_bin_id = ceiling(pos_start / 1000000))
+  
+  switch_err_eagle &lt;- switch_err_eagle %&gt;%
+    left_join({gc_content_1kb %&gt;% select(bin_id, GC)}, by = &quot;bin_id&quot;)
+  
+  switch_err_shapeit &lt;- switch_err_shapeit %&gt;%
+    left_join({gc_content_1kb %&gt;% select(bin_id, GC)}, by = &quot;bin_id&quot;)
+  
+  # get positions of flips
+  flip_pos_eagle &lt;- get_flip_pos(switch_err_eagle)
+  flip_pos_shapeit &lt;- get_flip_pos(switch_err_shapeit)
+  
+  # Assign switches flip status
+  switch_err_eagle$is_flip &lt;- switch_err_eagle$pos_start %in% flip_pos_eagle
+  switch_err_shapeit$is_flip &lt;- switch_err_shapeit$pos_start %in% flip_pos_shapeit
+}</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1875,7 +2147,6 @@ loaded via a namespace (and not attached):
 [61] bit64_4.0.5      glue_1.6.1       hms_1.1.1        parallel_4.2.0  
 [65] processx_3.5.2   fastmap_1.1.0    yaml_2.2.2       colorspace_2.0-2
 [69] rvest_1.0.2      knitr_1.37       haven_2.4.3      sass_0.4.0      </code></pre>
-</div>
 </div>
 </div>
 
