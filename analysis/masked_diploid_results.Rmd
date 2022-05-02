@@ -1,0 +1,490 @@
+---
+title: "masked_diploid_results"
+author: "Andy Beck"
+date: "2022-04-20"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+```{r}
+library(tidyverse)
+
+eagle_switch_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/19april22_switch_errors/switch_errors/eagle/annotated/"
+shapeit_switch_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/19april22_switch_errors/switch_errors/shapeit/annotated/"
+num_sites_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/19april22_switch_errors/vcf_n_sites/"
+whatshap_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/19april22_switch_errors/whatshap/"
+
+pair_info_df <- read_delim("data/sample_pairs_all.csv", col_names = c("POP", "ID1", "ID2"))
+pair_info_df$SP <- c(rep("EUR", 100), rep("AFR", 200))
+
+gc_content_1kb <- read_tsv("data/gc1kb_X_only.bed")
+colnames(gc_content_1kb) <- c("CHR", "START", "END", "AT", "GC", "A", "C", "G", "T", "TOTAL", "OTHER", "LENGTH")
+gc_content_1kb  <- gc_content_1kb %>%
+  mutate(bin_id = (START / 1000) + 1)
+
+background_dimer <- read_csv("/net/snowwhite/home/beckandy/research/phasing/output/background_rates/dimer.csv")
+background_3mer <- read_csv("/net/snowwhite/home/beckandy/research/phasing/output/background_rates/3mer.csv")
+```
+
+
+## Introduction
+
+We've refined our analyses in a few ways since the first run-through of this pseudo-diploid analysis. First let's list out everything I've done to get to this point:
+
+1. Subset the reference genome to just the X chromosome using `fastafetch`
+2. Download pilot mask from 1KGP along with chromosome lengths for hg38
+    * Take complement of mask with bedtools to get file with masked regions (as opposed to included regions)
+3. Mask both the reference fasta (`bedtools maskfasta`) and the 1KGP X chromosome vcf
+    * `freeze9.1000g.chrX.filtered.gtonly.minDP10.minAC1.PASS.phased.vcf.gz`
+4. Make window files (`bedtools makewindows`)
+5. Get GC content in windows (`bedtools nuc`) using masked fasta
+6. Remove PAR from X chromosome
+
+Using these masked reference and variant files, we proceeded to do our pseudo-diploid generation on 100 EUR and 200 AFR pairs:
+
+1. Sample a sub-population from 1KGP super-population (EUR or AFR)
+2. Sample 2 male samples from sub-population
+3. Remove remaining heterozygous sites in either subject (should not be heterozygous in non-PAR)
+4. Create truth VCF with haploids pasted together, and test vcf with sites in haploids shuffled
+5. Create reference VCF by removing two sampled subjects
+6. Phase the test VCF using EAGLE and SHAPEIT
+7. Compare phasing results and truth using `vcftools` and `whatshap`
+
+With those preliminaries out of the way, let's take a look at these results.
+
+## Example of a single pseudodiploid
+
+For a first pass, let's take a look at the information available for a single pseudo-diploid:
+
+```{r}
+pair_id <- 1
+switch_err_eagle <- read_csv(paste0(eagle_switch_dir, "switch_", pair_id, ".csv"))
+switch_err_shapeit <- read_csv(paste0(shapeit_switch_dir, "switch_", pair_id, ".csv"))
+whatshap_eagle <- read_tsv(paste0(whatshap_dir, "/eagle/eval_", pair_id, ".tsv"))
+whatshap_shapeit <- read_tsv(paste0(whatshap_dir, "/shapeit/eval_", pair_id, ".tsv"))
+```
+
+From the above we can get the raw number of total switches based on the dimension of the switch error data frames; in this example, we see that EAGLE has `r dim(switch_err_eagle)[1]` switches and SHAPEIT has `r dim(switch_err_shapeit)[1]` switches.
+
+From the whatshap output, we also get a breakdown between how many of the total switches are flips. For example, the breakdown between switches and flips (switches/flips) in EAGLE is `r whatshap_eagle$all_switchflips[1]`, and correspondingly in SHAPEIT we see `r whatshap_shapeit$all_switchflips[1]`. What we would really like is to know the locations of the flips, which we unfortunatly don't have from neither `vcftools` nor `whatshap`. Fortunately I believe the little chunk of code below correctly counts flips in the `vcftools` output:
+
+```{r}
+count <- 0
+in_progress <- FALSE
+for(i in 1:(length(switch_err_eagle$pos_start)-1)){
+  if(switch_err_eagle$pos_end[i] == switch_err_eagle$pos_start[i+1]){
+    if(!in_progress){
+      count <- count+1
+      in_progress <- TRUE
+    } else{
+      in_progress <- FALSE
+    }
+  } else{
+    in_progress <- FALSE
+  }
+}
+print(count)
+```
+
+Let's wrap this in a function and get a list of flip positions:
+
+```{r}
+get_flip_pos <- function(df){
+  flip_list <- c()
+  in_progress <- FALSE
+  for(i in 1:(length(df$pos_start)-1)){
+    if(df$pos_end[i] == df$pos_start[i+1]){
+      if(!in_progress){
+        in_progress <- TRUE
+        flip_list <- c(flip_list, df$pos_end[i])
+      } else{
+        in_progress <- FALSE
+      }
+    } else{
+      in_progress <- FALSE
+    }
+  }
+  return(flip_list)
+}
+
+flip_pos_eagle <- get_flip_pos(switch_err_eagle)
+flip_pos_shapeit <- get_flip_pos(switch_err_shapeit)
+```
+
+Just to satisfy my curiosity, let's see how many of the flip positions are shared between the methods:
+
+```{r}
+intersect(flip_pos_eagle, flip_pos_shapeit) %>% length()
+```
+
+And moving on, let's go ahead and annotate each switch in the `vcftools` output with whether or not it is a flip:
+
+```{r}
+switch_err_eagle$is_flip <- switch_err_eagle$pos_start %in% flip_pos_eagle
+switch_err_shapeit$is_flip <- switch_err_shapeit$pos_start %in% flip_pos_shapeit
+```
+
+Alright, one last thing we'll look at for this pair is the proportion of all switches and flips are CpGs and contrast this with the background rate of dimers. For reference, the distribution of dimers in the X chromosome is:
+
+```{r}
+background_dimer
+```
+
+and by summing up the number of CG and GC sites and dividing by the total we see that the proportion of sites that are CpGs is `r (5619375 + 1133731) / sum(background_dimer$N)` (around 4.7%)
+
+```{r}
+background_cpg <- (5619375 + 1133731) / sum(background_dimer$N)
+
+switch_err_eagle %>%
+  filter(is_flip == TRUE) %>%
+  pull(cpg_start) %>%
+  table()
+```
+
+Here for EAGLE we see that about 10.6% of flips occur at CpG sites.
+
+```{r}
+switch_err_shapeit %>%
+  filter(is_flip == TRUE) %>%
+  pull(cpg_start) %>%
+  table()
+```
+
+SHAPEIT also has ~ 10.6% of its flips at CpG. Now looking at overall number of switches:
+
+```{r}
+switch_err_eagle %>%
+  pull(cpg_start) %>%
+  table()
+
+switch_err_shapeit %>%
+  pull(cpg_start) %>%
+  table()
+```
+
+8.2% and 9.3% of switches at CpG.
+
+### GC Content
+
+```{r}
+switch_err_eagle <- switch_err_eagle %>%
+  mutate(bin_id = ceiling(pos_start / 1000))
+
+switch_err_shapeit <- switch_err_shapeit %>%
+  mutate(bin_id = ceiling(pos_start / 1000))
+
+switch_err_eagle <- switch_err_eagle %>%
+    left_join({gc_content_1kb %>% select(bin_id, GC)}, by = "bin_id")
+  
+switch_err_shapeit <- switch_err_shapeit %>%
+    left_join({gc_content_1kb %>% select(bin_id, GC)}, by = "bin_id")
+```
+
+
+## Summary Statisitics Across All Pseudo-diploids
+
+Let's grab:
+
+* Number of heterozygous sites per diploid
+* EAGLE phase confidence
+* Total number of switch errors for each method
+* Number of flips for each method
+* Percent of flips and switches that were CpG site
+* Average percent GC in 1kb windows
+
+### Pair information
+
+```{r}
+df_pair <- read_csv("/net/snowwhite/home/beckandy/research/phasing/data/sample_pairs_all.csv",
+                    col_names = c("pop", "sub1", "sub2"), show_col_types = FALSE) %>%
+  rename(sub_pop = pop)
+df_pair$pop <- c(rep("EUR", 100), rep("AFR", 200))
+df_pair$pair_id <- 1:300
+```
+
+
+### EAGLE Phase Confidence
+
+```{r}
+input_cmd <- "grep \"^FAKE001\" /net/snowwhite/home/beckandy/research/phasing/output/19april22_switch_errors/slurm/pair.*.out | awk '{print($1, \"\\t\", $2)}'"
+
+df_eagle_conf <- vroom::vroom(pipe(input_cmd), delim = "\t", col_names = c("f_name", "phase_confidence")) %>%
+  rowwise() %>%
+  mutate(pair_id = as.numeric(str_split(f_name, "\\.")[[1]][3])) %>%
+  select(pair_id, phase_confidence) %>%
+  arrange(pair_id)
+df_eagle_conf$pop <- c(rep("EUR", 100), rep("AFR", 200))
+```
+
+Oh, let's make a density plot, shall we?
+
+```{r}
+df_eagle_conf %>%
+  ggplot(aes(x = phase_confidence, colour = pop)) +
+  geom_density() +
+  ggtitle("EAGLE2 Phase Confidence")
+```
+
+
+### Number of sites
+
+```{r}
+input_cmd <- "cat /net/snowwhite/home/beckandy/research/phasing/output/19april22_switch_errors/vcf_n_sites/*all*"
+df_pseudo_sites <- vroom::vroom(pipe(input_cmd), delim = "\t", col_names = c("pair_id", "n_sites"))  %>%
+  arrange(pair_id)
+df_pseudo_sites$pop <- c(rep("EUR", 100), rep("AFR", 200))
+```
+
+And just to plot things out as we go, let's look at the density stratified by super-pop:
+
+```{r}
+df_pseudo_sites %>%
+  ggplot(aes(x = n_sites, colour = pop)) +
+  geom_density() +
+  ggtitle("Number of Sites per Pseudo-diploid")
+```
+
+### Number of heterozygous sites
+
+```{r}
+input_cmd <-  "cat /net/snowwhite/home/beckandy/research/phasing/output/19april22_switch_errors/vcf_n_sites/*hets*"
+df_pseudo_hets <- vroom::vroom(pipe(input_cmd), delim = "\t", col_names = c("pair_id", "n_het_sites"))  %>%
+  arrange(pair_id)
+
+df_pseudo_hets$pop <- c(rep("EUR", 100), rep("AFR", 200))
+```
+
+```{r}
+df_pseudo_hets %>%
+  ggplot(aes(x = n_het_sites, colour = pop)) +
+  geom_density() +
+  xlab("Number of heterozygous sites") +
+  ggtitle("Number of Heterozygous Sites per Pseudo-diploid")
+```
+
+### Switches and Flips
+
+```{r}
+switch_summary <- function(pair_id, eagle_dir, shapeit_dir, gc_content_1kb, bin_size = 1000){
+  switch_err_eagle <- read_csv(paste0(eagle_dir, "switch_", pair_id, ".csv"), show_col_types = FALSE) %>%
+    mutate(bin_id = ceiling(pos_start / bin_size))
+  switch_err_shapeit <- read_csv(paste0(shapeit_dir, "switch_", pair_id, ".csv"), show_col_types = FALSE) %>%
+    mutate(bin_id = ceiling(pos_start / bin_size))
+  
+  switch_err_eagle <- switch_err_eagle %>%
+    left_join({gc_content_1kb %>% select(bin_id, GC)}, by = "bin_id")
+  
+  switch_err_shapeit <- switch_err_shapeit %>%
+    left_join({gc_content_1kb %>% select(bin_id, GC)}, by = "bin_id")
+  
+  # get positions of flips
+  flip_pos_eagle <- get_flip_pos(switch_err_eagle)
+  flip_pos_shapeit <- get_flip_pos(switch_err_shapeit)
+  
+  # Assign switches flip status
+  switch_err_eagle$is_flip <- switch_err_eagle$pos_start %in% flip_pos_eagle
+  switch_err_shapeit$is_flip <- switch_err_shapeit$pos_start %in% flip_pos_shapeit
+  
+  # stats we want to pull
+  n_switch_eagle <- length(switch_err_eagle$pos_start)
+  n_switch_shapeit <- length(switch_err_shapeit$pos_start)
+  n_flip_eagle <- sum(switch_err_eagle$is_flip)
+  n_flip_shapeit <- sum(switch_err_shapeit$is_flip)
+  n_switch_cpg_eagle <- switch_err_eagle %>%
+    filter(cpg_start == 1) %>%
+    pull(is_flip) %>%
+    length()
+  n_flip_cpg_eagle <- switch_err_eagle %>%
+    filter(cpg_start == 1) %>%
+    pull(is_flip) %>%
+    sum()
+  n_switch_cpg_shapeit <- switch_err_shapeit %>%
+    filter(cpg_start == 1) %>%
+    pull(is_flip) %>%
+    length()
+  n_flip_cpg_shapeit <- switch_err_shapeit %>%
+    filter(cpg_start == 1) %>%
+    pull(is_flip) %>%
+    sum()
+  mean_gc_switch_eagle <- mean(switch_err_eagle$GC)
+  mean_gc_switch_shapeit <- mean(switch_err_shapeit$GC)
+  
+  return(data.frame(pair_id = pair_id,
+                    n_switch_eagle = n_switch_eagle,
+                    n_switch_shapeit = n_switch_shapeit,
+                    n_flip_eagle = n_flip_eagle,
+                    n_flip_shapeit = n_flip_shapeit,
+                    n_switch_cpg_eagle = n_switch_cpg_eagle,
+                    n_flip_cpg_eagle = n_flip_cpg_eagle,
+                    n_switch_cpg_shapeit = n_switch_cpg_shapeit,
+                    n_flip_cpg_shapeit = n_flip_cpg_shapeit,
+                    mean_gc_switch_eagle = mean_gc_switch_eagle,
+                    mean_gc_switch_shapeit = mean_gc_switch_shapeit
+                    ))
+}
+```
+
+And now let's get the rows for all 300 pseudo-diploids:
+
+```{r}
+switch_df <- lapply(c(1:300), 
+                    function(x){
+                      switch_summary(x, eagle_switch_dir, shapeit_switch_dir, gc_content_1kb)
+                      }) %>%
+  bind_rows()
+
+switch_df$pop <- c(rep("EUR", 100), rep("AFR", 200))
+```
+
+### Smash everything together into a single data frame
+
+```{r}
+df <- full_join(switch_df, df_pair, by = c("pair_id", "pop")) %>%
+  full_join(df_eagle_conf, by = c("pair_id", "pop")) %>%
+  full_join(df_pseudo_sites, by = c("pair_id", "pop")) %>%
+  full_join(df_pseudo_hets, by = c("pair_id", "pop"))
+```
+
+And now: we make graphs
+
+**Number of switch error**
+
+```{r}
+df %>%
+  ggplot(aes(x = n_switch_eagle, y = n_switch_shapeit, colour = pop)) +
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  xlab("Switch Errors: EAGLE") +
+  ylab("Switch Errors: SHAPEIT") +
+  ggtitle("Switch Errors by Method")
+```
+
+```{r}
+df %>%
+  ggplot(aes(x = n_switch_eagle, y = n_switch_shapeit, colour = pop)) +
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  xlab("Switch Errors: EAGLE") +
+  ylab("Switch Errors: SHAPEIT") +
+  ggtitle("Switch Errors by Method")
+```
+
+**Number of switch error - % heterozygosity**
+
+```{r}
+df %>%
+  mutate(pct_het = n_het_sites / n_sites) %>%
+  ggplot(aes(x = n_switch_eagle, y = n_switch_shapeit, colour = pct_het)) +
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  xlab("Switch Errors: EAGLE") +
+  ylab("Switch Errors: SHAPEIT") +
+  ggtitle("Switch Errors by Method")
+```
+
+**Number of flip error**
+
+```{r}
+df %>%
+  ggplot(aes(x = n_flip_eagle, y = n_flip_shapeit, colour = pop)) +
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  xlab("Flips: EAGLE") +
+  ylab("Flips: SHAPEIT") +
+  ggtitle("Flips by Method")
+```
+
+```{r}
+df %>%
+  mutate(prop1 = n_switch_cpg_eagle / n_switch_eagle,
+         prop2 = n_switch_cpg_shapeit / n_switch_shapeit) %>%
+  ggplot(aes(x = prop1, y = prop2, colour = pop)) +
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  xlab("Proportion Switches CpG: EAGLE") +
+  ylab("Proportion Switches CpG: SHAPEIT") +
+  ggtitle("Proportion Switches CpG by Method")
+```
+
+Density version of above plot:
+
+```{r}
+df %>%
+  mutate(eagle = n_switch_cpg_eagle / n_switch_eagle,
+         shapeit = n_switch_cpg_shapeit / n_switch_shapeit) %>%
+  select(pair_id, pop, eagle, shapeit) %>%
+  pivot_longer(eagle:shapeit, "method", values_to = "switch_enrich") %>%
+  ggplot(aes(x = switch_enrich, colour = method)) +
+  geom_density() +
+  ggtitle("Total Error Proportion CpG") + 
+  xlab("CpG Error Proportion")
+```
+
+
+```{r}
+df %>%
+  mutate(prop1 = n_flip_cpg_eagle / n_flip_eagle,
+         prop2 = n_flip_cpg_shapeit / n_flip_shapeit) %>%
+  ggplot(aes(x = prop1, y = prop2, colour = pop)) +
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  xlab("Proportion Flips CpG: EAGLE") +
+  ylab("Proportion Flips CpG: SHAPEIT") +
+  ggtitle("Proportion Flips CpG by Method")
+```
+
+```{r}
+df %>%
+  mutate(eagle = n_flip_cpg_eagle / n_flip_eagle,
+         shapeit = n_flip_cpg_shapeit / n_flip_shapeit) %>%
+  select(pair_id, pop, eagle, shapeit) %>%
+  pivot_longer(eagle:shapeit, "method", values_to = "flip_enrich") %>%
+  ggplot(aes(x = flip_enrich, colour = method)) +
+  geom_density() +
+  ggtitle("Flip Proportion CpG") + 
+  xlab("CpG Flip Proportion")
+```
+
+### New stuff post meeting
+
+Ratio of proportion errors to background CpG rate
+
+```{r}
+df %>%
+  mutate(enrich_eagle = (n_switch_cpg_eagle/n_switch_eagle) / background_cpg,
+         enrich_shapeit = (n_switch_cpg_shapeit/n_switch_shapeit) / background_cpg) %>%
+  ggplot(aes(x = enrich_eagle, y = enrich_shapeit, color = pop)) +
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  ggtitle("Total Error CpG Enrichment") +
+  xlab("EAGLE enrichment") +
+  ylab("SHAPEIT enrichment") 
+```
+
+```{r}
+df %>%
+  mutate(eagle = (n_switch_cpg_eagle/n_switch_eagle) / background_cpg,
+         shapeit = (n_switch_cpg_shapeit/n_switch_shapeit) / background_cpg) %>%
+  select(pair_id, pop, eagle, shapeit) %>%
+  pivot_longer(eagle:shapeit, "method", values_to = "flip_enrich") %>%
+  ggplot(aes(x = flip_enrich, colour = method)) +
+  geom_density() +
+  ggtitle("Flip Proportion CpG") + 
+  xlab("CpG Flip Proportion")
+```
+
+CpG Flip Enrichment
+
+```{r}
+df %>%
+  mutate(enrich_eagle = (n_flip_cpg_eagle/n_flip_eagle) / background_cpg,
+         enrich_shapeit = (n_flip_cpg_shapeit/n_flip_shapeit) / background_cpg) %>%
+  ggplot(aes(x = enrich_eagle, y = enrich_shapeit, color = pop)) +
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  xlab("EAGLE enrichment") +
+  ylab("SHAPEIT enrichment") +
+  ggtitle("Flip CpG Enrichment")
+```
+
