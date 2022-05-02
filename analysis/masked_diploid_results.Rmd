@@ -310,6 +310,7 @@ switch_summary <- function(pair_id, eagle_dir, shapeit_dir, gc_content_1kb, bin_
   mean_gc_switch_eagle <- mean(switch_err_eagle$GC)
   mean_gc_switch_shapeit <- mean(switch_err_shapeit$GC)
   
+  
   return(data.frame(pair_id = pair_id,
                     n_switch_eagle = n_switch_eagle,
                     n_switch_shapeit = n_switch_shapeit,
@@ -500,4 +501,77 @@ df %>%
   ggtitle("Flip CpG Enrichment") +
   labs(colour = "Population")
 ```
+
+## Additional Summary Information
+
+Average number of flips and switches per pseudo-diploid:
+
+```{r}
+df %>%
+  select(pop, n_switch_eagle, n_switch_cpg_eagle,
+         n_flip_eagle, n_flip_cpg_eagle,
+         n_switch_shapeit, n_switch_cpg_shapeit,
+         n_flip_shapeit, n_flip_cpg_shapeit) %>%
+  group_by(pop) %>%
+  summarize(mean_switch_eagle = mean(n_switch_eagle),
+            mean_switch_cpg_eagle = mean(n_switch_cpg_eagle),
+            mean_switch_shapeit = mean(n_switch_shapeit),
+            mean_switch_cpg_shapeit = mean(n_switch_cpg_shapeit),
+            mean_flip_eagle = mean(n_flip_eagle),
+            mean_flip_cpg_eagle = mean(n_flip_cpg_eagle),
+            mean_flip_shapeit = mean(n_flip_shapeit),
+            mean_flip_cpg_shapeit = mean(n_flip_cpg_shapeit)) %>%
+  knitr::kable()
+```
+
+Average number flips and switches per 1kb bin:
+
+```{r eval=FALSE}
+switch_err_eagle <- read_csv(paste0(eagle_switch_dir, "switch_", 1, ".csv"), show_col_types = FALSE) %>%
+  mutate(bin_id = ceiling(pos_start / 1000),
+         big_bin_id = ceiling(pos_start / 1000000))
+switch_err_shapeit <- read_csv(paste0(shapeit_switch_dir, "switch_", 1, ".csv"), show_col_types = FALSE) %>%
+  mutate(bin_id = ceiling(pos_start / 1000),
+         big_bin_id = ceiling(pos_start / 1000000))
+switch_err_eagle <- switch_err_eagle %>%
+  left_join({gc_content_1kb %>% select(bin_id, GC)}, by = "bin_id")
+switch_err_shapeit <- switch_err_shapeit %>%
+  left_join({gc_content_1kb %>% select(bin_id, GC)}, by = "bin_id")
+flip_pos_eagle <- get_flip_pos(switch_err_eagle)
+flip_pos_shapeit <- get_flip_pos(switch_err_shapeit)
+switch_err_eagle$is_flip <- switch_err_eagle$pos_start %in% flip_pos_eagle
+switch_err_shapeit$is_flip <- switch_err_shapeit$pos_start %in% flip_pos_shapeit
+
+switch_err_eagle %>%
+  select(big_bin_id) %>%
+  group_by(big_bin_id) %>%
+  summarize(n_switch = n()) %>%
+  pull(n_switch) %>%
+  mean()
+
+
+bin_summary <- function(pair_id, eagle_dir, shapeit_dir, gc_content_1kb){
+  switch_err_eagle <- read_csv(paste0(eagle_dir, "switch_", pair_id, ".csv"), show_col_types = FALSE) %>%
+    mutate(bin_id = ceiling(pos_start / 1000),
+           big_bin_id = ceiling(pos_start / 1000000))
+  switch_err_shapeit <- read_csv(paste0(shapeit_dir, "switch_", pair_id, ".csv"), show_col_types = FALSE) %>%
+    mutate(bin_id = ceiling(pos_start / 1000),
+           big_bin_id = ceiling(pos_start / 1000000))
+  
+  switch_err_eagle <- switch_err_eagle %>%
+    left_join({gc_content_1kb %>% select(bin_id, GC)}, by = "bin_id")
+  
+  switch_err_shapeit <- switch_err_shapeit %>%
+    left_join({gc_content_1kb %>% select(bin_id, GC)}, by = "bin_id")
+  
+  # get positions of flips
+  flip_pos_eagle <- get_flip_pos(switch_err_eagle)
+  flip_pos_shapeit <- get_flip_pos(switch_err_shapeit)
+  
+  # Assign switches flip status
+  switch_err_eagle$is_flip <- switch_err_eagle$pos_start %in% flip_pos_eagle
+  switch_err_shapeit$is_flip <- switch_err_shapeit$pos_start %in% flip_pos_shapeit
+}
+```
+
 
