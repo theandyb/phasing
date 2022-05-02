@@ -586,13 +586,13 @@ data/sample_pairs_all.csv
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrong0add4ba">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrong39360d2">
 <span class="glyphicon glyphicon-ok text-success"
-aria-hidden="true"></span> <strong>Repository version:</strong> 0add4ba
+aria-hidden="true"></span> <strong>Repository version:</strong> 39360d2
 </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrong0add4ba"
+<div id="strongRepositoryversionstrong39360d2"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -601,7 +601,7 @@ and connecting the code version to the results is critical for
 reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version 0add4ba.
+The results in this page were generated with repository version 39360d2.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -693,6 +693,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+39360d2
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2022-05-02
+</td>
+<td>
+wflow_publish("analysis/masked_diploid_results.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+29aa2c1
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2022-05-02
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1028,6 +1062,43 @@ dbl (1): phase_confidence
   geom_density() +
   ggtitle(&quot;EAGLE2 Phase Confidence&quot;)</code></pre>
 <p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-14-1">
+Past versions of unnamed-chunk-14-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-14-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+29aa2c1
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2022-05-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="number-of-sites" class="section level3">
 <h3>Number of sites</h3>
@@ -1049,6 +1120,43 @@ stratified by super-pop:</p>
   geom_density() +
   ggtitle(&quot;Number of Sites per Pseudo-diploid&quot;)</code></pre>
 <p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-16-1">
+Past versions of unnamed-chunk-16-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-16-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+29aa2c1
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2022-05-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="number-of-heterozygous-sites" class="section level3">
 <h3>Number of heterozygous sites</h3>
@@ -1069,6 +1177,43 @@ dbl (2): pair_id, n_het_sites
   xlab(&quot;Number of heterozygous sites&quot;) +
   ggtitle(&quot;Number of Heterozygous Sites per Pseudo-diploid&quot;)</code></pre>
 <p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-18-1">
+Past versions of unnamed-chunk-18-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-18-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+29aa2c1
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2022-05-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="switches-and-flips" class="section level3">
 <h3>Switches and Flips</h3>
@@ -1151,18 +1296,96 @@ class="section level3">
   ggplot(aes(x = n_switch_eagle, y = n_switch_shapeit, colour = pop)) +
   geom_point() +
   geom_abline(slope = 1, intercept = 0) +
-  xlab(&quot;Switch Errors: EAGLE&quot;) +
-  ylab(&quot;Switch Errors: SHAPEIT&quot;) +
-  ggtitle(&quot;Switch Errors by Method&quot;)</code></pre>
+  xlab(&quot;Total Errors: EAGLE&quot;) +
+  ylab(&quot;Total Errors: SHAPEIT&quot;) +
+  ggtitle(&quot;Total Errors by Method&quot;) +
+  labs(colour = &quot;Population&quot;)</code></pre>
 <p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-22-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-22-1">
+Past versions of unnamed-chunk-22-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-22-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+29aa2c1
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2022-05-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>df %&gt;%
-  ggplot(aes(x = n_switch_eagle, y = n_switch_shapeit, colour = pop)) +
+  mutate(non_flip_eagle = n_switch_eagle - (2*n_flip_eagle),
+         non_flip_shapeit = n_switch_shapeit - (2*n_flip_shapeit)) %&gt;%
+  ggplot(aes(x = non_flip_eagle, y = non_flip_shapeit, colour = pop)) +
   geom_point() +
   geom_abline(slope = 1, intercept = 0) +
   xlab(&quot;Switch Errors: EAGLE&quot;) +
   ylab(&quot;Switch Errors: SHAPEIT&quot;) +
-  ggtitle(&quot;Switch Errors by Method&quot;)</code></pre>
+  ggtitle(&quot;Switch Errors by Method&quot;, &quot;Total Errors - 2*Flip Errors&quot;) +
+  labs(colour = &quot;Population&quot;)</code></pre>
 <p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-23-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-23-1">
+Past versions of unnamed-chunk-23-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-23-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+29aa2c1
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2022-05-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p><strong>Number of switch error - % heterozygosity</strong></p>
 <pre class="r"><code>df %&gt;%
   mutate(pct_het = n_het_sites / n_sites) %&gt;%
@@ -1171,8 +1394,46 @@ class="section level3">
   geom_abline(slope = 1, intercept = 0) +
   xlab(&quot;Switch Errors: EAGLE&quot;) +
   ylab(&quot;Switch Errors: SHAPEIT&quot;) +
-  ggtitle(&quot;Switch Errors by Method&quot;)</code></pre>
+  ggtitle(&quot;Switch Errors by Method&quot;) +
+  labs(colour = &quot;Percent Heterozygosity&quot;)</code></pre>
 <p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-24-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-24-1">
+Past versions of unnamed-chunk-24-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-24-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+29aa2c1
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2022-05-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p><strong>Number of flip error</strong></p>
 <pre class="r"><code>df %&gt;%
   ggplot(aes(x = n_flip_eagle, y = n_flip_shapeit, colour = pop)) +
@@ -1180,8 +1441,46 @@ class="section level3">
   geom_abline(slope = 1, intercept = 0) +
   xlab(&quot;Flips: EAGLE&quot;) +
   ylab(&quot;Flips: SHAPEIT&quot;) +
-  ggtitle(&quot;Flips by Method&quot;)</code></pre>
+  ggtitle(&quot;Flips by Method&quot;) +
+  labs(colour = &quot;Population&quot;)</code></pre>
 <p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-25-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-25-1">
+Past versions of unnamed-chunk-25-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-25-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+29aa2c1
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2022-05-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>df %&gt;%
   mutate(prop1 = n_switch_cpg_eagle / n_switch_eagle,
          prop2 = n_switch_cpg_shapeit / n_switch_shapeit) %&gt;%
@@ -1190,8 +1489,46 @@ class="section level3">
   geom_abline(slope = 1, intercept = 0) +
   xlab(&quot;Proportion Switches CpG: EAGLE&quot;) +
   ylab(&quot;Proportion Switches CpG: SHAPEIT&quot;) +
-  ggtitle(&quot;Proportion Switches CpG by Method&quot;)</code></pre>
+  ggtitle(&quot;Proportion Switches CpG by Method&quot;) +
+  labs(colour = &quot;Population&quot;)</code></pre>
 <p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-26-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-26-1">
+Past versions of unnamed-chunk-26-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-26-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+29aa2c1
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2022-05-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Density version of above plot:</p>
 <pre class="r"><code>df %&gt;%
   mutate(eagle = n_switch_cpg_eagle / n_switch_eagle,
@@ -1201,8 +1538,46 @@ class="section level3">
   ggplot(aes(x = switch_enrich, colour = method)) +
   geom_density() +
   ggtitle(&quot;Total Error Proportion CpG&quot;) + 
-  xlab(&quot;CpG Error Proportion&quot;)</code></pre>
+  xlab(&quot;CpG Error Proportion&quot;) +
+  labs(colour = &quot;Method&quot;)</code></pre>
 <p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-27-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-27-1">
+Past versions of unnamed-chunk-27-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-27-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+29aa2c1
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2022-05-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>df %&gt;%
   mutate(prop1 = n_flip_cpg_eagle / n_flip_eagle,
          prop2 = n_flip_cpg_shapeit / n_flip_shapeit) %&gt;%
@@ -1211,8 +1586,46 @@ class="section level3">
   geom_abline(slope = 1, intercept = 0) +
   xlab(&quot;Proportion Flips CpG: EAGLE&quot;) +
   ylab(&quot;Proportion Flips CpG: SHAPEIT&quot;) +
-  ggtitle(&quot;Proportion Flips CpG by Method&quot;)</code></pre>
+  ggtitle(&quot;Proportion Flips CpG by Method&quot;) +
+  labs(colour = &quot;Population&quot;)</code></pre>
 <p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-28-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-28-1">
+Past versions of unnamed-chunk-28-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-28-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+29aa2c1
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2022-05-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>df %&gt;%
   mutate(eagle = n_flip_cpg_eagle / n_flip_eagle,
          shapeit = n_flip_cpg_shapeit / n_flip_shapeit) %&gt;%
@@ -1221,8 +1634,46 @@ class="section level3">
   ggplot(aes(x = flip_enrich, colour = method)) +
   geom_density() +
   ggtitle(&quot;Flip Proportion CpG&quot;) + 
-  xlab(&quot;CpG Flip Proportion&quot;)</code></pre>
+  xlab(&quot;CpG Flip Proportion&quot;) +
+  labs(colour = &quot;Method&quot;)</code></pre>
 <p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-29-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-29-1">
+Past versions of unnamed-chunk-29-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-29-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+29aa2c1
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2022-05-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="new-stuff-post-meeting" class="section level3">
 <h3>New stuff post meeting</h3>
@@ -1235,8 +1686,46 @@ class="section level3">
   geom_abline(slope = 1, intercept = 0) +
   ggtitle(&quot;Total Error CpG Enrichment&quot;) +
   xlab(&quot;EAGLE enrichment&quot;) +
-  ylab(&quot;SHAPEIT enrichment&quot;) </code></pre>
+  ylab(&quot;SHAPEIT enrichment&quot;) +
+  labs(colour = &quot;Population&quot;)</code></pre>
 <p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-30-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-30-1">
+Past versions of unnamed-chunk-30-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-30-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+29aa2c1
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2022-05-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>df %&gt;%
   mutate(eagle = (n_switch_cpg_eagle/n_switch_eagle) / background_cpg,
          shapeit = (n_switch_cpg_shapeit/n_switch_shapeit) / background_cpg) %&gt;%
@@ -1245,8 +1734,46 @@ class="section level3">
   ggplot(aes(x = flip_enrich, colour = method)) +
   geom_density() +
   ggtitle(&quot;Flip Proportion CpG&quot;) + 
-  xlab(&quot;CpG Flip Proportion&quot;)</code></pre>
+  xlab(&quot;CpG Flip Proportion&quot;) +
+  labs(colour = &quot;Method&quot;)</code></pre>
 <p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-31-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-31-1">
+Past versions of unnamed-chunk-31-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-31-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+29aa2c1
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2022-05-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>CpG Flip Enrichment</p>
 <pre class="r"><code>df %&gt;%
   mutate(enrich_eagle = (n_flip_cpg_eagle/n_flip_eagle) / background_cpg,
@@ -1256,8 +1783,46 @@ class="section level3">
   geom_abline(slope = 1, intercept = 0) +
   xlab(&quot;EAGLE enrichment&quot;) +
   ylab(&quot;SHAPEIT enrichment&quot;) +
-  ggtitle(&quot;Flip CpG Enrichment&quot;)</code></pre>
+  ggtitle(&quot;Flip CpG Enrichment&quot;) +
+  labs(colour = &quot;Population&quot;)</code></pre>
 <p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-32-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-32-1">
+Past versions of unnamed-chunk-32-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-32-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+29aa2c1
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2022-05-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
