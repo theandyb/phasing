@@ -355,19 +355,23 @@ df %>%
   ggplot(aes(x = n_switch_eagle, y = n_switch_shapeit, colour = pop)) +
   geom_point() +
   geom_abline(slope = 1, intercept = 0) +
-  xlab("Switch Errors: EAGLE") +
-  ylab("Switch Errors: SHAPEIT") +
-  ggtitle("Switch Errors by Method")
+  xlab("Total Errors: EAGLE") +
+  ylab("Total Errors: SHAPEIT") +
+  ggtitle("Total Errors by Method") +
+  labs(colour = "Population")
 ```
 
 ```{r}
 df %>%
-  ggplot(aes(x = n_switch_eagle, y = n_switch_shapeit, colour = pop)) +
+  mutate(non_flip_eagle = n_switch_eagle - (2*n_flip_eagle),
+         non_flip_shapeit = n_switch_shapeit - (2*n_flip_shapeit)) %>%
+  ggplot(aes(x = non_flip_eagle, y = non_flip_shapeit, colour = pop)) +
   geom_point() +
   geom_abline(slope = 1, intercept = 0) +
   xlab("Switch Errors: EAGLE") +
   ylab("Switch Errors: SHAPEIT") +
-  ggtitle("Switch Errors by Method")
+  ggtitle("Switch Errors by Method", "Total Errors - 2*Flip Errors") +
+  labs(colour = "Population")
 ```
 
 **Number of switch error - % heterozygosity**
@@ -380,7 +384,8 @@ df %>%
   geom_abline(slope = 1, intercept = 0) +
   xlab("Switch Errors: EAGLE") +
   ylab("Switch Errors: SHAPEIT") +
-  ggtitle("Switch Errors by Method")
+  ggtitle("Switch Errors by Method") +
+  labs(colour = "Percent Heterozygosity")
 ```
 
 **Number of flip error**
@@ -392,7 +397,8 @@ df %>%
   geom_abline(slope = 1, intercept = 0) +
   xlab("Flips: EAGLE") +
   ylab("Flips: SHAPEIT") +
-  ggtitle("Flips by Method")
+  ggtitle("Flips by Method") +
+  labs(colour = "Population")
 ```
 
 ```{r}
@@ -404,7 +410,8 @@ df %>%
   geom_abline(slope = 1, intercept = 0) +
   xlab("Proportion Switches CpG: EAGLE") +
   ylab("Proportion Switches CpG: SHAPEIT") +
-  ggtitle("Proportion Switches CpG by Method")
+  ggtitle("Proportion Switches CpG by Method") +
+  labs(colour = "Population")
 ```
 
 Density version of above plot:
@@ -418,7 +425,8 @@ df %>%
   ggplot(aes(x = switch_enrich, colour = method)) +
   geom_density() +
   ggtitle("Total Error Proportion CpG") + 
-  xlab("CpG Error Proportion")
+  xlab("CpG Error Proportion") +
+  labs(colour = "Method")
 ```
 
 
@@ -431,7 +439,8 @@ df %>%
   geom_abline(slope = 1, intercept = 0) +
   xlab("Proportion Flips CpG: EAGLE") +
   ylab("Proportion Flips CpG: SHAPEIT") +
-  ggtitle("Proportion Flips CpG by Method")
+  ggtitle("Proportion Flips CpG by Method") +
+  labs(colour = "Population")
 ```
 
 ```{r}
@@ -443,7 +452,8 @@ df %>%
   ggplot(aes(x = flip_enrich, colour = method)) +
   geom_density() +
   ggtitle("Flip Proportion CpG") + 
-  xlab("CpG Flip Proportion")
+  xlab("CpG Flip Proportion") +
+  labs(colour = "Method")
 ```
 
 ### New stuff post meeting
@@ -459,7 +469,8 @@ df %>%
   geom_abline(slope = 1, intercept = 0) +
   ggtitle("Total Error CpG Enrichment") +
   xlab("EAGLE enrichment") +
-  ylab("SHAPEIT enrichment") 
+  ylab("SHAPEIT enrichment") +
+  labs(colour = "Population")
 ```
 
 ```{r}
@@ -471,7 +482,8 @@ df %>%
   ggplot(aes(x = flip_enrich, colour = method)) +
   geom_density() +
   ggtitle("Flip Proportion CpG") + 
-  xlab("CpG Flip Proportion")
+  xlab("CpG Flip Proportion") +
+  labs(colour = "Method")
 ```
 
 CpG Flip Enrichment
@@ -485,6 +497,7 @@ df %>%
   geom_abline(slope = 1, intercept = 0) +
   xlab("EAGLE enrichment") +
   ylab("SHAPEIT enrichment") +
-  ggtitle("Flip CpG Enrichment")
+  ggtitle("Flip CpG Enrichment") +
+  labs(colour = "Population")
 ```
 
