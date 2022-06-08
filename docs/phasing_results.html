@@ -15,7 +15,7 @@
 
 <title>masked_diploid_results</title>
 
-<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -75,6 +75,7 @@ if (window.hljs) {
 
 
 
+
 <style type = "text/css">
 .main-container {
   max-width: 940px;
@@ -95,6 +96,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -320,7 +324,7 @@ div.tocify {
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -381,13 +385,13 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-05-02
+<strong>Last updated:</strong> 2022-05-31
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 5
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 1
+aria-hidden="true"></span> 2
 </p>
 <p>
 <strong>Knit directory:</strong> <code>phasing/</code> <span
@@ -410,18 +414,21 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
-<span class="glyphicon glyphicon-ok text-success"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
-</a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
+changes </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguptodate"
+<div id="strongRMarkdownfilestronguncommittedchanges"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great! Since the R Markdown file has been committed to the Git
-repository, you know the exact version of the code that produced these
-results.</p>
+<p>The R Markdown file has unstaged changes. To know which version of
+the R Markdown file created these results, you’ll want to first commit
+it to the Git repo. If you’re still working on the analysis, you can
+ignore this warning. When you’re finished, you can run
+<code>wflow_publish</code> to commit the R Markdown file and build the
+HTML.</p>
 </div>
 </div>
 </div>
@@ -540,6 +547,14 @@ output/19april22_switch_errors/switch_errors/shapeit/annotated
 </tr>
 <tr>
 <td style="text-align:left;">
+/net/snowwhite/home/beckandy/research/phasing/output/19april22_switch_errors/switch_errors/beagle/annotated/
+</td>
+<td style="text-align:left;">
+output/19april22_switch_errors/switch_errors/beagle/annotated
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 /net/snowwhite/home/beckandy/research/phasing/output/19april22_switch_errors/vcf_n_sites/
 </td>
 <td style="text-align:left;">
@@ -586,13 +601,13 @@ data/sample_pairs_all.csv
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongbe3d855">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongc753b7c">
 <span class="glyphicon glyphicon-ok text-success"
-aria-hidden="true"></span> <strong>Repository version:</strong> be3d855
+aria-hidden="true"></span> <strong>Repository version:</strong> c753b7c
 </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongbe3d855"
+<div id="strongRepositoryversionstrongc753b7c"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -601,7 +616,7 @@ and connecting the code version to the results is critical for
 reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version be3d855.
+The results in this page were generated with repository version c753b7c.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -619,6 +634,7 @@ Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
     Ignored:    data/first_attempt/
+    Ignored:    data/ovary/
     Ignored:    data/ref/
     Ignored:    data/shapeit/
     Ignored:    output/11april22_switch_errors/
@@ -633,17 +649,24 @@ Ignored files:
 Untracked files:
     Untracked:  Rplots.pdf
     Untracked:  analysis/Rplots.pdf
+    Untracked:  analysis/beagle_map_nomap.Rmd
     Untracked:  analysis/first_phase_test.Rmd
     Untracked:  analysis/first_phasing_results.Rmd
     Untracked:  analysis/gc_content.Rmd
+    Untracked:  analysis/methylation_explore.Rmd
     Untracked:  analysis/shift_error_ex.Rmd
+    Untracked:  code/add_meth.R
     Untracked:  code/background_3mer.py
     Untracked:  code/background_dimer.py
+    Untracked:  code/batch_add_meth.sh
+    Untracked:  code/batch_beagle.sh
+    Untracked:  plink.log
 
 Unstaged changes:
     Modified:   analysis/build_a_vcf.Rmd
     Modified:   analysis/captains_log.Rmd
     Modified:   analysis/data_exploration.Rmd
+    Modified:   analysis/masked_diploid_results.Rmd
     Modified:   code/batch_annotate_switch.sh
     Modified:   code/batch_diploid_analysis.sh
     Modified:   code/sample_X_pairs.R
@@ -693,6 +716,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+c753b7c
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2022-05-02
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -787,15 +827,16 @@ wflow_publish("analysis/masked_diploid_results.Rmd")
 </div>
 <pre class="r"><code>library(tidyverse)</code></pre>
 <pre><code>── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──</code></pre>
-<pre><code>✓ ggplot2 3.3.5     ✓ purrr   0.3.4
-✓ tibble  3.1.6     ✓ dplyr   1.0.8
-✓ tidyr   1.2.0     ✓ stringr 1.4.0
-✓ readr   2.1.2     ✓ forcats 0.5.1</code></pre>
+<pre><code>✔ ggplot2 3.3.6     ✔ purrr   0.3.4
+✔ tibble  3.1.7     ✔ dplyr   1.0.9
+✔ tidyr   1.2.0     ✔ stringr 1.4.0
+✔ readr   2.1.2     ✔ forcats 0.5.1</code></pre>
 <pre><code>── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-x dplyr::filter() masks stats::filter()
-x dplyr::lag()    masks stats::lag()</code></pre>
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>eagle_switch_dir &lt;- &quot;/net/snowwhite/home/beckandy/research/phasing/output/19april22_switch_errors/switch_errors/eagle/annotated/&quot;
 shapeit_switch_dir &lt;- &quot;/net/snowwhite/home/beckandy/research/phasing/output/19april22_switch_errors/switch_errors/shapeit/annotated/&quot;
+beagle_switch_dir &lt;- &quot;/net/snowwhite/home/beckandy/research/phasing/output/19april22_switch_errors/switch_errors/beagle/annotated/&quot;
 num_sites_dir &lt;- &quot;/net/snowwhite/home/beckandy/research/phasing/output/19april22_switch_errors/vcf_n_sites/&quot;
 whatshap_dir &lt;- &quot;/net/snowwhite/home/beckandy/research/phasing/output/19april22_switch_errors/whatshap/&quot;
 
@@ -873,7 +914,7 @@ heterozygous in non-PAR)</li>
 <li>Create truth VCF with haploids pasted together, and test vcf with
 sites in haploids shuffled</li>
 <li>Create reference VCF by removing two sampled subjects</li>
-<li>Phase the test VCF using EAGLE and SHAPEIT</li>
+<li>Phase the test VCF using EAGLE2, BEAGLE5, and SHAPEIT4</li>
 <li>Compare phasing results and truth using <code>vcftools</code> and
 <code>whatshap</code></li>
 </ol>
@@ -903,6 +944,15 @@ dbl (4): pos_start, pos_end, cpg_start, cpg_end
 
 ℹ Use `spec()` to retrieve the full column specification for this data.
 ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>switch_err_beagle &lt;- read_csv(paste0(beagle_switch_dir, &quot;switch_&quot;, pair_id, &quot;.csv&quot;))</code></pre>
+<pre><code>Rows: 1089 Columns: 6
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: &quot;,&quot;
+chr (2): motif_start, end_motif
+dbl (4): pos_start, pos_end, cpg_start, cpg_end
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <pre class="r"><code>whatshap_eagle &lt;- read_tsv(paste0(whatshap_dir, &quot;/eagle/eval_&quot;, pair_id, &quot;.tsv&quot;))</code></pre>
 <pre><code>Rows: 1 Columns: 28
 ── Column specification ────────────────────────────────────────────────────────
@@ -923,7 +973,8 @@ dbl (20): intersection_blocks, covered_variants, all_assessed_pairs, all_swi...
 ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <p>From the above we can get the raw number of total switches based on
 the dimension of the switch error data frames; in this example, we see
-that EAGLE has 965 switches and SHAPEIT has 961 switches.</p>
+that EAGLE has 965 switches, BEAGLE has 1089 and SHAPEIT has 961
+switches.</p>
 <p>From the whatshap output, we also get a breakdown between how many of
 the total switches are flips. For example, the breakdown between
 switches and flips (switches/flips) in EAGLE is 289/338, and
@@ -968,7 +1019,8 @@ print(count)</code></pre>
 }
 
 flip_pos_eagle &lt;- get_flip_pos(switch_err_eagle)
-flip_pos_shapeit &lt;- get_flip_pos(switch_err_shapeit)</code></pre>
+flip_pos_shapeit &lt;- get_flip_pos(switch_err_shapeit)
+flip_pos_beagle &lt;- get_flip_pos(switch_err_beagle)</code></pre>
 <p>Just to satisfy my curiosity, let’s see how many of the flip
 positions are shared between the methods:</p>
 <pre class="r"><code>intersect(flip_pos_eagle, flip_pos_shapeit) %&gt;% length()</code></pre>
@@ -976,7 +1028,8 @@ positions are shared between the methods:</p>
 <p>And moving on, let’s go ahead and annotate each switch in the
 <code>vcftools</code> output with whether or not it is a flip:</p>
 <pre class="r"><code>switch_err_eagle$is_flip &lt;- switch_err_eagle$pos_start %in% flip_pos_eagle
-switch_err_shapeit$is_flip &lt;- switch_err_shapeit$pos_start %in% flip_pos_shapeit</code></pre>
+switch_err_shapeit$is_flip &lt;- switch_err_shapeit$pos_start %in% flip_pos_shapeit
+switch_err_beagle$is_flip &lt;- switch_err_beagle$pos_start %in% flip_pos_beagle</code></pre>
 <p>Alright, one last thing we’ll look at for this pair is the proportion
 of all switches and flips are CpGs and contrast this with the background
 rate of dimers. For reference, the distribution of dimers in the X
@@ -1015,6 +1068,14 @@ switch_err_eagle %&gt;%
 302  36 </code></pre>
 <p>Here for EAGLE we see that about 10.6% of flips occur at CpG
 sites.</p>
+<pre class="r"><code>switch_err_beagle %&gt;%
+  filter(is_flip == TRUE) %&gt;%
+  pull(cpg_start) %&gt;%
+  table()</code></pre>
+<pre><code>.
+  0   1 
+320  34 </code></pre>
+<p>~9.6% of BEAGLE’s flips occur at CpGs/</p>
 <pre class="r"><code>switch_err_shapeit %&gt;%
   filter(is_flip == TRUE) %&gt;%
   pull(cpg_start) %&gt;%
@@ -1030,16 +1091,25 @@ number of switches:</p>
 <pre><code>.
   0   1 
 886  79 </code></pre>
+<pre class="r"><code>switch_err_beagle %&gt;%
+  pull(cpg_start) %&gt;%
+  table()</code></pre>
+<pre><code>.
+  0   1 
+995  94 </code></pre>
 <pre class="r"><code>switch_err_shapeit %&gt;%
   pull(cpg_start) %&gt;%
   table()</code></pre>
 <pre><code>.
   0   1 
 872  89 </code></pre>
-<p>8.2% and 9.3% of switches at CpG.</p>
+<p>8.2%, 8.6% and 9.3% of errors at CpG.</p>
 <div id="gc-content" class="section level3">
 <h3>GC Content</h3>
 <pre class="r"><code>switch_err_eagle &lt;- switch_err_eagle %&gt;%
+  mutate(bin_id = ceiling(pos_start / 1000))
+
+switch_err_beagle &lt;- switch_err_beagle %&gt;%
   mutate(bin_id = ceiling(pos_start / 1000))
 
 switch_err_shapeit &lt;- switch_err_shapeit %&gt;%
@@ -1047,54 +1117,23 @@ switch_err_shapeit &lt;- switch_err_shapeit %&gt;%
 
 switch_err_eagle &lt;- switch_err_eagle %&gt;%
     left_join({gc_content_1kb %&gt;% select(bin_id, GC)}, by = &quot;bin_id&quot;)
+
+switch_err_beagle &lt;- switch_err_beagle %&gt;%
+    left_join({gc_content_1kb %&gt;% select(bin_id, GC)}, by = &quot;bin_id&quot;)
   
 switch_err_shapeit &lt;- switch_err_shapeit %&gt;%
     left_join({gc_content_1kb %&gt;% select(bin_id, GC)}, by = &quot;bin_id&quot;)</code></pre>
-</div>
-</div>
-<div id="summary-statisitics-across-all-pseudo-diploids"
-class="section level2">
-<h2>Summary Statisitics Across All Pseudo-diploids</h2>
-<p>Let’s grab:</p>
-<ul>
-<li>Number of heterozygous sites per diploid</li>
-<li>EAGLE phase confidence</li>
-<li>Total number of switch errors for each method</li>
-<li>Number of flips for each method</li>
-<li>Percent of flips and switches that were CpG site</li>
-<li>Average percent GC in 1kb windows</li>
-</ul>
-<div id="pair-information" class="section level3">
-<h3>Pair information</h3>
-<pre class="r"><code>df_pair &lt;- read_csv(&quot;/net/snowwhite/home/beckandy/research/phasing/data/sample_pairs_all.csv&quot;,
-                    col_names = c(&quot;pop&quot;, &quot;sub1&quot;, &quot;sub2&quot;), show_col_types = FALSE) %&gt;%
-  rename(sub_pop = pop)
-df_pair$pop &lt;- c(rep(&quot;EUR&quot;, 100), rep(&quot;AFR&quot;, 200))
-df_pair$pair_id &lt;- 1:300</code></pre>
-</div>
-<div id="eagle-phase-confidence" class="section level3">
-<h3>EAGLE Phase Confidence</h3>
-<pre class="r"><code>input_cmd &lt;- &quot;grep \&quot;^FAKE001\&quot; /net/snowwhite/home/beckandy/research/phasing/output/19april22_switch_errors/slurm/pair.*.out | awk &#39;{print($1, \&quot;\\t\&quot;, $2)}&#39;&quot;
-
-df_eagle_conf &lt;- vroom::vroom(pipe(input_cmd), delim = &quot;\t&quot;, col_names = c(&quot;f_name&quot;, &quot;phase_confidence&quot;)) %&gt;%
-  rowwise() %&gt;%
-  mutate(pair_id = as.numeric(str_split(f_name, &quot;\\.&quot;)[[1]][3])) %&gt;%
-  select(pair_id, phase_confidence) %&gt;%
-  arrange(pair_id)</code></pre>
-<pre><code>Rows: 300 Columns: 2
-── Column specification ────────────────────────────────────────────────────────
-Delimiter: &quot;\t&quot;
-chr (1): f_name
-dbl (1): phase_confidence
-
-ℹ Use `spec()` to retrieve the full column specification for this data.
-ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<pre class="r"><code>df_eagle_conf$pop &lt;- c(rep(&quot;EUR&quot;, 100), rep(&quot;AFR&quot;, 200))</code></pre>
-<p>Oh, let’s make a density plot, shall we?</p>
-<pre class="r"><code>df_eagle_conf %&gt;%
-  ggplot(aes(x = phase_confidence, colour = pop)) +
-  geom_density() +
-  ggtitle(&quot;EAGLE2 Phase Confidence&quot;)</code></pre>
+<p>Let’s first look at what the GC content chromosome-wide looks like in
+X:</p>
+<pre class="r"><code>gc_content_1kb %&gt;%
+  filter(GC &gt; 0) %&gt;%
+  ggplot(aes(x = bin_id, y = GC)) +
+  geom_point()</code></pre>
+<p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>gc_content_1kb %&gt;%
+  filter(GC &gt; 0) %&gt;%
+  ggplot(aes(x = GC)) +
+  geom_boxplot()</code></pre>
 <p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-14-1">
@@ -1133,6 +1172,50 @@ Andy Beck
 </table>
 </div>
 </div>
+<p>And now for our errors, we can see how the distribution of GC content
+in the windows they occur in compare to the chromosome-wide
+distribution:</p>
+<pre class="r"><code>switch_err_beagle %&gt;%
+  ggplot(aes(x = GC)) +
+  geom_boxplot()</code></pre>
+<p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="summary-statisitics-across-all-pseudo-diploids"
+class="section level2">
+<h2>Summary Statisitics Across All Pseudo-diploids</h2>
+<p>Let’s grab:</p>
+<ul>
+<li>Number of heterozygous sites per diploid</li>
+<li>EAGLE phase confidence</li>
+<li>Total number of switch errors for each method</li>
+<li>Number of flips for each method</li>
+<li>Percent of flips and switches that were CpG site</li>
+<li>Average percent GC in 1kb windows</li>
+</ul>
+<div id="pair-information" class="section level3">
+<h3>Pair information</h3>
+<pre class="r"><code>df_pair &lt;- read_csv(&quot;/net/snowwhite/home/beckandy/research/phasing/data/sample_pairs_all.csv&quot;,
+                    col_names = c(&quot;pop&quot;, &quot;sub1&quot;, &quot;sub2&quot;), show_col_types = FALSE) %&gt;%
+  rename(sub_pop = pop)
+df_pair$pop &lt;- c(rep(&quot;EUR&quot;, 100), rep(&quot;AFR&quot;, 200))
+df_pair$pair_id &lt;- 1:300</code></pre>
+</div>
+<div id="eagle-phase-confidence" class="section level3">
+<h3>EAGLE Phase Confidence</h3>
+<pre class="r"><code>input_cmd &lt;- &quot;grep \&quot;^FAKE001\&quot; /net/snowwhite/home/beckandy/research/phasing/output/19april22_switch_errors/slurm/pair.*.out | awk &#39;{print($1, \&quot;\\t\&quot;, $2)}&#39;&quot;
+
+df_eagle_conf &lt;- vroom::vroom(pipe(input_cmd), delim = &quot;\t&quot;, col_names = c(&quot;f_name&quot;, &quot;phase_confidence&quot;)) %&gt;%
+  rowwise() %&gt;%
+  mutate(pair_id = as.numeric(str_split(f_name, &quot;\\.&quot;)[[1]][3])) %&gt;%
+  select(pair_id, phase_confidence) %&gt;%
+  arrange(pair_id)
+df_eagle_conf$pop &lt;- c(rep(&quot;EUR&quot;, 100), rep(&quot;AFR&quot;, 200))</code></pre>
+<p>Oh, let’s make a density plot, shall we?</p>
+<pre class="r"><code>df_eagle_conf %&gt;%
+  ggplot(aes(x = phase_confidence, colour = pop)) +
+  geom_density() +
+  ggtitle(&quot;EAGLE2 Phase Confidence&quot;)</code></pre>
 </div>
 <div id="number-of-sites" class="section level3">
 <h3>Number of sites</h3>
@@ -1153,44 +1236,7 @@ stratified by super-pop:</p>
   ggplot(aes(x = n_sites, colour = pop)) +
   geom_density() +
   ggtitle(&quot;Number of Sites per Pseudo-diploid&quot;)</code></pre>
-<p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-16-1">
-Past versions of unnamed-chunk-16-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-16-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-29aa2c1
-</td>
-<td>
-Andy Beck
-</td>
-<td>
-2022-05-02
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="number-of-heterozygous-sites" class="section level3">
 <h3>Number of heterozygous sites</h3>
@@ -1210,131 +1256,7 @@ dbl (2): pair_id, n_het_sites
   geom_density() +
   xlab(&quot;Number of heterozygous sites&quot;) +
   ggtitle(&quot;Number of Heterozygous Sites per Pseudo-diploid&quot;)</code></pre>
-<p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-18-1">
-Past versions of unnamed-chunk-18-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-18-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-29aa2c1
-</td>
-<td>
-Andy Beck
-</td>
-<td>
-2022-05-02
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-<div id="switches-and-flips" class="section level3">
-<h3>Switches and Flips</h3>
-<pre class="r"><code>switch_summary &lt;- function(pair_id, eagle_dir, shapeit_dir, gc_content_1kb, bin_size = 1000){
-  switch_err_eagle &lt;- read_csv(paste0(eagle_dir, &quot;switch_&quot;, pair_id, &quot;.csv&quot;), show_col_types = FALSE) %&gt;%
-    mutate(bin_id = ceiling(pos_start / bin_size))
-  switch_err_shapeit &lt;- read_csv(paste0(shapeit_dir, &quot;switch_&quot;, pair_id, &quot;.csv&quot;), show_col_types = FALSE) %&gt;%
-    mutate(bin_id = ceiling(pos_start / bin_size))
-  
-  switch_err_eagle &lt;- switch_err_eagle %&gt;%
-    left_join({gc_content_1kb %&gt;% select(bin_id, GC)}, by = &quot;bin_id&quot;)
-  
-  switch_err_shapeit &lt;- switch_err_shapeit %&gt;%
-    left_join({gc_content_1kb %&gt;% select(bin_id, GC)}, by = &quot;bin_id&quot;)
-  
-  # get positions of flips
-  flip_pos_eagle &lt;- get_flip_pos(switch_err_eagle)
-  flip_pos_shapeit &lt;- get_flip_pos(switch_err_shapeit)
-  
-  # Assign switches flip status
-  switch_err_eagle$is_flip &lt;- switch_err_eagle$pos_start %in% flip_pos_eagle
-  switch_err_shapeit$is_flip &lt;- switch_err_shapeit$pos_start %in% flip_pos_shapeit
-  
-  # stats we want to pull
-  n_switch_eagle &lt;- length(switch_err_eagle$pos_start)
-  n_switch_shapeit &lt;- length(switch_err_shapeit$pos_start)
-  n_flip_eagle &lt;- sum(switch_err_eagle$is_flip)
-  n_flip_shapeit &lt;- sum(switch_err_shapeit$is_flip)
-  n_switch_cpg_eagle &lt;- switch_err_eagle %&gt;%
-    filter(cpg_start == 1) %&gt;%
-    pull(is_flip) %&gt;%
-    length()
-  n_flip_cpg_eagle &lt;- switch_err_eagle %&gt;%
-    filter(cpg_start == 1) %&gt;%
-    pull(is_flip) %&gt;%
-    sum()
-  n_switch_cpg_shapeit &lt;- switch_err_shapeit %&gt;%
-    filter(cpg_start == 1) %&gt;%
-    pull(is_flip) %&gt;%
-    length()
-  n_flip_cpg_shapeit &lt;- switch_err_shapeit %&gt;%
-    filter(cpg_start == 1) %&gt;%
-    pull(is_flip) %&gt;%
-    sum()
-  mean_gc_switch_eagle &lt;- mean(switch_err_eagle$GC)
-  mean_gc_switch_shapeit &lt;- mean(switch_err_shapeit$GC)
-  
-  
-  return(data.frame(pair_id = pair_id,
-                    n_switch_eagle = n_switch_eagle,
-                    n_switch_shapeit = n_switch_shapeit,
-                    n_flip_eagle = n_flip_eagle,
-                    n_flip_shapeit = n_flip_shapeit,
-                    n_switch_cpg_eagle = n_switch_cpg_eagle,
-                    n_flip_cpg_eagle = n_flip_cpg_eagle,
-                    n_switch_cpg_shapeit = n_switch_cpg_shapeit,
-                    n_flip_cpg_shapeit = n_flip_cpg_shapeit,
-                    mean_gc_switch_eagle = mean_gc_switch_eagle,
-                    mean_gc_switch_shapeit = mean_gc_switch_shapeit
-                    ))
-}</code></pre>
-<p>And now let’s get the rows for all 300 pseudo-diploids:</p>
-<pre class="r"><code>switch_df &lt;- lapply(c(1:300), 
-                    function(x){
-                      switch_summary(x, eagle_switch_dir, shapeit_switch_dir, gc_content_1kb)
-                      }) %&gt;%
-  bind_rows()
-
-switch_df$pop &lt;- c(rep(&quot;EUR&quot;, 100), rep(&quot;AFR&quot;, 200))</code></pre>
-</div>
-<div id="smash-everything-together-into-a-single-data-frame"
-class="section level3">
-<h3>Smash everything together into a single data frame</h3>
-<pre class="r"><code>df &lt;- full_join(switch_df, df_pair, by = c(&quot;pair_id&quot;, &quot;pop&quot;)) %&gt;%
-  full_join(df_eagle_conf, by = c(&quot;pair_id&quot;, &quot;pop&quot;)) %&gt;%
-  full_join(df_pseudo_sites, by = c(&quot;pair_id&quot;, &quot;pop&quot;)) %&gt;%
-  full_join(df_pseudo_hets, by = c(&quot;pair_id&quot;, &quot;pop&quot;))</code></pre>
-<p>And now: we make graphs</p>
-<p><strong>Number of switch error</strong></p>
-<pre class="r"><code>df %&gt;%
-  ggplot(aes(x = n_switch_eagle, y = n_switch_shapeit, colour = pop)) +
-  geom_point() +
-  geom_abline(slope = 1, intercept = 0) +
-  xlab(&quot;Total Errors: EAGLE&quot;) +
-  ylab(&quot;Total Errors: SHAPEIT&quot;) +
-  ggtitle(&quot;Total Errors by Method&quot;) +
-  labs(colour = &quot;Population&quot;)</code></pre>
+<pre><code>Warning: Removed 31 rows containing non-finite values (stat_density).</code></pre>
 <p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-22-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-22-1">
@@ -1384,6 +1306,288 @@ Andy Beck
 </table>
 </div>
 </div>
+</div>
+<div id="switches-and-flips" class="section level3">
+<h3>Switches and Flips</h3>
+<pre class="r"><code>switch_summary &lt;- function(pair_id, eagle_dir, beagle_dir, shapeit_dir, gc_content_1kb, bin_size = 1000){
+  switch_err_eagle &lt;- read_csv(paste0(eagle_dir, &quot;switch_&quot;, pair_id, &quot;.csv&quot;), show_col_types = FALSE) %&gt;%
+    mutate(bin_id = ceiling(pos_start / bin_size))
+  switch_err_beagle &lt;- read_csv(paste0(beagle_dir, &quot;switch_&quot;, pair_id, &quot;.csv&quot;), show_col_types = FALSE) %&gt;%
+    mutate(bin_id = ceiling(pos_start / bin_size))
+  switch_err_shapeit &lt;- read_csv(paste0(shapeit_dir, &quot;switch_&quot;, pair_id, &quot;.csv&quot;), show_col_types = FALSE) %&gt;%
+    mutate(bin_id = ceiling(pos_start / bin_size))
+  
+  switch_err_eagle &lt;- switch_err_eagle %&gt;%
+    left_join({gc_content_1kb %&gt;% select(bin_id, GC)}, by = &quot;bin_id&quot;)
+  
+  switch_err_beagle &lt;- switch_err_beagle %&gt;%
+    left_join({gc_content_1kb %&gt;% select(bin_id, GC)}, by = &quot;bin_id&quot;)
+  
+  switch_err_shapeit &lt;- switch_err_shapeit %&gt;%
+    left_join({gc_content_1kb %&gt;% select(bin_id, GC)}, by = &quot;bin_id&quot;)
+  
+  # get positions of flips
+  flip_pos_eagle &lt;- get_flip_pos(switch_err_eagle)
+  flip_pos_beagle &lt;- get_flip_pos(switch_err_beagle)
+  flip_pos_shapeit &lt;- get_flip_pos(switch_err_shapeit)
+  
+  # Assign switches flip status
+  switch_err_eagle$is_flip &lt;- switch_err_eagle$pos_start %in% flip_pos_eagle
+  switch_err_beagle$is_flip &lt;- switch_err_beagle$pos_start %in% flip_pos_beagle
+  switch_err_shapeit$is_flip &lt;- switch_err_shapeit$pos_start %in% flip_pos_shapeit
+  
+  # stats we want to pull
+  n_switch_eagle &lt;- length(switch_err_eagle$pos_start)
+  n_switch_beagle &lt;- length(switch_err_beagle$pos_start)
+  n_switch_shapeit &lt;- length(switch_err_shapeit$pos_start)
+  
+  n_flip_eagle &lt;- sum(switch_err_eagle$is_flip)
+  n_flip_beagle &lt;- sum(switch_err_beagle$is_flip)
+  n_flip_shapeit &lt;- sum(switch_err_shapeit$is_flip)
+  
+  n_switch_cpg_eagle &lt;- switch_err_eagle %&gt;%
+    filter(cpg_start == 1) %&gt;%
+    pull(is_flip) %&gt;%
+    length()
+  n_switch_cpg_beagle &lt;- switch_err_beagle %&gt;%
+    filter(cpg_start == 1) %&gt;%
+    pull(is_flip) %&gt;%
+    length()
+  n_switch_cpg_shapeit &lt;- switch_err_shapeit %&gt;%
+    filter(cpg_start == 1) %&gt;%
+    pull(is_flip) %&gt;%
+    length()
+  
+  n_flip_cpg_eagle &lt;- switch_err_eagle %&gt;%
+    filter(cpg_start == 1) %&gt;%
+    pull(is_flip) %&gt;%
+    sum()
+  n_flip_cpg_beagle &lt;- switch_err_beagle %&gt;%
+    filter(cpg_start == 1) %&gt;%
+    pull(is_flip) %&gt;%
+    sum()
+  n_flip_cpg_shapeit &lt;- switch_err_shapeit %&gt;%
+    filter(cpg_start == 1) %&gt;%
+    pull(is_flip) %&gt;%
+    sum()
+  
+  mean_gc_switch_eagle &lt;- mean(switch_err_eagle$GC)
+  mean_gc_switch_beagle &lt;- mean(switch_err_beagle$GC)
+  mean_gc_switch_shapeit &lt;- mean(switch_err_shapeit$GC)
+  
+  
+  return(data.frame(pair_id = pair_id,
+                    n_switch_eagle = n_switch_eagle,
+                    n_switch_beagle = n_switch_beagle,
+                    n_switch_shapeit = n_switch_shapeit,
+                    n_flip_eagle = n_flip_eagle,
+                    n_flip_beagle = n_flip_beagle,
+                    n_flip_shapeit = n_flip_shapeit,
+                    n_switch_cpg_eagle = n_switch_cpg_eagle,
+                    n_switch_cpg_beagle = n_switch_cpg_beagle,
+                    n_switch_cpg_shapeit = n_switch_cpg_shapeit,
+                    n_flip_cpg_eagle = n_flip_cpg_eagle,
+                    n_flip_cpg_beagle = n_flip_cpg_beagle,
+                    n_flip_cpg_shapeit = n_flip_cpg_shapeit,
+                    mean_gc_switch_eagle = mean_gc_switch_eagle,
+                    mean_gc_switch_beagle = mean_gc_switch_beagle,
+                    mean_gc_switch_shapeit = mean_gc_switch_shapeit
+                    ))
+}</code></pre>
+<p>And now let’s get the rows for all 300 pseudo-diploids:</p>
+<pre class="r"><code>switch_df &lt;- lapply(c(1:300), 
+                    function(x){
+                      switch_summary(x, eagle_switch_dir, beagle_switch_dir, shapeit_switch_dir, gc_content_1kb)
+                      }) %&gt;%
+  bind_rows()
+
+switch_df$pop &lt;- c(rep(&quot;EUR&quot;, 100), rep(&quot;AFR&quot;, 200))</code></pre>
+</div>
+<div id="smash-everything-together-into-a-single-data-frame"
+class="section level3">
+<h3>Smash everything together into a single data frame</h3>
+<pre class="r"><code>df &lt;- full_join(switch_df, df_pair, by = c(&quot;pair_id&quot;, &quot;pop&quot;)) %&gt;%
+  full_join(df_pseudo_sites, by = c(&quot;pair_id&quot;, &quot;pop&quot;)) %&gt;%
+  full_join(df_pseudo_hets, by = c(&quot;pair_id&quot;, &quot;pop&quot;))</code></pre>
+<p>And now: we make graphs</p>
+<p><strong>Number of switch error</strong></p>
+<pre class="r"><code>df %&gt;%
+  ggplot(aes(x = n_switch_eagle, y = n_switch_shapeit, colour = pop)) +
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  xlab(&quot;Total Errors: EAGLE&quot;) +
+  ylab(&quot;Total Errors: SHAPEIT&quot;) +
+  ggtitle(&quot;Total Errors by Method&quot;) +
+  labs(colour = &quot;Population&quot;)</code></pre>
+<p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-26-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-26-1">
+Past versions of unnamed-chunk-26-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-26-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+6755925
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2022-05-02
+</td>
+</tr>
+<tr>
+<td>
+29aa2c1
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2022-05-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>df %&gt;%
+  ggplot(aes(x = n_switch_eagle, y = n_switch_beagle, colour = pop)) +
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  xlab(&quot;Total Errors: EAGLE&quot;) +
+  ylab(&quot;Total Errors: BEAGLE&quot;) +
+  ggtitle(&quot;Total Errors by Method&quot;) +
+  labs(colour = &quot;Population&quot;)</code></pre>
+<p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-27-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-27-1">
+Past versions of unnamed-chunk-27-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-27-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+6755925
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2022-05-02
+</td>
+</tr>
+<tr>
+<td>
+29aa2c1
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2022-05-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>df %&gt;%
+  ggplot(aes(x = n_switch_shapeit, y = n_switch_beagle, colour = pop)) +
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  xlab(&quot;Total Errors: SHAPEIT&quot;) +
+  ylab(&quot;Total Errors: BEAGLE&quot;) +
+  ggtitle(&quot;Total Errors by Method&quot;) +
+  labs(colour = &quot;Population&quot;)</code></pre>
+<p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-28-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-28-1">
+Past versions of unnamed-chunk-28-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-28-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+6755925
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2022-05-02
+</td>
+</tr>
+<tr>
+<td>
+29aa2c1
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2022-05-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>sum(df$n_switch_eagle &gt; df$n_switch_shapeit)</code></pre>
+<pre><code>[1] 222</code></pre>
+<pre class="r"><code>sum(df$n_switch_beagle &gt; df$n_switch_shapeit)</code></pre>
+<pre><code>[1] 296</code></pre>
+<pre class="r"><code>sum(df$n_switch_beagle &gt; df$n_switch_eagle)</code></pre>
+<pre><code>[1] 252</code></pre>
 <pre class="r"><code>df %&gt;%
   mutate(non_flip_eagle = n_switch_eagle - (2*n_flip_eagle),
          non_flip_shapeit = n_switch_shapeit - (2*n_flip_shapeit)) %&gt;%
@@ -1394,13 +1598,131 @@ Andy Beck
   ylab(&quot;Switch Errors: SHAPEIT&quot;) +
   ggtitle(&quot;Switch Errors by Method&quot;, &quot;Total Errors - 2*Flip Errors&quot;) +
   labs(colour = &quot;Population&quot;)</code></pre>
-<p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-23-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-30-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-23-1">
-Past versions of unnamed-chunk-23-1.png
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-30-1">
+Past versions of unnamed-chunk-30-1.png
 </button>
 </p>
-<div id="fig-unnamed-chunk-23-1" class="collapse">
+<div id="fig-unnamed-chunk-30-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+6755925
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2022-05-02
+</td>
+</tr>
+<tr>
+<td>
+29aa2c1
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2022-05-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>df %&gt;%
+  mutate(non_flip_eagle = n_switch_eagle - (2*n_flip_eagle),
+         non_flip_beagle = n_switch_beagle - (2*n_flip_beagle)) %&gt;%
+  ggplot(aes(x = non_flip_eagle, y = non_flip_beagle, colour = pop)) +
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  xlab(&quot;Switch Errors: EAGLE&quot;) +
+  ylab(&quot;Switch Errors: BEAGLE&quot;) +
+  ggtitle(&quot;Switch Errors by Method&quot;, &quot;Total Errors - 2*Flip Errors&quot;) +
+  labs(colour = &quot;Population&quot;)</code></pre>
+<p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-31-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-31-1">
+Past versions of unnamed-chunk-31-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-31-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+6755925
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2022-05-02
+</td>
+</tr>
+<tr>
+<td>
+29aa2c1
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2022-05-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>df %&gt;%
+  mutate(non_flip_shapeit = n_switch_shapeit - (2*n_flip_shapeit),
+         non_flip_beagle = n_switch_beagle - (2*n_flip_beagle)) %&gt;%
+  ggplot(aes(x = non_flip_shapeit, y = non_flip_beagle, colour = pop)) +
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  xlab(&quot;Switch Errors: SHAPEIT&quot;) +
+  ylab(&quot;Switch Errors: BEAGLE&quot;) +
+  ggtitle(&quot;Switch Errors by Method&quot;, &quot;Total Errors - 2*Flip Errors&quot;) +
+  labs(colour = &quot;Population&quot;)</code></pre>
+<p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-32-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-32-1">
+Past versions of unnamed-chunk-32-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-32-1" class="collapse">
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
 <thead>
@@ -1453,55 +1775,7 @@ Andy Beck
   ylab(&quot;Switch Errors: SHAPEIT&quot;) +
   ggtitle(&quot;Switch Errors by Method&quot;) +
   labs(colour = &quot;Percent Heterozygosity&quot;)</code></pre>
-<p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-24-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-24-1">
-Past versions of unnamed-chunk-24-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-24-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-6755925
-</td>
-<td>
-Andy Beck
-</td>
-<td>
-2022-05-02
-</td>
-</tr>
-<tr>
-<td>
-29aa2c1
-</td>
-<td>
-Andy Beck
-</td>
-<td>
-2022-05-02
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-33-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p><strong>Number of flip error</strong></p>
 <pre class="r"><code>df %&gt;%
   ggplot(aes(x = n_flip_eagle, y = n_flip_shapeit, colour = pop)) +
@@ -1511,55 +1785,45 @@ Andy Beck
   ylab(&quot;Flips: SHAPEIT&quot;) +
   ggtitle(&quot;Flips by Method&quot;) +
   labs(colour = &quot;Population&quot;)</code></pre>
-<p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-25-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-25-1">
-Past versions of unnamed-chunk-25-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-25-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-6755925
-</td>
-<td>
-Andy Beck
-</td>
-<td>
-2022-05-02
-</td>
-</tr>
-<tr>
-<td>
-29aa2c1
-</td>
-<td>
-Andy Beck
-</td>
-<td>
-2022-05-02
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-34-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>df %&gt;%
+  ggplot(aes(x = n_flip_eagle, y = n_flip_beagle, colour = pop)) +
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  xlab(&quot;Flips: EAGLE&quot;) +
+  ylab(&quot;Flips: BEAGLE&quot;) +
+  ggtitle(&quot;Flips by Method&quot;) +
+  labs(colour = &quot;Population&quot;)</code></pre>
+<p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-35-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>df %&gt;%
+  ggplot(aes(x = n_flip_shapeit, y = n_flip_beagle, colour = pop)) +
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  xlab(&quot;Flips: SHAPEIT&quot;) +
+  ylab(&quot;Flips: BEAGLE&quot;) +
+  ggtitle(&quot;Flips by Method&quot;) +
+  labs(colour = &quot;Population&quot;)</code></pre>
+<p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-36-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>sum(df$n_flip_shapeit &gt; df$n_flip_eagle)</code></pre>
+<pre><code>[1] 252</code></pre>
+<pre class="r"><code>df %&gt;%
+  ggplot(aes(x = n_switch_cpg_eagle, y = n_switch_cpg_shapeit, colour = pop)) +
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  xlab(&quot;Flips: EAGLE&quot;) +
+  ylab(&quot;Flips: SHAPEIT&quot;) +
+  ggtitle(&quot;Total Errors by Method at CpG&quot;) +
+  labs(colour = &quot;Population&quot;)</code></pre>
+<p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-38-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>df %&gt;%
+  ggplot(aes(x = n_flip_cpg_eagle, y = n_flip_cpg_shapeit, colour = pop)) +
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  xlab(&quot;Flips: EAGLE&quot;) +
+  ylab(&quot;Flips: SHAPEIT&quot;) +
+  ggtitle(&quot;Flips by Method at CpG&quot;) +
+  labs(colour = &quot;Population&quot;)</code></pre>
+<p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-39-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>df %&gt;%
   mutate(prop1 = n_switch_cpg_eagle / n_switch_eagle,
          prop2 = n_switch_cpg_shapeit / n_switch_shapeit) %&gt;%
@@ -1570,55 +1834,7 @@ Andy Beck
   ylab(&quot;Proportion Switches CpG: SHAPEIT&quot;) +
   ggtitle(&quot;Proportion Switches CpG by Method&quot;) +
   labs(colour = &quot;Population&quot;)</code></pre>
-<p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-26-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-26-1">
-Past versions of unnamed-chunk-26-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-26-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-6755925
-</td>
-<td>
-Andy Beck
-</td>
-<td>
-2022-05-02
-</td>
-</tr>
-<tr>
-<td>
-29aa2c1
-</td>
-<td>
-Andy Beck
-</td>
-<td>
-2022-05-02
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-40-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Density version of above plot:</p>
 <pre class="r"><code>df %&gt;%
   mutate(eagle = n_switch_cpg_eagle / n_switch_eagle,
@@ -1630,55 +1846,7 @@ Andy Beck
   ggtitle(&quot;Total Error Proportion CpG&quot;) + 
   xlab(&quot;CpG Error Proportion&quot;) +
   labs(colour = &quot;Method&quot;)</code></pre>
-<p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-27-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-27-1">
-Past versions of unnamed-chunk-27-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-27-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-6755925
-</td>
-<td>
-Andy Beck
-</td>
-<td>
-2022-05-02
-</td>
-</tr>
-<tr>
-<td>
-29aa2c1
-</td>
-<td>
-Andy Beck
-</td>
-<td>
-2022-05-02
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-41-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>df %&gt;%
   mutate(prop1 = n_flip_cpg_eagle / n_flip_eagle,
          prop2 = n_flip_cpg_shapeit / n_flip_shapeit) %&gt;%
@@ -1689,55 +1857,7 @@ Andy Beck
   ylab(&quot;Proportion Flips CpG: SHAPEIT&quot;) +
   ggtitle(&quot;Proportion Flips CpG by Method&quot;) +
   labs(colour = &quot;Population&quot;)</code></pre>
-<p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-28-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-28-1">
-Past versions of unnamed-chunk-28-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-28-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-6755925
-</td>
-<td>
-Andy Beck
-</td>
-<td>
-2022-05-02
-</td>
-</tr>
-<tr>
-<td>
-29aa2c1
-</td>
-<td>
-Andy Beck
-</td>
-<td>
-2022-05-02
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-42-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>df %&gt;%
   mutate(eagle = n_flip_cpg_eagle / n_flip_eagle,
          shapeit = n_flip_cpg_shapeit / n_flip_shapeit) %&gt;%
@@ -1748,55 +1868,7 @@ Andy Beck
   ggtitle(&quot;Flip Proportion CpG&quot;) + 
   xlab(&quot;CpG Flip Proportion&quot;) +
   labs(colour = &quot;Method&quot;)</code></pre>
-<p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-29-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-29-1">
-Past versions of unnamed-chunk-29-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-29-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-6755925
-</td>
-<td>
-Andy Beck
-</td>
-<td>
-2022-05-02
-</td>
-</tr>
-<tr>
-<td>
-29aa2c1
-</td>
-<td>
-Andy Beck
-</td>
-<td>
-2022-05-02
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-43-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="new-stuff-post-meeting" class="section level3">
 <h3>New stuff post meeting</h3>
@@ -1811,55 +1883,7 @@ Andy Beck
   xlab(&quot;EAGLE enrichment&quot;) +
   ylab(&quot;SHAPEIT enrichment&quot;) +
   labs(colour = &quot;Population&quot;)</code></pre>
-<p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-30-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-30-1">
-Past versions of unnamed-chunk-30-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-30-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-6755925
-</td>
-<td>
-Andy Beck
-</td>
-<td>
-2022-05-02
-</td>
-</tr>
-<tr>
-<td>
-29aa2c1
-</td>
-<td>
-Andy Beck
-</td>
-<td>
-2022-05-02
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-44-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>df %&gt;%
   mutate(eagle = (n_switch_cpg_eagle/n_switch_eagle) / background_cpg,
          shapeit = (n_switch_cpg_shapeit/n_switch_shapeit) / background_cpg) %&gt;%
@@ -1870,55 +1894,7 @@ Andy Beck
   ggtitle(&quot;Flip Proportion CpG&quot;) + 
   xlab(&quot;CpG Flip Proportion&quot;) +
   labs(colour = &quot;Method&quot;)</code></pre>
-<p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-31-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-31-1">
-Past versions of unnamed-chunk-31-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-31-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-6755925
-</td>
-<td>
-Andy Beck
-</td>
-<td>
-2022-05-02
-</td>
-</tr>
-<tr>
-<td>
-29aa2c1
-</td>
-<td>
-Andy Beck
-</td>
-<td>
-2022-05-02
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-45-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>CpG Flip Enrichment</p>
 <pre class="r"><code>df %&gt;%
   mutate(enrich_eagle = (n_flip_cpg_eagle/n_flip_eagle) / background_cpg,
@@ -1930,55 +1906,7 @@ Andy Beck
   ylab(&quot;SHAPEIT enrichment&quot;) +
   ggtitle(&quot;Flip CpG Enrichment&quot;) +
   labs(colour = &quot;Population&quot;)</code></pre>
-<p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-32-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-32-1">
-Past versions of unnamed-chunk-32-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-32-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-6755925
-</td>
-<td>
-Andy Beck
-</td>
-<td>
-2022-05-02
-</td>
-</tr>
-<tr>
-<td>
-29aa2c1
-</td>
-<td>
-Andy Beck
-</td>
-<td>
-2022-05-02
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-46-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 <div id="additional-summary-information" class="section level2">
@@ -1991,89 +1919,173 @@ Andy Beck
          n_flip_shapeit, n_flip_cpg_shapeit) %&gt;%
   group_by(pop) %&gt;%
   summarize(mean_switch_eagle = mean(n_switch_eagle),
+            sd_switch_eagle = sd(n_switch_eagle),
             mean_switch_cpg_eagle = mean(n_switch_cpg_eagle),
-            mean_switch_shapeit = mean(n_switch_shapeit),
-            mean_switch_cpg_shapeit = mean(n_switch_cpg_shapeit),
-            mean_flip_eagle = mean(n_flip_eagle),
-            mean_flip_cpg_eagle = mean(n_flip_cpg_eagle),
-            mean_flip_shapeit = mean(n_flip_shapeit),
-            mean_flip_cpg_shapeit = mean(n_flip_cpg_shapeit)) %&gt;%
+            sd_switch_cpg_eagle = sd(n_switch_cpg_eagle)) %&gt;%
   knitr::kable()</code></pre>
 <table>
 <colgroup>
-<col width="2%" />
-<col width="10%" />
-<col width="13%" />
-<col width="12%" />
-<col width="14%" />
-<col width="9%" />
-<col width="12%" />
-<col width="10%" />
-<col width="13%" />
+<col width="5%" />
+<col width="22%" />
+<col width="20%" />
+<col width="27%" />
+<col width="25%" />
 </colgroup>
 <thead>
 <tr class="header">
 <th align="left">pop</th>
 <th align="right">mean_switch_eagle</th>
+<th align="right">sd_switch_eagle</th>
 <th align="right">mean_switch_cpg_eagle</th>
-<th align="right">mean_switch_shapeit</th>
-<th align="right">mean_switch_cpg_shapeit</th>
-<th align="right">mean_flip_eagle</th>
-<th align="right">mean_flip_cpg_eagle</th>
-<th align="right">mean_flip_shapeit</th>
-<th align="right">mean_flip_cpg_shapeit</th>
+<th align="right">sd_switch_cpg_eagle</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td align="left">AFR</td>
 <td align="right">1379.625</td>
+<td align="right">320.5703</td>
 <td align="right">112.975</td>
-<td align="right">1331.865</td>
-<td align="right">108.955</td>
-<td align="right">503.79</td>
-<td align="right">41.79</td>
-<td align="right">560.57</td>
-<td align="right">46.605</td>
+<td align="right">26.83683</td>
 </tr>
 <tr class="even">
 <td align="left">EUR</td>
 <td align="right">817.110</td>
+<td align="right">201.0611</td>
 <td align="right">70.150</td>
+<td align="right">18.01423</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>df %&gt;%
+  select(pop,
+         n_switch_shapeit, n_switch_cpg_shapeit) %&gt;%
+  group_by(pop) %&gt;%
+  summarize(mean_switch_shapeit = mean(n_switch_shapeit),
+            sd_switch_shapeit = sd(n_switch_shapeit),
+            mean_switch_cpg_shapeit = mean(n_switch_cpg_shapeit),
+            sd_switch_cpg_shapeit = sd(n_switch_cpg_shapeit)) %&gt;%
+  knitr::kable()</code></pre>
+<table>
+<colgroup>
+<col width="4%" />
+<col width="22%" />
+<col width="20%" />
+<col width="27%" />
+<col width="25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">pop</th>
+<th align="right">mean_switch_shapeit</th>
+<th align="right">sd_switch_shapeit</th>
+<th align="right">mean_switch_cpg_shapeit</th>
+<th align="right">sd_switch_cpg_shapeit</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">AFR</td>
+<td align="right">1331.865</td>
+<td align="right">316.2958</td>
+<td align="right">108.955</td>
+<td align="right">25.52785</td>
+</tr>
+<tr class="even">
+<td align="left">EUR</td>
 <td align="right">780.430</td>
+<td align="right">207.8206</td>
 <td align="right">65.230</td>
+<td align="right">18.69903</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>df %&gt;%
+  select(pop, n_flip_eagle, n_flip_cpg_eagle) %&gt;%
+  group_by(pop) %&gt;%
+  summarize(mean_flip_eagle = mean(n_flip_eagle),
+            sd_flip_eagle = sd(n_flip_eagle),
+            mean_flip_cpg_eagle = mean(n_flip_cpg_eagle),
+            sd_flip_cpg_eagle = sd(n_flip_cpg_eagle)) %&gt;%
+  knitr::kable()</code></pre>
+<table>
+<colgroup>
+<col width="5%" />
+<col width="22%" />
+<col width="19%" />
+<col width="27%" />
+<col width="25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">pop</th>
+<th align="right">mean_flip_eagle</th>
+<th align="right">sd_flip_eagle</th>
+<th align="right">mean_flip_cpg_eagle</th>
+<th align="right">sd_flip_cpg_eagle</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">AFR</td>
+<td align="right">503.79</td>
+<td align="right">112.09129</td>
+<td align="right">41.79</td>
+<td align="right">10.309088</td>
+</tr>
+<tr class="even">
+<td align="left">EUR</td>
 <td align="right">285.71</td>
+<td align="right">69.34751</td>
 <td align="right">24.47</td>
+<td align="right">7.980348</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>df %&gt;%
+  select(pop, n_flip_shapeit, n_flip_cpg_shapeit) %&gt;%
+  group_by(pop) %&gt;%
+  summarize(mean_flip_shapeit = mean(n_flip_shapeit),
+            sd_flip_shapeit = sd(n_flip_shapeit),
+            mean_flip_cpg_shapeit = mean(n_flip_cpg_shapeit),
+            sd_flip_cpg_shapeit = sd(n_flip_cpg_shapeit)) %&gt;%
+  knitr::kable()</code></pre>
+<table>
+<colgroup>
+<col width="5%" />
+<col width="22%" />
+<col width="20%" />
+<col width="27%" />
+<col width="25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">pop</th>
+<th align="right">mean_flip_shapeit</th>
+<th align="right">sd_flip_shapeit</th>
+<th align="right">mean_flip_cpg_shapeit</th>
+<th align="right">sd_flip_cpg_shapeit</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">AFR</td>
+<td align="right">560.57</td>
+<td align="right">126.91906</td>
+<td align="right">46.605</td>
+<td align="right">11.371700</td>
+</tr>
+<tr class="even">
+<td align="left">EUR</td>
 <td align="right">297.99</td>
+<td align="right">73.97781</td>
 <td align="right">25.260</td>
+<td align="right">7.807818</td>
 </tr>
 </tbody>
 </table>
 <p>Average number flips and switches per 1kb bin:</p>
-<pre class="r"><code>switch_err_eagle &lt;- read_csv(paste0(eagle_switch_dir, &quot;switch_&quot;, 1, &quot;.csv&quot;), show_col_types = FALSE) %&gt;%
-  mutate(bin_id = ceiling(pos_start / 1000),
-         big_bin_id = ceiling(pos_start / 1000000))
-switch_err_shapeit &lt;- read_csv(paste0(shapeit_switch_dir, &quot;switch_&quot;, 1, &quot;.csv&quot;), show_col_types = FALSE) %&gt;%
-  mutate(bin_id = ceiling(pos_start / 1000),
-         big_bin_id = ceiling(pos_start / 1000000))
-switch_err_eagle &lt;- switch_err_eagle %&gt;%
-  left_join({gc_content_1kb %&gt;% select(bin_id, GC)}, by = &quot;bin_id&quot;)
-switch_err_shapeit &lt;- switch_err_shapeit %&gt;%
-  left_join({gc_content_1kb %&gt;% select(bin_id, GC)}, by = &quot;bin_id&quot;)
-flip_pos_eagle &lt;- get_flip_pos(switch_err_eagle)
-flip_pos_shapeit &lt;- get_flip_pos(switch_err_shapeit)
-switch_err_eagle$is_flip &lt;- switch_err_eagle$pos_start %in% flip_pos_eagle
-switch_err_shapeit$is_flip &lt;- switch_err_shapeit$pos_start %in% flip_pos_shapeit
-
-switch_err_eagle %&gt;%
-  select(big_bin_id) %&gt;%
-  group_by(big_bin_id) %&gt;%
-  summarize(n_switch = n()) %&gt;%
-  pull(n_switch) %&gt;%
-  mean()
-
-
-bin_summary &lt;- function(pair_id, eagle_dir, shapeit_dir, gc_content_1kb){
+<pre class="r"><code>bin_summary &lt;- function(pair_id, eagle_dir, shapeit_dir, gc_content_1kb){
   switch_err_eagle &lt;- read_csv(paste0(eagle_dir, &quot;switch_&quot;, pair_id, &quot;.csv&quot;), show_col_types = FALSE) %&gt;%
     mutate(bin_id = ceiling(pos_start / 1000),
            big_bin_id = ceiling(pos_start / 1000000))
@@ -2094,7 +2106,112 @@ bin_summary &lt;- function(pair_id, eagle_dir, shapeit_dir, gc_content_1kb){
   # Assign switches flip status
   switch_err_eagle$is_flip &lt;- switch_err_eagle$pos_start %in% flip_pos_eagle
   switch_err_shapeit$is_flip &lt;- switch_err_shapeit$pos_start %in% flip_pos_shapeit
+  
+  n_switch_bin_eagle &lt;- switch_err_eagle %&gt;%
+    select(big_bin_id) %&gt;%
+    group_by(big_bin_id) %&gt;%
+    summarize(n_switch_eagle = n())
+  
+  n_switch_bin_shapeit &lt;- switch_err_shapeit %&gt;%
+    select(big_bin_id) %&gt;%
+    group_by(big_bin_id) %&gt;%
+    summarize(n_switch_shapeit = n())
+  
+  n_flip_bin_eagle &lt;- switch_err_eagle %&gt;%
+    filter(is_flip == TRUE) %&gt;%
+    select(big_bin_id) %&gt;%
+    group_by(big_bin_id) %&gt;%
+    summarize(n_flip_eagle = n())
+  
+  n_flip_bin_shapeit &lt;- switch_err_shapeit %&gt;%
+    filter(is_flip == TRUE) %&gt;%
+    select(big_bin_id) %&gt;%
+    group_by(big_bin_id) %&gt;%
+    summarize(n_flip_shapeit = n())
+  
+  final &lt;- full_join(n_switch_bin_eagle, n_switch_bin_shapeit, by = &quot;big_bin_id&quot;) %&gt;%
+    full_join(n_flip_bin_eagle, by = &quot;big_bin_id&quot;) %&gt;%
+    full_join(n_flip_bin_shapeit, by = &quot;big_bin_id&quot;) %&gt;%
+    replace_na(list(&quot;n_switch_eagle&quot; = 0, &quot;n_switch_shapeit&quot; = 0,
+                    &quot;n_flip_eagle&quot; = 0, &quot;n_flip_shapeit&quot; = 0))
+  final$pair_id &lt;- pair_id
+  return(final)
 }</code></pre>
+<pre class="r"><code>bin_df_EUR &lt;- lapply(c(1:100), 
+                    function(x){
+                      bin_summary(x, eagle_switch_dir, shapeit_switch_dir, gc_content_1kb)
+                      }) %&gt;%
+  bind_rows()
+
+bin_df_AFR &lt;- lapply(c(101:300), 
+                    function(x){
+                      bin_summary(x, eagle_switch_dir, shapeit_switch_dir, gc_content_1kb)
+                      }) %&gt;%
+  bind_rows()</code></pre>
+<p>Counts per bin</p>
+<pre class="r"><code>cnt_per_bin_EUR &lt;- bin_df_EUR %&gt;%
+  group_by(big_bin_id) %&gt;%
+  summarize(n_switch_eagle = sum(n_switch_eagle),
+            n_switch_shapeit = sum(n_switch_shapeit),
+            n_flip_eagle = sum(n_flip_eagle),
+            n_flip_shapeit = sum(n_flip_shapeit))
+
+cnt_per_bin_AFR &lt;- bin_df_AFR %&gt;%
+  group_by(big_bin_id) %&gt;%
+  summarize(n_switch_eagle = sum(n_switch_eagle),
+            n_switch_shapeit = sum(n_switch_shapeit),
+            n_flip_eagle = sum(n_flip_eagle),
+            n_flip_shapeit = sum(n_flip_shapeit))
+
+cnt_per_bin_AFR$pop &lt;- &quot;AFR&quot;
+cnt_per_bin_EUR$pop &lt;- &quot;EUR&quot;
+
+cnt_per_bin &lt;- bind_rows(cnt_per_bin_AFR, cnt_per_bin_EUR)</code></pre>
+<pre class="r"><code>cnt_per_bin %&gt;%
+  ggplot(aes(x = big_bin_id, y = n_switch_eagle, colour = pop)) +
+  geom_point() +
+  geom_line()</code></pre>
+<p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-54-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>cnt_per_bin_EUR %&gt;%
+  select(big_bin_id, n_switch_eagle, n_switch_shapeit) %&gt;%
+  rename(EAGLE = n_switch_eagle, SHAPEIT = n_switch_shapeit) %&gt;%
+  pivot_longer(EAGLE:SHAPEIT, names_to = &quot;Method&quot;, values_to = &quot;Switches&quot;) %&gt;%
+  ggplot(aes(x = big_bin_id, y = Switches, colour = Method)) +
+  geom_point() +
+  geom_line() +
+  xlab(&quot;Bin (MB)&quot;) +
+  ggtitle(&quot;Total Errors per MB Bin - EUR&quot;)</code></pre>
+<p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-55-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>cnt_per_bin_EUR %&gt;%
+  select(big_bin_id, n_flip_eagle, n_flip_shapeit) %&gt;%
+  rename(EAGLE = n_flip_eagle, SHAPEIT = n_flip_shapeit) %&gt;%
+  pivot_longer(EAGLE:SHAPEIT, names_to = &quot;Method&quot;, values_to = &quot;Flips&quot;) %&gt;%
+  ggplot(aes(x = big_bin_id, y = Flips, colour = Method)) +
+  geom_point() +
+  geom_line() +
+  xlab(&quot;Bin (MB)&quot;) +
+  ggtitle(&quot;Total Flips per MB Bin - EUR&quot;)</code></pre>
+<p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-56-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>cnt_per_bin_AFR %&gt;%
+  select(big_bin_id, n_switch_eagle, n_switch_shapeit) %&gt;%
+  rename(EAGLE = n_switch_eagle, SHAPEIT = n_switch_shapeit) %&gt;%
+  pivot_longer(EAGLE:SHAPEIT, names_to = &quot;Method&quot;, values_to = &quot;Switches&quot;) %&gt;%
+  ggplot(aes(x = big_bin_id, y = Switches, colour = Method)) +
+  geom_point() +
+  geom_line() +
+  xlab(&quot;Bin (MB)&quot;) +
+  ggtitle(&quot;Total Errors per MB Bin - AFR&quot;)</code></pre>
+<p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-57-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>cnt_per_bin_AFR %&gt;%
+  select(big_bin_id, n_flip_eagle, n_flip_shapeit) %&gt;%
+  rename(EAGLE = n_flip_eagle, SHAPEIT = n_flip_shapeit) %&gt;%
+  pivot_longer(EAGLE:SHAPEIT, names_to = &quot;Method&quot;, values_to = &quot;Flips&quot;) %&gt;%
+  ggplot(aes(x = big_bin_id, y = Flips, colour = Method)) +
+  geom_point() +
+  geom_line() +
+  xlab(&quot;Bin (MB)&quot;) +
+  ggtitle(&quot;Total Flips per MB Bin - AFR&quot;)</code></pre>
+<p><img src="figure/masked_diploid_results.Rmd/unnamed-chunk-58-1.png" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -2124,29 +2241,29 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] forcats_0.5.1   stringr_1.4.0   dplyr_1.0.8     purrr_0.3.4    
- [5] readr_2.1.2     tidyr_1.2.0     tibble_3.1.6    ggplot2_3.3.5  
+ [1] forcats_0.5.1   stringr_1.4.0   dplyr_1.0.9     purrr_0.3.4    
+ [5] readr_2.1.2     tidyr_1.2.0     tibble_3.1.7    ggplot2_3.3.6  
  [9] tidyverse_1.3.1 workflowr_1.7.0
 
 loaded via a namespace (and not attached):
- [1] Rcpp_1.0.8       lubridate_1.8.0  getPass_0.2-2    ps_1.6.0        
- [5] assertthat_0.2.1 rprojroot_2.0.2  digest_0.6.29    utf8_1.2.2      
+ [1] Rcpp_1.0.8.3     lubridate_1.8.0  getPass_0.2-2    ps_1.7.0        
+ [5] assertthat_0.2.1 rprojroot_2.0.3  digest_0.6.29    utf8_1.2.2      
  [9] cellranger_1.1.0 R6_2.5.1         backports_1.4.1  reprex_2.0.1    
-[13] evaluate_0.14    httr_1.4.2       highr_0.9        pillar_1.7.0    
-[17] rlang_1.0.1      readxl_1.3.1     rstudioapi_0.13  whisker_0.4     
-[21] callr_3.7.0      jquerylib_0.1.4  rmarkdown_2.11   labeling_0.4.2  
+[13] evaluate_0.15    httr_1.4.3       highr_0.9        pillar_1.7.0    
+[17] rlang_1.0.2      readxl_1.4.0     rstudioapi_0.13  whisker_0.4     
+[21] callr_3.7.0      jquerylib_0.1.4  rmarkdown_2.14   labeling_0.4.2  
 [25] bit_4.0.4        munsell_0.5.0    broom_0.8.0      compiler_4.2.0  
-[29] httpuv_1.6.5     modelr_0.1.8     xfun_0.29        pkgconfig_2.0.3 
-[33] htmltools_0.5.2  tidyselect_1.1.1 fansi_1.0.2      withr_2.4.3     
-[37] crayon_1.4.2     tzdb_0.2.0       dbplyr_2.1.1     later_1.3.0     
-[41] grid_4.2.0       jsonlite_1.7.3   gtable_0.3.0     lifecycle_1.0.1 
-[45] DBI_1.1.2        git2r_0.29.0     magrittr_2.0.2   scales_1.1.1    
-[49] vroom_1.5.7      cli_3.1.1        stringi_1.7.6    farver_2.1.0    
+[29] httpuv_1.6.5     modelr_0.1.8     xfun_0.31        pkgconfig_2.0.3 
+[33] htmltools_0.5.2  tidyselect_1.1.2 fansi_1.0.3      withr_2.5.0     
+[37] crayon_1.5.1     tzdb_0.3.0       dbplyr_2.1.1     later_1.3.0     
+[41] grid_4.2.0       jsonlite_1.8.0   gtable_0.3.0     lifecycle_1.0.1 
+[45] DBI_1.1.2        git2r_0.30.1     magrittr_2.0.3   scales_1.2.0    
+[49] vroom_1.5.7      cli_3.3.0        stringi_1.7.6    farver_2.1.0    
 [53] fs_1.5.2         promises_1.2.0.1 xml2_1.3.3       bslib_0.3.1     
-[57] ellipsis_0.3.2   generics_0.1.2   vctrs_0.3.8      tools_4.2.0     
-[61] bit64_4.0.5      glue_1.6.1       hms_1.1.1        parallel_4.2.0  
-[65] processx_3.5.2   fastmap_1.1.0    yaml_2.2.2       colorspace_2.0-2
-[69] rvest_1.0.2      knitr_1.37       haven_2.4.3      sass_0.4.0      </code></pre>
+[57] ellipsis_0.3.2   generics_0.1.2   vctrs_0.4.1      tools_4.2.0     
+[61] bit64_4.0.5      glue_1.6.2       hms_1.1.1        parallel_4.2.0  
+[65] processx_3.5.3   fastmap_1.1.0    yaml_2.3.5       colorspace_2.0-3
+[69] rvest_1.0.2      knitr_1.39       haven_2.5.0      sass_0.4.1      </code></pre>
 </div>
 </div>
 
