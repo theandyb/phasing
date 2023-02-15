@@ -1,0 +1,145 @@
+---
+title: "beagle_map_nomap"
+author: "Andy Beck"
+date: "2022-05-31"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+```{r}
+library(tidyverse)
+```
+
+
+## Introduction
+
+This document's purpose is to satiate my curiosity regarding the impact of using a genetic map when phasing with BEAGLE5. 
+
+```{r}
+map_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/19april22_switch_errors/switch_errors/beagle/annotated/"
+unmap_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/19april22_switch_errors/switch_errors/beagle_nomap/annotated/"
+
+pair_info_df <- read_delim("data/sample_pairs_all.csv", col_names = c("POP", "ID1", "ID2"))
+pair_info_df$SP <- c(rep("EUR", 100), rep("AFR", 200))
+
+gc_content_1kb <- read_tsv("data/gc1kb_X_only.bed")
+colnames(gc_content_1kb) <- c("CHR", "START", "END", "AT", "GC", "A", "C", "G", "T", "TOTAL", "OTHER", "LENGTH")
+gc_content_1kb  <- gc_content_1kb %>%
+  mutate(bin_id = (START / 1000) + 1)
+
+background_dimer <- read_csv("/net/snowwhite/home/beckandy/research/phasing/output/background_rates/dimer.csv")
+background_3mer <- read_csv("/net/snowwhite/home/beckandy/research/phasing/output/background_rates/3mer.csv")
+```
+
+```{r}
+get_flip_pos <- function(df){
+  flip_list <- c()
+  in_progress <- FALSE
+  for(i in 1:(length(df$pos_start)-1)){
+    if(df$pos_end[i] == df$pos_start[i+1]){
+      if(!in_progress){
+        in_progress <- TRUE
+        flip_list <- c(flip_list, df$pos_end[i])
+      } else{
+        in_progress <- FALSE
+      }
+    } else{
+      in_progress <- FALSE
+    }
+  }
+  return(flip_list)
+}
+
+switch_summary_beagle <- function(pair_id, map_dir, unmap_dir, gc_content_1kb, bin_size = 1000){
+  switch_err_map <- read_csv(paste0(map_dir, "switch_", pair_id, ".csv"), show_col_types = FALSE) %>%
+    mutate(bin_id = ceiling(pos_start / bin_size))
+  switch_err_unmap <- read_csv(paste0(unmap_dir, "switch_", pair_id, ".csv"), show_col_types = FALSE) %>%
+    mutate(bin_id = ceiling(pos_start / bin_size))
+  
+  switch_err_map <- switch_err_map %>%
+    left_join({gc_content_1kb %>% select(bin_id, GC)}, by = "bin_id")
+  
+  switch_err_unmap <- switch_err_unmap %>%
+    left_join({gc_content_1kb %>% select(bin_id, GC)}, by = "bin_id")
+  
+  # get positions of flips
+  flip_pos_map <- get_flip_pos(switch_err_map)
+  flip_pos_unmap <- get_flip_pos(switch_err_unmap)
+  
+  # Assign switches flip status
+  switch_err_map$is_flip <- switch_err_map$pos_start %in% flip_pos_map
+  switch_err_unmap$is_flip <- switch_err_unmap$pos_start %in% flip_pos_unmap
+  
+  # stats we want to pull
+  n_switch_map <- length(switch_err_map$pos_start)
+  n_switch_unmap <- length(switch_err_unmap$pos_start)
+  
+  n_flip_map <- sum(switch_err_map$is_flip)
+  n_flip_unmap <- sum(switch_err_unmap$is_flip)
+  
+  n_switch_cpg_map <- switch_err_map %>%
+    filter(cpg_start == 1) %>%
+    pull(is_flip) %>%
+    length()
+  n_switch_cpg_unmap <- switch_err_unmap %>%
+    filter(cpg_start == 1) %>%
+    pull(is_flip) %>%
+    length()
+  
+  n_flip_cpg_map <- switch_err_map %>%
+    filter(cpg_start == 1) %>%
+    pull(is_flip) %>%
+    sum()
+  n_flip_cpg_unmap <- switch_err_unmap %>%
+    filter(cpg_start == 1) %>%
+    pull(is_flip) %>%
+    sum()
+  
+  mean_gc_switch_map <- mean(switch_err_map$GC)
+  mean_gc_switch_unmap <- mean(switch_err_unmap$GC)
+  
+  
+  return(data.frame(pair_id = pair_id,
+                    n_switch_map = n_switch_map,
+                    n_switch_unmap = n_switch_unmap,
+                    n_flip_map = n_flip_map,
+                    n_flip_unmap = n_flip_unmap,
+                    n_switch_cpg_map = n_switch_cpg_map,
+                    n_switch_cpg_unmap = n_switch_cpg_unmap,
+                    n_flip_cpg_map = n_flip_cpg_map,
+                    n_flip_cpg_unmap = n_flip_cpg_unmap,
+                    mean_gc_switch_map = mean_gc_switch_map,
+                    mean_gc_switch_unmap = mean_gc_switch_unmap
+                    ))
+}
+
+switch_df_beagle <- lapply(c(1:300), 
+                    function(x){
+                      switch_summary_beagle(x, map_dir, unmap_dir, gc_content_1kb)
+                      }) %>%
+  bind_rows()
+
+switch_df_beagle$pop <- c(rep("EUR", 100), rep("AFR", 200))
+```
+
+```{r}
+switch_df_beagle %>%
+  ggplot(aes(x = n_switch_map, y = n_switch_unmap, colour = pop)) +
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  ggtitle("Total Errors") +
+  xlab("BEAGLE with genetic map") +
+  ylab("BEAGLE without genetic map")
+```
+
+```{r}
+switch_df_beagle %>%
+  ggplot(aes(x = n_flip_map, y = n_flip_unmap, colour = pop)) +
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  ggtitle("Flips") +
+  xlab("BEAGLE with genetic map") +
+  ylab("BEAGLE without genetic map")
+```
+

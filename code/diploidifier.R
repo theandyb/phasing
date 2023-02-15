@@ -13,6 +13,13 @@ args <- commandArgs(trailingOnly = T)
 input_file <- args[1]
 output_file <- args[2]
 
+if(length(args) < 3)
+{
+  id <- "001"
+} else{
+  id <- args[3]
+}
+
 #' Create shuffled diploid from two genotypes
 #'
 #' @param g1 A genotype (0 or 1)
@@ -34,11 +41,12 @@ vcf_truth <- vcf
 df <- vcf@gt %>% as.data.frame()
 s1 <- names(df)[2]
 s2 <- names(df)[3]
+new_id <- paste0("FAKE", id)
 df <- df %>%
   rowwise() %>%
-  mutate(FAKE001 = unphaser(str_sub( !!as.name(s1), 1, 1), str_sub( !!as.name(s2), 1, 1)) ) %>%
+  mutate(!!new_id := unphaser(str_sub( !!as.name(s1), 1, 1), str_sub( !!as.name(s2), 1, 1)) ) %>%
   ungroup() %>%
-  select(FORMAT, FAKE001)
+  select(FORMAT, starts_with("FAKE"))
 
 vcf@gt <- as.matrix(df)
 write.vcf(vcf, paste0(output_file, "_test.vcf.gz"))
@@ -48,9 +56,9 @@ s1 <- names(df)[2]
 s2 <- names(df)[3]
 df <- df %>%
   rowwise() %>%
-  mutate(FAKE001 = paste0(str_sub( !!as.name(s1), 1, 1), "|", str_sub( !!as.name(s2), 1, 1))) %>%
+  mutate(!!new_id := paste0(str_sub( !!as.name(s1), 1, 1), "|", str_sub( !!as.name(s2), 1, 1))) %>%
   ungroup() %>%
-  select(FORMAT, FAKE001)
+  select(FORMAT, starts_with("FAKE"))
 
 vcf_truth@gt <- as.matrix(df)
 write.vcf(vcf_truth, paste0(output_file, "_truth.vcf.gz"))

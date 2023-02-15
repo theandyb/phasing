@@ -1,0 +1,201 @@
+---
+title: "Parameter Test"
+author: "Andy Beck"
+date: "2022-09-28"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+```{r}
+library(tidyverse)
+library(janitor)
+source("code/common_functions.R")
+
+# Overwrite the switch_summary function
+switch_summary <- function(pair_id, input_dir, gc_content_1kb, bin_size = 1000){
+  switch_err_df <- read_csv(paste0(input_dir, "switch_", pair_id, ".csv"), show_col_types = FALSE) %>%
+    mutate(bin_id = ceiling(pos_start / bin_size))
+  
+  switch_err_df <- switch_err_df %>%
+    left_join({gc_content_1kb %>% select(bin_id, GC)}, by = "bin_id")
+  
+  # get positions of flips
+  flip_pos <- get_flip_pos(switch_err_df)
+  
+  # Assign switches flip status
+  switch_err_df$is_flip <- (switch_err_df$pos_start %in% flip_pos) |
+    (switch_err_df$pos_end %in% flip_pos)
+  
+  # Start of flip
+  switch_err_df$start_flip <- (switch_err_df$pos_start %in% flip_pos)
+  
+  # stats we want to pull
+  n_switch <- length(switch_err_df$pos_start)
+  n_flip <- sum(switch_err_df$is_flip) / 2
+  n_other <- n_switch - 2*n_flip
+
+  n_switch_cpg <- switch_err_df %>%
+    filter(cpg_start == 1) %>%
+    pull(is_flip) %>%
+    length()
+
+  n_flip_cpg <- switch_err_df %>%
+    filter(cpg_start == 1) %>%
+    pull(start_flip) %>%
+    sum()
+  
+  mean_gc_switch <- mean(switch_err_df$GC)
+  
+  return(data.frame(pair_id = pair_id,
+                    n_switch = n_switch,
+                    n_flip = n_flip,
+                    n_other = n_other,
+                    n_switch_cpg = n_switch_cpg,
+                    n_flip_cpg = n_flip_cpg,
+                    mean_gc_switch = mean_gc_switch
+                    ))
+}
+
+pair_info_df <- read_delim("data/sample_pairs_16aug2022.csv", col_names = c("POP", "ID1", "ID2"))
+pair_info_df$SP <- c(rep("EUR", 200), rep("AFR", 200))
+pair_info_df$pair_id <- 1:400
+
+gc_content_1kb <- read_tsv("data/gc1kb_X_only.bed")
+colnames(gc_content_1kb) <- c("CHR", "START", "END", "AT", "GC", "A", "C", "G", "T", "TOTAL", "OTHER", "LENGTH")
+gc_content_1kb  <- gc_content_1kb %>%
+  mutate(bin_id = (START / 1000) + 1)
+
+background_dimer <- read_csv("/net/snowwhite/home/beckandy/research/phasing/output/background_rates/dimer.csv")
+background_3mer <- read_csv("/net/snowwhite/home/beckandy/research/phasing/output/background_rates/3mer.csv")
+
+cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+
+background_cpg_het <- 229868 / 1567042
+```
+
+## Introduction
+
+The purpose of this document is to explore the effects of changing parameters for the phasing algorithms. The impetus for this was two observations:
+
+1. SHAPEIT4 has a parameter that changes some defaults when phasing data from sequencing (`--phasing`) which I was unaware of in my first round of simulations
+2. BEAGLE appeared to have done better when no genetic map was included.
+
+This document will focus on the above two issues first, and later we may look more thoroughly into other parameter choices which may improve the phasing of our pseudo-diploids.
+
+## First Analysis
+
+### SHAPEIT
+
+Let's first take a look at the SHAPEIT4 results: does the `--sequencing` option reduce the number of errors?
+
+```{r}
+shapeit_np_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/9aug22_switch_errors/switch_errors/shapeit/annotated/"
+shapeit_p_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/27sept/switch_errors/shapeit/annotated/"
+
+whatshap_np <- "/net/snowwhite/home/beckandy/research/phasing/output/9aug22_switch_errors/whatshap/"
+whatshap_p <- "/net/snowwhite/home/beckandy/research/phasing/output/27sept/whatshap/"
+
+df_s_np <- lapply(c(1:400), 
+                    function(x){
+                      switch_summary(x, shapeit_np_dir, gc_content_1kb)
+                      }) %>%
+  bind_rows()
+
+df_s_p <- lapply(c(1:400), 
+                    function(x){
+                      switch_summary(x, shapeit_p_dir, gc_content_1kb)
+                      }) %>%
+  bind_rows()
+
+df_s_np$type <- "no_sequencing"
+df_s_p$type <- "sequencing"
+
+df <- bind_rows(df_s_np, df_s_p)
+```
+
+Let's first look at the number of total errors we see in each pseudo-diploid:
+
+```{r}
+df %>%
+  select(pair_id, n_switch, type) %>%
+  pivot_wider(id_cols = pair_id, names_from = type, values_from = n_switch) %>%
+  left_join(pair_info_df, by = "pair_id") %>%
+  ggplot(aes(x = no_sequencing, y = sequencing, color = SP)) +
+  geom_point() +
+  ggtitle("Total Errors: SHAPEIT4", "With and without --sequencing option") +
+  xlab("With sequencing parameters") + ylab("Without") +
+  geom_abline(slope = 1, intercept = 0)
+```
+
+Not much of a difference here; let's take a look at flips:
+
+```{r}
+df %>%
+  select(pair_id, n_flip, type) %>%
+  pivot_wider(id_cols = pair_id, names_from = type, values_from = n_flip) %>%
+  left_join(pair_info_df, by = "pair_id") %>%
+  ggplot(aes(x = no_sequencing, y = sequencing, color = SP)) +
+  geom_point() +
+  ggtitle("Flips: SHAPEIT4", "With and without --sequencing option") +
+  xlab("With sequencing parameters") + ylab("Without") +
+  geom_abline(slope = 1, intercept = 0)
+```
+
+### BEAGLE
+
+Let's take another look at BEAGLE with and without the genetic map.
+
+```{r}
+beagle_gm_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/9aug22_switch_errors/switch_errors/beagle/annotated/"
+beagle_nm_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/27sept/switch_errors/beagle/annotated/"
+
+whatshap_gm <- "/net/snowwhite/home/beckandy/research/phasing/output/9aug22_switch_errors/whatshap/"
+whatshap_nm <- "/net/snowwhite/home/beckandy/research/phasing/output/27sept/whatshap/"
+
+df_gm <- lapply(c(1:400), 
+                    function(x){
+                      switch_summary(x, beagle_gm_dir, gc_content_1kb)
+                      }) %>%
+  bind_rows()
+
+df_nm <- lapply(c(1:400), 
+                    function(x){
+                      switch_summary(x, beagle_nm_dir, gc_content_1kb)
+                      }) %>%
+  bind_rows()
+
+df_gm$type <- "genetic_map"
+df_nm$type <- "constant_recomb"
+
+df <- bind_rows(df_gm, df_nm)
+```
+
+Let's first look at the number of errors
+
+```{r}
+df %>%
+  select(pair_id, n_switch, type) %>%
+  pivot_wider(id_cols = pair_id, names_from = type, values_from = n_switch) %>%
+  left_join(pair_info_df, by = "pair_id") %>%
+  ggplot(aes(x = genetic_map, y = constant_recomb, color = SP)) +
+  geom_point() +
+  ggtitle("Total Errors: BEAGLE 5.2", "Genetic Map versus Constant Recombination Rate") +
+  xlab("With genetic map") + ylab("Constant Rate") +
+  geom_abline(slope = 1, intercept = 0)
+```
+
+and now flips:
+
+```{r}
+df %>%
+  select(pair_id, n_flip, type) %>%
+  pivot_wider(id_cols = pair_id, names_from = type, values_from = n_flip) %>%
+  left_join(pair_info_df, by = "pair_id") %>%
+  ggplot(aes(x = genetic_map, y = constant_recomb, color = SP)) +
+  geom_point() +
+  ggtitle("Flips: BEAGLE 5.2", "Genetic Map versus Constant Recombination Rate") +
+  xlab("With genetic map") + ylab("Constant Rate") +
+  geom_abline(slope = 1, intercept = 0)
+```
+

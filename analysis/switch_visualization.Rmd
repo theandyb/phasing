@@ -1,0 +1,53 @@
+---
+title: "switch_visualization"
+author: "Andy Beck"
+date: "2023-01-24"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+```{r}
+library(tidyverse)
+
+# has header
+# CHROM   POS_START       POS_END INDV
+# error_$i.diff.switch
+vt_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/2023_switch_errors/vcf/vcf_gz/topmed/vcftools/"
+
+#chr\tpos\tgt
+# pair_$i_het_loc.txt
+# no header
+het_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/2023_switch_errors/het_loc/"
+```
+
+Work out how to do this with a singular example:
+
+```{r}
+df_het <- read_tsv(paste0(het_dir, "pair_", 321, "_het_loc.txt"), 
+                   col_names = c("CHROM", "POS", "GT"), show_col_types = FALSE)
+df_vt <- read_tsv(paste0(vt_dir, "error_", 321, ".diff.switch"), show_col_types = FALSE)
+
+df_het$chr1 <- "R"
+df_het$chr2 <- "B"
+
+for(i in df_vt$POS_START){
+  ix <- which(df_het$POS == i)[1]
+  if(df_het$chr1[ix] == "R"){
+    df_het$chr1[ix:length(df_het$chr1)] <- "B"
+    df_het$chr2[ix:length(df_het$chr2)] <- "R"
+  } else {
+    df_het$chr1[ix:length(df_het$chr1)] <- "R"
+    df_het$chr2[ix:length(df_het$chr2)] <- "B"
+  }
+}
+
+df_het %>%
+  select(POS, chr1, chr2) %>%
+  pivot_longer(chr1:chr2, names_to = "chr", values_to = "val") %>% 
+  ggplot(aes(x = POS, y = chr, colour = val)) +
+  geom_tile()
+```
+

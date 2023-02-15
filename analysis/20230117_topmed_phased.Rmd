@@ -1,0 +1,175 @@
+---
+title: "20230117_topmed_phased"
+author: "Andy Beck"
+date: "2023-01-17"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+```{r}
+library(tidyverse)
+
+topmed_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/filter_switch_errors/whatshap/topmed/"
+eagle_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/filter_switch_errors/whatshap/eagle/"
+beagle_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/filter_switch_errors/whatshap/beagle/"
+shapeit_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/filter_switch_errors/whatshap/shapeit/"
+vote_dir <- "/net/snowwhite/home/beckandy/research/phasing/data/consensus/"
+new_vote_dir <- "/net/snowwhite/home/beckandy/research/phasing/data/consensus/easy/"
+#load single result
+get_errors <- function(dir, pair_id, prefix = "eval"){
+  f_name <- paste0(dir, prefix, "_", pair_id, ".tsv")
+  df <- read_tsv(f_name, show_col_types = FALSE) %>% select(starts_with("all"))
+  return(df)
+}
+
+# load all results
+get_all_errors <- function(dir, ids = 1:400, prefix = "eval"){
+  df <- get_errors(dir, ids[1], prefix)
+  for(i in 2:length(ids)){
+    df <- bind_rows(df, get_errors(dir, ids[i], prefix))
+  }
+  df$id <- ids
+  return(df)
+}
+
+# df_topmed <- get_all_errors(topmed_dir, prefix = "eval")
+# df_eagle <- get_all_errors(eagle_dir)
+# df_beagle <- get_all_errors(beagle_dir)
+# df_shapeit <- get_all_errors(shapeit_dir)
+# df_vote <- get_all_errors(vote_dir, prefix = "error_vote")
+# df_new_vote <- get_all_errors(new_vote_dir, prefix = "error_vote")
+# 
+# df_topmed$alg <- "topmed"
+# df_beagle$alg <- "beagle"
+# df_eagle$alg <- "eagle"
+# df_shapeit$alg <- "shapeit"
+# df_vote$alg <- "vote"
+# df_new_vote$alg <- "new_vote"
+# 
+# df_topmed$pop <- c(rep("EUR", 200), rep("AFR", 200))
+# df_beagle$pop <- c(rep("EUR", 200), rep("AFR", 200))
+# df_eagle$pop <- c(rep("EUR", 200), rep("AFR", 200))
+# df_shapeit$pop <- c(rep("EUR", 200), rep("AFR", 200))
+# df_vote$pop <- c(rep("EUR", 200), rep("AFR", 200))
+# df_new_vote$pop <- c(rep("EUR", 200), rep("AFR", 200))
+# 
+# df <- bind_rows(df_topmed, df_beagle) %>%
+#   bind_rows(df_eagle) %>%
+#   bind_rows(df_shapeit) %>%
+#   bind_rows(df_vote) %>%
+#   bind_rows(df_new_vote)
+# 
+# df <- df %>%
+#   separate(all_switchflips, into = c("switches", "flips"), sep = "/", remove = FALSE) %>%
+#   mutate(switches = as.numeric(switches),
+#          flips = as.numeric(flips))
+# 
+# df %>% write_csv("/net/snowwhite/home/beckandy/research/phasing/output/filter_switch_errors/whatshap/all_pairs.csv")
+
+df <- read_csv("/net/snowwhite/home/beckandy/research/phasing/output/filter_switch_errors/whatshap/all_pairs.csv")
+```
+
+Box plots for overall errors
+
+```{r}
+df %>%
+  select(id, alg, all_switches) %>%
+  ggplot(aes(x = alg, y = all_switches)) +
+  geom_boxplot() +
+  xlab("Total Errors") +
+  ylab("Algorithm / Reference Panel") +
+  ggtitle("Total Errors by Method") +
+  theme_classic()
+
+df %>%
+  select(id, alg, all_switches, pop) %>%
+  pivot_wider(id_cols = c(id, pop), names_from = alg, values_from = all_switches) %>%
+  ggplot(aes(x = eagle, y = topmed, colour = pop)) +
+  geom_point() +
+  xlab("EAGLE") +
+  ylab("TOPMed") +
+  geom_abline(slope = 1, intercept = 0) +
+  ggtitle("Total Errors", "EAGLE and TOPMed")
+
+df %>%
+  select(id, alg, all_switches, pop) %>%
+  pivot_wider(id_cols = c(id, pop), names_from = alg, values_from = all_switches) %>%
+  ggplot(aes(x = beagle, y = topmed, colour = pop)) +
+  geom_point() +
+  xlab("BAGLE") +
+  ylab("TOPMed") +
+  geom_abline(slope = 1, intercept = 0) +
+  ggtitle("Total Errors", "BEAGLE and TOPMed")
+
+df %>%
+  select(id, alg, all_switches, pop) %>%
+  pivot_wider(id_cols = c(id, pop), names_from = alg, values_from = all_switches) %>%
+  ggplot(aes(x = shapeit, y = topmed, colour = pop)) +
+  geom_point() +
+  xlab("SHAPEIT") +
+  ylab("TOPMed") +
+  geom_abline(slope = 1, intercept = 0) +
+  ggtitle("Total Errors", "SHAPEIT and TOPMed")
+```
+
+
+Histogram of flips
+
+```{r}
+df %>%
+  ggplot(aes(x = alg, y = flips)) +
+  geom_boxplot() +
+  ggtitle("Flips by Method / Reference Panel") +
+  xlab("Algorithm / Reference Panel") +
+  ylab("Flips") +
+  theme_classic()
+```
+
+Histogram of switches
+
+```{r}
+df %>%
+  ggplot(aes(x = alg, y = switches)) +
+  geom_boxplot() +
+  ggtitle("Switchess by Method / Reference Panel") +
+  xlab("Algorithm / Reference Panel") +
+  ylab("Switches") +
+  theme_classic()
+
+df %>%
+  filter(pop == "AFR") %>%
+  ggplot(aes(x = alg, y = switches)) +
+  geom_boxplot() +
+  ggtitle("Switchess by Method / Reference Panel", "AFR Pseudo-diploids") +
+  xlab("Algorithm / Reference Panel") +
+  ylab("Switches") +
+  theme_classic()
+
+df %>%
+  select(id, alg, switches, pop) %>%
+  pivot_wider(id_cols = c(id, pop), names_from = alg, values_from = switches) %>%
+  ggplot(aes(x = eagle, y = topmed, colour = pop)) +
+  geom_point() +
+  xlab("EAGLE") +
+  ylab("TOPMed") +
+  geom_abline(slope = 1, intercept = 0) +
+  ggtitle("Switches", "EAGLE and TOPMed")
+```
+
+And now, flips:
+
+```{r}
+df %>%
+  select(id, alg, flips, pop) %>%
+  pivot_wider(id_cols = c(id, pop), names_from = alg, values_from = flips) %>%
+  ggplot(aes(x = eagle, y = topmed, colour = pop)) +
+  geom_point() +
+  xlab("EAGLE") +
+  ylab("TOPMed") +
+  geom_abline(slope = 1, intercept = 0) +
+  ggtitle("Flips", "EAGLE and TOPMed")
+```
+

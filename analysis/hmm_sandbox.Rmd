@@ -1,0 +1,57 @@
+---
+title: "hmm_sandbox"
+author: "Andy Beck"
+date: "2023-02-08"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+```{r}
+library(tidyverse)
+
+vcf_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/filter_switch_errors/vcf/"
+eagle_dir <- paste0(vcf_dir, "eagle/")
+beagle_dir <- paste0(vcf_dir, "beagle/")
+shapeit_dir <- paste0(vcf_dir, "shapeit/")
+
+bcftools_prefix <- paste0("bcftools view -C 2 ")
+bcftools_prefix2 <- paste0("bcftools view ")
+bcftools_suffix <- paste0(".bcf | bcftools query -f \"[%POS\\t%GT\\n]\"")
+
+df_e <- vroom::vroom(pipe(paste0(bcftools_prefix, eagle_dir, "pair_", 1, bcftools_suffix)),
+                   col_names = c("POS", "EAGLE"),
+                   delim = "\t", show_col_types = FALSE)
+df_b <- vroom::vroom(pipe(paste0(bcftools_prefix, beagle_dir, "pair_", 1, bcftools_suffix)),
+                   col_names = c("POS", "BEAGLE"),
+                   delim = "\t", show_col_types = FALSE)
+df_s <- vroom::vroom(pipe(paste0(bcftools_prefix, shapeit_dir, "pair_", 1, bcftools_suffix)),
+                   col_names = c("POS", "SHAPEIT"),
+                   delim = "\t", show_col_types = FALSE)
+df_t <- vroom::vroom(pipe(paste0(bcftools_prefix2, vcf_dir, "pair_", 1, "_true", bcftools_suffix)),
+                   col_names = c("POS", "TRUTH"),
+                   delim = "\t", show_col_types = FALSE)
+
+df <- inner_join(df_e, df_b, by = "POS") %>%
+  inner_join(df_s, by = "POS") %>%
+  inner_join(df_t, by = "POS")
+
+if(df$EAGLE[1] != df$TRUTH[1]){
+  df <- df %>%
+    rowwise() %>%
+    mutate(EAGLE = paste0(str_sub(EAGLE,3,3), "|", str_sub(EAGLE, 1, 1)))
+}
+if(df$BEAGLE[1] != df$TRUTH[1]){
+  df <- df %>%
+    rowwise() %>%
+    mutate(BEAGLE = paste0(str_sub(BEAGLE,3,3), "|", str_sub(BEAGLE, 1, 1)))
+}
+if(df$SHAPEIT[1] != df$TRUTH[1]){
+  df <- df %>%
+    rowwise() %>%
+    mutate(SHAPEIT = paste0(str_sub(SHAPEIT,3,3), "|", str_sub(SHAPEIT, 1, 1)))
+}
+```
+

@@ -1,0 +1,112 @@
+---
+title: "gc_content"
+author: "Andy Beck"
+date: "2022-04-18"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+```{r}
+library(tidyverse)
+```
+
+
+## Introduction
+
+In this document we'll take a peek at what the gc content looks like genome-wide. For now we have this available in windows of size 10kb and 100kb (it might be worth asking if I should be looking at larger windows). Let's first look at the 10kb windows
+
+```{r}
+col_names <- c("CHR", "START", "END", "AT", "GC", "A", "C", "G", "T", "N", "OTHER", "LEN")
+df_10k <- read_tsv("data/gc10kb.bed")
+df_100k <- read_tsv("data/gc100kb.bed")
+df_1k <- read_tsv("data/gc1kb_X_only.bed")
+
+colnames(df_1k) <- col_names
+colnames(df_10k) <- col_names
+colnames(df_100k) <- col_names
+```
+
+
+Let's take a peek at the X chromosome:
+
+```{r}
+for(chrom in c("X")){
+  c_name <- paste0("chr", chrom)
+  p<- df_10k %>%
+    filter(CHR == c_name) %>%
+    ggplot(aes(x = START, y = GC)) + 
+    geom_line() + 
+    geom_smooth() +
+    ggtitle("% GC Content in 10kb Windows", paste0("Chromosome ", chrom)) +
+    xlab("Window Start Position") +
+    ylab("% GC")
+  print(p)
+}
+```
+
+```{r}
+for(chrom in c("X")){
+  c_name <- paste0("chr", chrom)
+  p<- df_100k %>%
+    filter(CHR == c_name) %>%
+    ggplot(aes(x = START, y = GC)) + 
+    geom_line() + 
+    geom_smooth() +
+    ggtitle("% GC Content in 100kb Windows", paste0("Chromosome ", chrom)) +
+    xlab("Window Start Position") +
+    ylab("% GC")
+  print(p)
+}
+```
+
+```{r}
+df_1k %>%
+  ggplot(aes(x = START, y = GC))+
+  geom_line() +
+  geom_smooth()+
+  ggtitle("% GC Content in 1kb Windows", "Chromosome X") +
+  xlab("Window Start Position") +
+  ylab("% GC")
+```
+
+## Assigning bins to switches
+
+```{r}
+df_1k <- df_1k %>%
+  rowwise() %>%
+  mutate(bin_id = (START / 1000) + 1)
+df_1k %>% head
+```
+
+## Single pseudo-diploid Exploration
+
+```{r}
+df_eagle <- read_csv("/net/snowwhite/home/beckandy/research/phasing/output/18mar22_switch_errors/switch_errors/eagle/annotated/switch_1.csv")
+df_shapeit <- read_csv("/net/snowwhite/home/beckandy/research/phasing/output/18mar22_switch_errors/switch_errors/shapeit/annotated/switch_1.csv")
+
+background_dimer <- read_csv("/net/snowwhite/home/beckandy/research/phasing/output/background_rates/dimer.csv")
+background_3mer <- read_csv("/net/snowwhite/home/beckandy/research/phasing/output/background_rates/3mer.csv")
+```
+
+Add bin ids for start (and end?):
+
+```{r}
+df_eagle <- df_eagle %>%
+  mutate(start_bin = ceiling(pos_start / 1000),
+         end_bin = ceiling(pos_end / 1000))
+
+df_shapeit <- df_shapeit %>%
+  mutate(start_bin = ceiling(pos_start / 1000),
+         end_bin = ceiling(pos_end / 1000))
+```
+
+Match GC content:
+
+```{r}
+df_1k %>% 
+  select(bin_id, GC) %>%
+  right_join(df_shapeit, by = c("bin_id" = "start_bin")) %>%
+  pull(GC) %>% mean()
+```
+

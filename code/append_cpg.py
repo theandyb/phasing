@@ -4,7 +4,7 @@ from Bio.Seq import Seq
 import argparse
 
 def get_motif(seqstr, pos, bp = 10):
-    return seqstr[(pos - bp):(pos + bp + 1)]
+    return seqstr[(pos - bp - 1):(pos + bp)]
 
 def cpg_stat(seqstr, pos):
     motif = get_motif(seqstr, pos, 1)

@@ -15,7 +15,7 @@
 
 <title>Captain’s Log</title>
 
-<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -75,6 +75,7 @@ if (window.hljs) {
 
 
 
+
 <style type = "text/css">
 .main-container {
   max-width: 940px;
@@ -95,6 +96,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -320,7 +324,7 @@ div.tocify {
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -359,7 +363,9 @@ div.tocify {
 
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
-<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span>
 </button>
 </p>
 <div id="workflowr-report" class="collapse">
@@ -368,7 +374,9 @@ div.tocify {
 <a data-toggle="tab" href="#summary">Summary</a>
 </li>
 <li>
-<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> </a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -377,17 +385,27 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-02-28
+<strong>Last updated:</strong> 2022-05-23
 </p>
 <p>
-<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 1
 </p>
 <p>
-<strong>Knit directory:</strong> <code>phasing/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+<strong>Knit directory:</strong> <code>phasing/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
 </p>
 <p>
-This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
-  href="https://github.com/workflowr/workflowr">workflowr</a> (version 1.7.0). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.0). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
 </p>
 <hr>
 </div>
@@ -396,154 +414,181 @@ This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a> analysi
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
+changes </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div id="strongRMarkdownfilestronguncommittedchanges"
+class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+<p>The R Markdown file has unstaged changes. To know which version of
+the R Markdown file created these results, you’ll want to first commit
+it to the Git repo. If you’re still working on the analysis, you can
+ignore this warning. When you’re finished, you can run
+<code>wflow_publish</code> to commit the R Markdown file and build the
+HTML.</p>
 </div>
 </div>
 </div>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
 </p>
 </div>
 <div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
 </div>
 </div>
 </div>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20220221code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(20220221)</code> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20220221code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20220221)</code> </a>
 </p>
 </div>
-<div id="strongSeedstrongcodesetseed20220221code" class="panel-collapse collapse">
+<div id="strongSeedstrongcodesetseed20220221code"
+class="panel-collapse collapse">
 <div class="panel-body">
-<p>The command <code>set.seed(20220221)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+<p>The command <code>set.seed(20220221)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
 </div>
 </div>
 </div>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
 </p>
 </div>
-<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
 </div>
 </div>
 </div>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
 </p>
 </div>
 <div id="strongCachestrongnone" class="panel-collapse collapse">
 <div class="panel-body">
-<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
 </div>
 </div>
 </div>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
 </p>
 </div>
 <div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
 </div>
 </div>
 </div>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrong72ed6c4"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> 72ed6c4 </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongc753b7c">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong> c753b7c
+</a>
 </p>
 </div>
-<div id="strongRepositoryversionstrong72ed6c4" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongc753b7c"
+class="panel-collapse collapse">
 <div class="panel-body">
 <p>
-Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version 72ed6c4. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version c753b7c.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
 </p>
 <p>
-Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
 </p>
 <pre><code>
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    data/first_attempt/
+    Ignored:    data/ref/
+    Ignored:    data/shapeit/
+    Ignored:    output/11april22_switch_errors/
+    Ignored:    output/14mar22_switch_errors/
+    Ignored:    output/16mar22_switch_errors/
+    Ignored:    output/18mar22_switch_errors/
+    Ignored:    output/19april22_switch_errors/
+    Ignored:    output/background_rates/
+    Ignored:    output/switch_error_test/
+    Ignored:    sandbox/
 
 Untracked files:
-    Untracked:  code/combine_subj_info.R
-    Untracked:  data/1000G_2504_high_coverage.sequence.index
-    Untracked:  data/1000G_698_related_high_coverage.sequence.index
-    Untracked:  data/1kGP.3202_samples.pedigree_info.txt
-    Untracked:  data/20131219.populations.tsv
-    Untracked:  data/20131219.superpopulations.tsv
-    Untracked:  data/chr1.b38.gmap.gz
-    Untracked:  data/chr10.b38.gmap.gz
-    Untracked:  data/chr11.b38.gmap.gz
-    Untracked:  data/chr12.b38.gmap.gz
-    Untracked:  data/chr13.b38.gmap.gz
-    Untracked:  data/chr14.b38.gmap.gz
-    Untracked:  data/chr15.b38.gmap.gz
-    Untracked:  data/chr16.b38.gmap.gz
-    Untracked:  data/chr17.b38.gmap.gz
-    Untracked:  data/chr18.b38.gmap.gz
-    Untracked:  data/chr19.b38.gmap.gz
-    Untracked:  data/chr2.b38.gmap.gz
-    Untracked:  data/chr20.b38.gmap.gz
-    Untracked:  data/chr21.b38.gmap.gz
-    Untracked:  data/chr22.b38.gmap.gz
-    Untracked:  data/chr3.b38.gmap.gz
-    Untracked:  data/chr4.b38.gmap.gz
-    Untracked:  data/chr5.b38.gmap.gz
-    Untracked:  data/chr6.b38.gmap.gz
-    Untracked:  data/chr7.b38.gmap.gz
-    Untracked:  data/chr8.b38.gmap.gz
-    Untracked:  data/chr9.b38.gmap.gz
-    Untracked:  data/chrX.b38.gmap.gz
-    Untracked:  data/chrX.tsv
-    Untracked:  data/chrX_par1.b38.gmap.gz
-    Untracked:  data/chrX_par2.b38.gmap.gz
-    Untracked:  data/chrX_phased.tsv
-    Untracked:  data/chrX_phased_mask.tsv
-    Untracked:  data/chrX_phased_mask2.tsv
-    Untracked:  data/chrX_ref.vcf.gz
-    Untracked:  data/chrX_ref.vcf.gz.csi
-    Untracked:  data/chrX_sites_28feb2022.tsv
-    Untracked:  data/chrX_sites_28feb2022_2.tsv
-    Untracked:  data/chrX_test.vcf
-    Untracked:  data/chrX_test_fake.vcf.gz
-    Untracked:  data/chrX_test_fake.vcf.gz.csi
-    Untracked:  data/genetic_maps.b38.tar.gz
-    Untracked:  data/mask_pilot_chrX.bed
-    Untracked:  data/mask_pilot_chrX_v2.bed
-    Untracked:  data/related_subj.tsv
-    Untracked:  data/subject_info.csv
-    Untracked:  data/unrelated_subj.tsv
-    Untracked:  output/shapeit.log
+    Untracked:  Rplots.pdf
+    Untracked:  analysis/Rplots.pdf
+    Untracked:  analysis/first_phase_test.Rmd
+    Untracked:  analysis/first_phasing_results.Rmd
+    Untracked:  analysis/gc_content.Rmd
+    Untracked:  analysis/methylation_explore.Rmd
+    Untracked:  analysis/shift_error_ex.Rmd
+    Untracked:  code/background_3mer.py
+    Untracked:  code/background_dimer.py
+    Untracked:  plink.log
 
 Unstaged changes:
-    Modified:   analysis/index.Rmd
+    Modified:   analysis/build_a_vcf.Rmd
+    Modified:   analysis/captains_log.Rmd
+    Modified:   analysis/data_exploration.Rmd
+    Modified:   analysis/masked_diploid_results.Rmd
+    Modified:   code/batch_annotate_switch.sh
+    Modified:   code/batch_diploid_analysis.sh
+    Modified:   code/sample_X_pairs.R
 
 </code></pre>
 <p>
-Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
 </p>
 </div>
 </div>
@@ -554,7 +599,12 @@ Note that any generated files, e.g. HTML, png, CSS, etc., are not included in t
 <div id="versions" class="tab-pane fade">
 
 <p>
-These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/captains_log.Rmd</code>) and HTML (<code>docs/captains_log.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/captains_log.Rmd</code>) and HTML
+(<code>docs/captains_log.html</code>) files. If you’ve configured a
+remote Git repository (see <code>?wflow_git_remote</code>), click on the
+hyperlinks in the table below to view the files as they were in that
+past version.
 </p>
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
@@ -578,6 +628,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+0b8c9e7
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2022-02-28
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -604,19 +671,24 @@ wflow_publish(c("analysis/captains_log.Rmd", "analysis/build_a_vcf.Rmd",
 </div>
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
-<p>Here in this document I will be documenting every action that I perform for this ill-defined “phasing project.” Onwards!</p>
+<p>Here in this document I will be documenting every action that I
+perform for this ill-defined “phasing project.” Onwards!</p>
 </div>
 <div id="feb-2022" class="section level2">
 <h2>21 Feb 2022</h2>
 <div id="installation-of-shapeit4" class="section level3">
 <h3>Installation of SHAPEIT4</h3>
-<p>Following the instructions that I found at <a href="https://odelaneau.github.io/shapeit4/#installation">this site</a>, I</p>
+<p>Following the instructions that I found at <a
+href="https://odelaneau.github.io/shapeit4/#installation">this site</a>,
+I</p>
 <ol style="list-style-type: decimal">
-<li>Downloaded the source code: <code>wget https://github.com/odelaneau/shapeit4/archive/refs/tags/v4.2.2.tar.gz</code></li>
+<li>Downloaded the source code:
+<code>wget https://github.com/odelaneau/shapeit4/archive/refs/tags/v4.2.2.tar.gz</code></li>
 <li>Extracted the source code: <code>tar zxvf v4.2.2.tar.gz</code></li>
 <li>Per instructions edited the paths in the <code>makefile</code>
 <ul>
-<li>Should I have installed my own version of HTSlib? -&gt; edit: going to do this, under $HOME/Tools</li>
+<li>Should I have installed my own version of HTSlib? -&gt; edit: going
+to do this, under $HOME/Tools</li>
 <li>BOOST paths did not need to be changed</li>
 </ul></li>
 <li>Compile using <code>make</code></li>
@@ -648,11 +720,14 @@ wget ftp.1000genomes.ebi.ac.uk/vol1/ftp/phase3/20131219.superpopulations.tsv
 wget ftp.1000genomes.ebi.ac.uk/vol1/ftp/phase3/20131219.populations.tsv</code></pre>
 <p>And then from the main directory of this project run</p>
 <pre><code>Rscript code/combine_subj_info.R</code></pre>
-<p>Using this dataset I randomly sampled a European male from the unrelated sample (HG00260).</p>
+<p>Using this dataset I randomly sampled a European male from the
+unrelated sample (HG00260).</p>
 </div>
 <div id="first-look-at-a-vcf-file" class="section level3">
 <h3>First look at a VCF file</h3>
-<p>Let’s grab the genotypes for two subjects outside the pseudo-autosomal region to verify that all these variants are homozygous:</p>
+<p>Let’s grab the genotypes for two subjects outside the
+pseudo-autosomal region to verify that all these variants are
+homozygous:</p>
 <pre><code>bcftools view -t ^chrX:10001-2781479 -s HG00260,HG00136 -c1 \
 /net/topmed8/working/call_sets/freeze9/release/subset/1000g/minDP0.minAC1.PASS/freeze9.1000g.chrX.filtered.gtonly.minDP0.minAC1.PASS.bcf |\
 bcftools view -t ^chrX:155701382-156030895 |\
@@ -667,18 +742,26 @@ bcftools query -f &#39;%CHROM  %POS  %REF  %ALT{0} [ %GT]\n&#39; | tr -s &#39; &
 <h2>23 Feb 2022</h2>
 <div id="mask-the-vcf" class="section level3">
 <h3>Mask the VCF</h3>
-<p>The idea stemming from lab meeting was that the heterozygotes might have been due to hard to sequence regions (repetitive regions, etc). Let’s use a mask and see if that reduces the number of heterozygotes we see in the two X chromosomes:</p>
+<p>The idea stemming from lab meeting was that the heterozygotes might
+have been due to hard to sequence regions (repetitive regions, etc).
+Let’s use a mask and see if that reduces the number of heterozygotes we
+see in the two X chromosomes:</p>
 <pre><code>zcat /net/wonderland/home/ycsi/Data/Ref/GRCh38/1kg_20160622_genome_mask/PilotMask/20160622.allChr.pilot_mask.bed.gz |\
-awk &#39;{if($1 == &quot;chrX&quot;)print $0}&#39; &gt; data/mask_pilot_chrX.bed</code></pre>
-<p>NOTE: this version of the bed has un-masked regions -&gt; we want intersections here</p>
+awk &#39;{if($1 == &quot;chrX&quot;)print $0}&#39; &gt; data/mask_pilot_chrX.bed
+
+zcat /net/wonderland/home/ycsi/Data/Ref/GRCh38/1kg_20160622_genome_mask/StrictMask/20160622.allChr.mask.bed.gz |\
+awk &#39;{if($1 == &quot;chrX&quot;)print $0}&#39; &gt; data/mask_strict_chrX.bed</code></pre>
+<p>NOTE: this version of the bed has un-masked regions -&gt; we want
+intersections here</p>
 <pre><code>bedtools intersect -a /net/topmed8/working/call_sets/freeze9/release/subset/1000g/minDP10.minAC1.PASS.phased/freeze9.1000g.chrX.filtered.gtonly.minDP10.minAC1.PASS.phased.vcf.gz -b /net/snowwhite/home/beckandy/research/phasing/data/mask_pilot_chrX.bed -wa -header |\
 bcftools view -t ^chrX:10001-2781479 -s HG00260,HG00136 -c1 |\
 bcftools view -t ^chrX:155701382-156030895 |\
 bcftools query -f &#39;%CHROM  %POS  %REF  %ALT{0} [ %GT]\n&#39; | tr -s &#39; &#39; &gt; data/chrX_phased_mask.tsv</code></pre>
-<p>And a different version of the mask (this version of the mask has masked regions)</p>
+<p>And a different version of the mask (this version of the mask has
+masked regions)</p>
 <pre><code>zcat /net/wonderland/home/ycsi/Data/Ref/GRCh38/mdust.hg38.bed.gz |\
-awk &#39;{if($1 == &quot;chrX&quot;)print $0}&#39; &gt; data/mask_pilot_chrX_v2.bed</code></pre>
-<pre><code>bedtools intersect -v -a /net/topmed8/working/call_sets/freeze9/release/subset/1000g/minDP10.minAC1.PASS.phased/freeze9.1000g.chrX.filtered.gtonly.minDP10.minAC1.PASS.phased.vcf.gz -b /net/snowwhite/home/beckandy/research/phasing/data/mask_pilot_chrX_v2.bed -wa -header |\
+awk &#39;{if($1 == &quot;chrX&quot;)print $0}&#39; &gt; data/ref/mask_pilot_chrX_v2.bed</code></pre>
+<pre><code>bedtools intersect -v -a /net/topmed8/working/call_sets/freeze9/release/subset/1000g/minDP10.minAC1.PASS.phased/freeze9.1000g.chrX.filtered.gtonly.minDP10.minAC1.PASS.phased.vcf.gz -b /net/snowwhite/home/beckandy/research/phasing/data/ref/mask_pilot_chrX_v2.bed -wa -header |\
 bcftools view -t ^chrX:10001-2781479 -s HG00260,HG00136 -c1 -Ou |\
 bcftools view -t ^chrX:155701382-156030895 -Ou |\
 bcftools query -f &#39;%CHROM  %POS  %REF  %ALT{0} [ %GT]\n&#39; | tr -s &#39; &#39; &gt; data/chrX_phased_mask2.tsv</code></pre>
@@ -686,7 +769,8 @@ bcftools query -f &#39;%CHROM  %POS  %REF  %ALT{0} [ %GT]\n&#39; | tr -s &#39; &
 </div>
 <div id="feb-2022-2" class="section level2">
 <h2>28 Feb 2022</h2>
-<p>Using the file <code>data/chrX_phased_mask2.tsv</code>, generate a list of sites to keep in our VCF:</p>
+<p>Using the file <code>data/chrX_phased_mask2.tsv</code>, generate a
+list of sites to keep in our VCF:</p>
 <pre class="r"><code>library(tidyverse)
 df &lt;- read_delim(&quot;data/chrX_phased_mask2.tsv&quot;, col_names = c(&quot;CHROM&quot;, &quot;POS&quot;, &quot;REF&quot;, &quot;ALT&quot;, &quot;G1&quot;, &quot;G2&quot;))
 df2 &lt;- df %&gt;%
@@ -695,11 +779,12 @@ df2 &lt;- df %&gt;%
 df2 %&gt;%
   select(CHROM, POS) %&gt;%
   write_tsv(&quot;data/chrX_sites_28feb2022.tsv&quot;)</code></pre>
-<p><strong>UPDATE: generate list of sites using bcftools chain</strong></p>
-<pre><code>bedtools intersect -v -a /net/topmed8/working/call_sets/freeze9/release/subset/1000g/minDP10.minAC1.PASS.phased/freeze9.1000g.chrX.filtered.gtonly.minDP10.minAC1.PASS.phased.vcf.gz -b /net/snowwhite/home/beckandy/research/phasing/data/mask_pilot_chrX_v2.bed -wa -header |\
+<p><strong>UPDATE: generate list of sites using bcftools
+chain</strong></p>
+<pre><code>bedtools intersect -v -a /net/topmed8/working/call_sets/freeze9/release/subset/1000g/minDP10.minAC1.PASS.phased/freeze9.1000g.chrX.filtered.gtonly.minDP10.minAC1.PASS.phased.vcf.gz -b /net/snowwhite/home/beckandy/research/phasing/data/ref/mask_pilot_chrX_v2.bed -wa -header |\
 bcftools view -t ^chrX:10001-2781479 -s HG00260,HG00136 -c1 -Ou |\
 bcftools view -t ^chrX:155701382-156030895 -Ou |\
-bcftools query -e &#39;GT=&quot;1|0&quot; || GT=&quot;0|1&quot;&#39; -f &#39;%CHROM  %POS\n&#39; | tr -s &#39; &#39; &gt; data/chrX_sites_28feb2022_2.tsv</code></pre>
+bcftools query -e &#39;GT=&quot;1|0&quot; || GT=&quot;0|1&quot;&#39; -f &#39;%CHROM \t%POS\n&#39; | tr -s &#39; &#39; &gt; data/chrX_sites_28feb2022_2.tsv</code></pre>
 <pre><code>bcftools view -R /net/snowwhite/home/beckandy/research/phasing/data/chrX_sites_28feb2022.tsv -s HG00260,HG00136 -Ov /net/topmed8/working/call_sets/freeze9/release/subset/1000g/minDP10.minAC1.PASS.phased/freeze9.1000g.chrX.filtered.gtonly.minDP10.minAC1.PASS.phased.vcf.gz  &gt; data/chrX_test.vcf</code></pre>
 <div id="running-shapeit4" class="section level3">
 <h3>Running SHAPEIT4</h3>
@@ -708,27 +793,197 @@ bcftools query -e &#39;GT=&quot;1|0&quot; || GT=&quot;0|1&quot;&#39; -f &#39;%CH
 <p>Also, our vcf file needs to be indexed:</p>
 <pre><code># from the data dir
 bcftools index chrX_test_fake.vcf.gz</code></pre>
-<p>We also need an indexed reference panel -&gt; probably cheating if we use 1000G?</p>
+<p>We also need an indexed reference panel -&gt; probably cheating if we
+use 1000G?</p>
 <pre><code>cp /net/topmed8/working/call_sets/freeze9/release/subset/1000g/minDP10.minAC1.PASS.phased/freeze9.1000g.chrX.filtered.gtonly.minDP10.minAC1.PASS.phased.vcf.gz data/chrX_ref.vcf.gz
 
-bcftools index data/chrX_ref.vcf.gz</code></pre>
+bcftools index data/ref/chrX_ref.vcf.gz</code></pre>
 <p>And now to phase our fake vcf:</p>
 <pre><code>shapeit4.2 --input data/chrX_test_fake.vcf.gz \
   --map data/chrX.b38.gmap.gz \
-  --reference data/chrX_ref.vcf.gz \
+  --reference data/first_attempt/chrX_ref.vcf.gz \
   --region chrX \
   --thread 10 \
   --log output/shapeit.log \
-  --output data/chrX_fake_phased.vcf.gz</code></pre>
+  --output data/first_attempt/chrX_phased_SHAPEIT.vcf.gz</code></pre>
+</div>
+<div id="installing-eagle-2.4" class="section level3">
+<h3>Installing EAGLE 2.4</h3>
+<p>Download what I believe are pre-compiled binaries</p>
+<pre><code>wget https://storage.googleapis.com/broad-alkesgroup-public/Eagle/downloads/Eagle_v2.4.1.tar.gz
+tar -zxvf Eagle_v2.4.1.tar.gz</code></pre>
+<p>They have some instructions for preping a version of the 1KGP data
+that no longer exist. Maybe worth processing my chr X reference data in
+a similar manner?</p>
+<p><a
+href="https://alkesgroup.broadinstitute.org/Eagle/downloads/prep_1000G_hg38.txt"
+class="uri">https://alkesgroup.broadinstitute.org/Eagle/downloads/prep_1000G_hg38.txt</a></p>
+<p>Run this from the same directory with the refernce data
+(<code>data/ref</code>):</p>
+<pre><code>(bcftools view --no-version -h chrX_ref.vcf.gz |\
+  grep -v &quot;^##contig=&lt;ID=[GNh]&quot; | sed &#39;s/^##contig=&lt;ID=MT/##contig=&lt;ID=chrM/;s/^##contig=&lt;ID=\([0-9XY]\)/##contig=&lt;ID=chr\1/&#39;; \
+  bcftools view --no-version -H -c 2 chrX_ref.vcf.gz) | \
+  bcftools norm --no-version -Ou -m -any | \
+  bcftools norm --no-version -Ob -o chrX_ref.bcf -d none -f /net/snowwhite/home/beckandy/reference/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna &amp;&amp; \
+  bcftools index -f chrX_ref.bcf</code></pre>
+<p>And now we phase:</p>
+<pre><code>eagle --vcfTarget /net/snowwhite/home/beckandy/research/phasing/data/first_attempt/chrX_test_fake.bcf \
+  --vcfRef /net/snowwhite/home/beckandy/research/phasing/data/ref/chrX_ref.bcf \
+  --geneticMapFile=/net/snowwhite/home/beckandy/software/Eagle_v2.4.1/tables/genetic_map_hg38_withX.txt.gz \
+  --vcfOutFormat v \
+  --chrom chrX \
+  --outPrefix=eagle \
+  --numThreads 10</code></pre>
+</div>
+</div>
+<div id="march-2022" class="section level2">
+<h2>2 March 2022</h2>
+<div id="mask-vcf" class="section level3">
+<h3>Mask VCF</h3>
+<p><strong>NOTE: THIS CHANGED LATER IN APRIL</strong></p>
+<p>Instead of running this 100 times, let’s just mask one copy of the X
+chromosome (also removing the PAR)</p>
+<pre><code>bedtools intersect -v -a /net/topmed8/working/call_sets/freeze9/release/subset/1000g/minDP10.minAC1.PASS.phased/freeze9.1000g.chrX.filtered.gtonly.minDP10.minAC1.PASS.phased.vcf.gz -b /net/snowwhite/home/beckandy/research/phasing/data/ref/mask_pilot_chrX_v2.bed -wa -header |\
+bcftools view -t ^chrX:10001-2781479 -Ou |\
+bcftools view -t ^chrX:155701382-156030895 -Ob &gt; data/ref/chrX_nonPAR.bcf</code></pre>
+</div>
+</div>
+<div id="march-2022-1" class="section level2">
+<h2>14 March 2022</h2>
+<p>Test the approach: generate fake diploid, phase using entire sample
+-&gt; should phase perfectly</p>
+<p>EAGLE: phase confidence = 0.99995</p>
+<p>Phased perfectly</p>
+</div>
+<div id="march-2022-2" class="section level2">
+<h2>22 March 2022</h2>
+<ul>
+<li>Script to run pseudo-diploid analyses:
+<code>code/batch_diploid_analysis.sh</code>
+<ul>
+<li>Wishlist: remove hard-coding of output directories (have it make
+based on date)</li>
+</ul></li>
+<li>Results analysis:
+<code>analysis/first_phasing_results.Rmd</code></li>
+<li>Attempt at understanding how vcftools –diff-switch works:
+<code>analysis/shift_error_ex.Rmd</code></li>
+</ul>
+<p><strong>Installing whatshap</strong></p>
+<pre class="bash"><code># create conda env
+conda create --name whatshap
+# activate environment
+conda activate whatshao
+# install whatshap
+conda install whatshap nomkl</code></pre>
+</div>
+<div id="april-2022" class="section level2">
+<h2>11 April 2022</h2>
+<ul>
+<li>Annotation of switches with CpG status and 3mer motif:
+<code>batch_annotate_switch.sh</code></li>
+<li>Get background CpG and 3mer rates: <code>background_dimer.py</code>
+and <code>background_3mer.py</code></li>
+<li>Sampled 200 pairs of AFR subjects:
+<code>sample_pairs_afr.csv</code></li>
+</ul>
+</div>
+<div id="april-2022-1" class="section level2">
+<h2>18 April 2022</h2>
+<p><strong>NOTE:</strong> Some of this was later re-done using a masked
+reference genome</p>
+<div id="getting-gc-content-in-windows" class="section level3">
+<h3>Getting GC Content in Windows</h3>
+<pre class="bash"><code>curl -s http://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/hg38.chrom.sizes | \
+  grep -Ev &quot;_|Y|M&quot; &gt; data/hg38.chrom.sizes
+    
+bedtools makewindows -g data/hg38.chrom.sizes -w 1000000 | sort -k 1,1V -k2,2n &gt; data/genome.1000kb.sorted.bed
+
+bedtools makewindows -g data/hg38.chrom.sizes -w 5000000 | sort -k 1,1V -k2,2n &gt; data/genome.5000kb.sorted.bed
+
+bedtools makewindows -g data/hg38.chrom.sizes -w 100000 | sort -k 1,1V -k2,2n &gt; data/genome.100kb.sorted.bed
+
+bedtools makewindows -g data/hg38.chrom.sizes -w 10000 | sort -k 1,1V -k2,2n &gt; data/genome.10kb.sorted.bed
+
+bedtools makewindows -g data/hg38.chrom.sizes -w 1000 | sort -k 1,1V -k2,2n &gt; data/genome.1kb.sorted.bed
+
+# GC content
+bedtools nuc -fi /net/snowwhite/home/beckandy/research/1000G_LSCI/reference_data/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna -bed data/genome.1kb.sorted.bed | grep -E &#39;#|chrX&#39; &gt; data/gc1kb_X_only.bed
+
+bedtools nuc -fi /net/snowwhite/home/beckandy/research/1000G_LSCI/reference_data/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna -bed data/genome.10kb.sorted.bed &gt; data/gc10kb.bed
+
+bedtools nuc -fi /net/snowwhite/home/beckandy/research/1000G_LSCI/reference_data/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna -bed data/genome.100kb.sorted.bed &gt; data/gc100kb.bed</code></pre>
+</div>
+</div>
+<div id="april-2022-2" class="section level2">
+<h2>19 April 2022</h2>
+<div id="masked-vcf" class="section level3">
+<h3>Masked VCF</h3>
+<p>Re-did the step from March for creating the masked VCF, BUT we’ve
+decided to use a different mask file (1KGP pilot)</p>
+<pre><code>bedtools intersect -a /net/topmed8/working/call_sets/freeze9/release/subset/1000g/minDP10.minAC1.PASS.phased/freeze9.1000g.chrX.filtered.gtonly.minDP10.minAC1.PASS.phased.vcf.gz -b /net/snowwhite/home/beckandy/research/phasing/data/ref/mask_pilot_chrX.bed -wa -header |\
+bcftools view -t ^chrX:10001-2781479 -Ou |\
+bcftools view -t ^chrX:155701382-156030895 -Ob &gt; data/ref/chrX_nonPAR_pilot.bcf</code></pre>
+</div>
+</div>
+<div id="april-2022-3" class="section level2">
+<h2>20 April 2022</h2>
+<div id="masked-reference-genome" class="section level3">
+<h3>Masked reference genome</h3>
+<p>First we need to get the complement of the pilot mask:</p>
+<pre><code>bedtools complement -i data/ref/mask_pilot_chrX.bed -g data/hg38.chromX.sizes | bedtools sort &gt; data/ref/mask_pilot_fasta.bed</code></pre>
+<p>Then subset fasta to X:</p>
+<pre><code>fastaindex -f ../1000G_LSCI/reference_data/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna -i ../1000G_LSCI/reference_data/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.in
+
+fastafetch -f ../1000G_LSCI/reference_data/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna -i ../1000G_LSCI/reference_data/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.in -q &quot;chrX&quot; &gt; data/ref/chrX.fasta</code></pre>
+<p>Then we apply the mask to the fasta:</p>
+<pre><code>bedtools maskfasta -fi data/ref/chrX.fasta -bed data/ref/mask_pilot_fasta.bed -fo data/ref/chrX_mask.fasta
+samtools faidx data/ref/chrX_mask.fasta</code></pre>
+<p>Re-make window files using reduced hg38.chromX.sizes file:</p>
+<pre><code>grep &#39;chrX&#39; data/hg38.chrom.sizes &gt; data/hg38.chromX.sizes
+bedtools makewindows -g data/hg38.chromX.sizes -w 100000 | sort -k 1,1V -k2,2n &gt; data/genome.100kb.sorted.bed
+
+bedtools makewindows -g data/hg38.chromX.sizes -w 10000 | sort -k 1,1V -k2,2n &gt; data/genome.10kb.sorted.bed
+
+bedtools makewindows -g data/hg38.chromX.sizes -w 1000 | sort -k 1,1V -k2,2n &gt; data/genome.1kb.sorted.bed</code></pre>
+<p>And finally get GC content in windows:</p>
+<pre><code>bedtools nuc -fi data/ref/chrX_mask.fasta -bed data/genome.1kb.sorted.bed | grep -E &#39;#|chrX&#39; &gt; data/gc1kb_X_only.bed
+
+bedtools nuc -fi data/ref/chrX_mask.fasta -bed data/genome.10kb.sorted.bed &gt; data/gc10kb.bed
+
+bedtools nuc -fi data/ref/chrX_mask.fasta -bed data/genome.100kb.sorted.bed &gt; data/gc100kb.bed</code></pre>
+</div>
+</div>
+<div id="may-2022" class="section level2">
+<h2>23 May 2022</h2>
+<p>Getting methylation maps from <a
+href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM1127119">GEO:
+GSM1127119</a></p>
+<pre><code>wget https://ftp.ncbi.nlm.nih.gov/geo/samples/GSM1127nnn/GSM1127119/suppl/GSM1127119_UCSF-UBC.Testis_Spermatozoa_Primary_Cells.Bisulfite-Seq.390ATA.wig.gz
+
+gunzip GSM1127119_UCSF-UBC.Testis_Spermatozoa_Primary_Cells.Bisulfite-Seq.390ATA.wig.gz
+
+fetchChromSizes hg19 &gt; hg19.chrom.sizes
+wigToBigWig GSM1127119_UCSF-UBC.Testis_Spermatozoa_Primary_Cells.Bisulfite-Seq.390ATA.wig hg19.chrom.sizes methylation.bw
+
+bigWigToBedGraph methylation.bw methylation.bed 
+
+wget https://hgdownload.soe.ucsc.edu/goldenPath/hg19/liftOver/hg19ToHg38.over.chain.gz
+gunzip hg19ToHg38.over.chain.gz
+
+liftOver methylation.bed hg19ToHg38.over.chain methylation_lo.bed unlifted.bed
+
+grep &#39;chrX&#39; methylation_lo.bed | sort -k2,2n &gt; methylation_chrX.bed</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
-<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
 </button>
 </p>
 <div id="workflowr-sessioninfo" class="collapse">
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 4.1.2 (2021-11-01)
+<pre><code>R version 4.2.0 (2022-04-22)
 Platform: x86_64-pc-linux-gnu (64-bit)
 Running under: Ubuntu 18.04.6 LTS
 
@@ -751,18 +1006,17 @@ other attached packages:
 [1] workflowr_1.7.0
 
 loaded via a namespace (and not attached):
- [1] Rcpp_1.0.8       bslib_0.3.1      compiler_4.1.2   pillar_1.7.0    
- [5] later_1.3.0      git2r_0.29.0     jquerylib_0.1.4  tools_4.1.2     
- [9] getPass_0.2-2    digest_0.6.29    jsonlite_1.7.3   evaluate_0.14   
-[13] tibble_3.1.6     lifecycle_1.0.1  pkgconfig_2.0.3  rlang_1.0.1     
-[17] cli_3.1.1        rstudioapi_0.13  yaml_2.2.2       xfun_0.29       
-[21] fastmap_1.1.0    httr_1.4.2       stringr_1.4.0    knitr_1.37      
-[25] sass_0.4.0       fs_1.5.2         vctrs_0.3.8      rprojroot_2.0.2 
-[29] glue_1.6.1       R6_2.5.1         processx_3.5.2   fansi_1.0.2     
-[33] rmarkdown_2.11   callr_3.7.0      magrittr_2.0.2   whisker_0.4     
-[37] ps_1.6.0         promises_1.2.0.1 htmltools_0.5.2  ellipsis_0.3.2  
-[41] httpuv_1.6.5     utf8_1.2.2       stringi_1.7.6    crayon_1.4.2    </code></pre>
-</div>
+ [1] Rcpp_1.0.8.3     bslib_0.3.1      compiler_4.2.0   pillar_1.7.0    
+ [5] later_1.3.0      git2r_0.30.1     jquerylib_0.1.4  tools_4.2.0     
+ [9] getPass_0.2-2    digest_0.6.29    jsonlite_1.8.0   evaluate_0.15   
+[13] tibble_3.1.7     lifecycle_1.0.1  pkgconfig_2.0.3  rlang_1.0.2     
+[17] cli_3.3.0        rstudioapi_0.13  yaml_2.3.5       xfun_0.31       
+[21] fastmap_1.1.0    httr_1.4.3       stringr_1.4.0    knitr_1.39      
+[25] sass_0.4.1       fs_1.5.2         vctrs_0.4.1      rprojroot_2.0.3 
+[29] glue_1.6.2       R6_2.5.1         processx_3.5.3   fansi_1.0.3     
+[33] rmarkdown_2.14   callr_3.7.0      magrittr_2.0.3   whisker_0.4     
+[37] ps_1.7.0         promises_1.2.0.1 htmltools_0.5.2  ellipsis_0.3.2  
+[41] httpuv_1.6.5     utf8_1.2.2       stringi_1.7.6    crayon_1.5.1    </code></pre>
 </div>
 </div>
 

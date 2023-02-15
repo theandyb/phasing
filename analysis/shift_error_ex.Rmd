@@ -1,0 +1,80 @@
+---
+title: "Shift Error Exploration"
+author: "Andy Beck"
+date: "2022-03-22"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+The purpose of this document is to serve as documentation of the attempt I am about to embark on to understand exactly what `vcftools` is doing when I run the `--diff-switch-error`.
+
+## Generating the data
+
+```{bash eval=FALSE}
+# from within the output/switch_error_test directory
+id=22
+line=$(awk -v id=${id} 'NR==id{ print; exit }' /net/snowwhite/home/beckandy/research/phasing/data/sample_pairs.csv)
+arrSub=(${line//,/ })
+sub_a=${arrSub[1]}
+sub_b=${arrSub[2]}
+
+bcftools view -v snps -c 2 -Ou /net/snowwhite/home/beckandy/research/phasing/data/ref/chrX_nonPAR.bcf | \
+  bcftools view -s $sub_a,$sub_b -c1 -Ou |\
+  bcftools query -e 'GT="1|0" || GT="0|1"' -f '%CHROM\t%POS\n' | tr -s ' ' > sites.tsv
+
+bcftools view -v snps -s $sub_a,$sub_b -Ou /net/snowwhite/home/beckandy/research/phasing/data/ref/chrX_nonPAR.bcf |\
+	bcftools view -T sites.tsv -Ov |\
+	bcftools view -c 1 -Oz > input.vcf.gz
+
+Rscript /net/snowwhite/home/beckandy/research/phasing/code/diploidifier.R input.vcf.gz input
+
+bcftools view input_test.vcf.gz | \
+  bcftools norm --no-version -Ou -m -any | \
+  bcftools norm --no-version -Ob -d none -f /net/snowwhite/home/beckandy/reference/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna > input_test.bcf
+bcftools index input_test.bcf
+
+bcftools view -c 2 -Ou /net/snowwhite/home/beckandy/research/phasing/data/ref/chrX_nonPAR.bcf | \
+  bcftools view -s^$sub_a,$sub_b -Ou | \
+  bcftools norm --no-version -Ou -m -any | \
+  bcftools norm --no-version -Ob -d none -f /net/snowwhite/home/beckandy/reference/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna > ref.bcf
+bcftools index ref.bcf
+
+eagle --vcfTarget input_test.bcf \
+  --vcfRef ref.bcf \
+  --geneticMapFile=/net/snowwhite/home/beckandy/software/Eagle_v2.4.1/tables/genetic_map_hg38_withX.txt.gz \
+  --vcfOutFormat v \
+  --chrom chrX \
+  --outPrefix=eagle
+  
+shapeit4.2 \
+  --input input_test.bcf \
+  --map /net/snowwhite/home/beckandy/research/phasing/data/shapeit/chrX.b38.gmap.gz \
+  --reference ref.bcf \
+  --region chrX \
+  --thread 2 \
+  --output shapeit.vcf.gz
+  
+vcftools --vcf eagle.vcf \
+  --gzdiff input_truth.vcf.gz \
+  --diff-switch-error \
+  --out error_eagle
+
+vcftools --gzvcf shapeit.vcf.gz \
+  --gzdiff input_truth.vcf.gz \
+  --diff-switch-error \
+  --out error_shapeit
+
+bcftools query -i 'GT="1/0" || GT="0/1"' -f '%CHROM\t%POS\t%POS\n' input_test.bcf  |\
+  tr -s ' ' > het_sites.bed
+
+tail -n+2 error_eagle.diff.switch |\
+  bedtools intersect -a - -b het_sites.bed -c > eagle_hets.bed
+
+tail -n+2 error_shapeit.diff.switch |\
+  bedtools intersect -a - -b het_sites.bed -c > shapeit_hets.bed
+
+
+```

@@ -88,7 +88,10 @@ The idea stemming from lab meeting was that the heterozygotes might have been du
 
 ```
 zcat /net/wonderland/home/ycsi/Data/Ref/GRCh38/1kg_20160622_genome_mask/PilotMask/20160622.allChr.pilot_mask.bed.gz |\
-awk '{if($1 == "chrX")print $0}' > data/mask_pilot_chrX.bed
+awk '{if($1 == "chrX")print $0}' > data/mask/mask_pilot_chrX.bed
+
+zcat /net/wonderland/home/ycsi/Data/Ref/GRCh38/1kg_20160622_genome_mask/StrictMask/20160622.allChr.mask.bed.gz |\
+awk '{if($1 == "chrX")print $0}' > data/mask/mask_strict_chrX.bed
 ```
 
 NOTE: this version of the bed has un-masked regions -> we want intersections here
@@ -104,11 +107,11 @@ And a different version of the mask (this version of the mask has masked regions
 
 ```
 zcat /net/wonderland/home/ycsi/Data/Ref/GRCh38/mdust.hg38.bed.gz |\
-awk '{if($1 == "chrX")print $0}' > data/mask_pilot_chrX_v2.bed
+awk '{if($1 == "chrX")print $0}' > data/ref/mask_pilot_chrX_v2.bed
 ```
 
 ```
-bedtools intersect -v -a /net/topmed8/working/call_sets/freeze9/release/subset/1000g/minDP10.minAC1.PASS.phased/freeze9.1000g.chrX.filtered.gtonly.minDP10.minAC1.PASS.phased.vcf.gz -b /net/snowwhite/home/beckandy/research/phasing/data/mask_pilot_chrX_v2.bed -wa -header |\
+bedtools intersect -v -a /net/topmed8/working/call_sets/freeze9/release/subset/1000g/minDP10.minAC1.PASS.phased/freeze9.1000g.chrX.filtered.gtonly.minDP10.minAC1.PASS.phased.vcf.gz -b /net/snowwhite/home/beckandy/research/phasing/data/ref/mask_pilot_chrX_v2.bed -wa -header |\
 bcftools view -t ^chrX:10001-2781479 -s HG00260,HG00136 -c1 -Ou |\
 bcftools view -t ^chrX:155701382-156030895 -Ou |\
 bcftools query -f '%CHROM  %POS  %REF  %ALT{0} [ %GT]\n' | tr -s ' ' > data/chrX_phased_mask2.tsv
@@ -132,10 +135,10 @@ df2 %>%
 **UPDATE: generate list of sites using bcftools chain**
 
 ```
-bedtools intersect -v -a /net/topmed8/working/call_sets/freeze9/release/subset/1000g/minDP10.minAC1.PASS.phased/freeze9.1000g.chrX.filtered.gtonly.minDP10.minAC1.PASS.phased.vcf.gz -b /net/snowwhite/home/beckandy/research/phasing/data/mask_pilot_chrX_v2.bed -wa -header |\
+bedtools intersect -v -a /net/topmed8/working/call_sets/freeze9/release/subset/1000g/minDP10.minAC1.PASS.phased/freeze9.1000g.chrX.filtered.gtonly.minDP10.minAC1.PASS.phased.vcf.gz -b /net/snowwhite/home/beckandy/research/phasing/data/ref/mask_pilot_chrX.bed -wa -header |\
 bcftools view -t ^chrX:10001-2781479 -s HG00260,HG00136 -c1 -Ou |\
 bcftools view -t ^chrX:155701382-156030895 -Ou |\
-bcftools query -e 'GT="1|0" || GT="0|1"' -f '%CHROM  %POS\n' | tr -s ' ' > data/chrX_sites_28feb2022_2.tsv
+bcftools query -e 'GT="1|0" || GT="0|1"' -f '%CHROM \t%POS\n' | tr -s ' ' > data/chrX_sites_28feb2022_2.tsv
 ```
 
 
@@ -163,7 +166,7 @@ We also need an indexed reference panel -> probably cheating if we use 1000G?
 ```
 cp /net/topmed8/working/call_sets/freeze9/release/subset/1000g/minDP10.minAC1.PASS.phased/freeze9.1000g.chrX.filtered.gtonly.minDP10.minAC1.PASS.phased.vcf.gz data/chrX_ref.vcf.gz
 
-bcftools index data/chrX_ref.vcf.gz
+bcftools index data/ref/chrX_ref.vcf.gz
 ```
 
 And now to phase our fake vcf:
@@ -171,9 +174,227 @@ And now to phase our fake vcf:
 ```
 shapeit4.2 --input data/chrX_test_fake.vcf.gz \
   --map data/chrX.b38.gmap.gz \
-  --reference data/chrX_ref.vcf.gz \
+  --reference data/first_attempt/chrX_ref.vcf.gz \
   --region chrX \
   --thread 10 \
   --log output/shapeit.log \
-  --output data/chrX_fake_phased.vcf.gz
+  --output data/first_attempt/chrX_phased_SHAPEIT.vcf.gz
 ```
+
+### Installing EAGLE 2.4
+
+Download what I believe are pre-compiled binaries
+
+```
+wget https://storage.googleapis.com/broad-alkesgroup-public/Eagle/downloads/Eagle_v2.4.1.tar.gz
+tar -zxvf Eagle_v2.4.1.tar.gz
+```
+
+They have some instructions for preping a version of the 1KGP data that no longer exist. Maybe worth processing my chr X reference data in a similar manner?
+
+https://alkesgroup.broadinstitute.org/Eagle/downloads/prep_1000G_hg38.txt
+
+Run this from the same directory with the refernce data (`data/ref`):
+```
+(bcftools view --no-version -h chrX_ref.vcf.gz |\
+  grep -v "^##contig=<ID=[GNh]" | sed 's/^##contig=<ID=MT/##contig=<ID=chrM/;s/^##contig=<ID=\([0-9XY]\)/##contig=<ID=chr\1/'; \
+  bcftools view --no-version -H -c 2 chrX_ref.vcf.gz) | \
+  bcftools norm --no-version -Ou -m -any | \
+  bcftools norm --no-version -Ob -o chrX_ref.bcf -d none -f /net/snowwhite/home/beckandy/reference/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna && \
+  bcftools index -f chrX_ref.bcf
+```
+
+And now we phase:
+
+```
+eagle --vcfTarget /net/snowwhite/home/beckandy/research/phasing/data/first_attempt/chrX_test_fake.bcf \
+  --vcfRef /net/snowwhite/home/beckandy/research/phasing/data/ref/chrX_ref.bcf \
+  --geneticMapFile=/net/snowwhite/home/beckandy/software/Eagle_v2.4.1/tables/genetic_map_hg38_withX.txt.gz \
+  --vcfOutFormat v \
+  --chrom chrX \
+  --outPrefix=eagle \
+  --numThreads 10
+```
+
+## 2 March 2022
+
+### Mask VCF
+
+**NOTE: THIS CHANGED LATER IN APRIL**
+
+Instead of running this 100 times, let's just mask one copy of the X chromosome (also removing the PAR)
+
+```
+bedtools intersect -v -a /net/topmed8/working/call_sets/freeze9/release/subset/1000g/minDP10.minAC1.PASS.phased/freeze9.1000g.chrX.filtered.gtonly.minDP10.minAC1.PASS.phased.vcf.gz -b /net/snowwhite/home/beckandy/research/phasing/data/ref/mask_pilot_chrX_v2.bed -wa -header |\
+bcftools view -t ^chrX:10001-2781479 -Ou |\
+bcftools view -t ^chrX:155701382-156030895 -Ob > data/ref/chrX_nonPAR.bcf
+```
+
+## 14 March 2022
+
+Test the approach: generate fake diploid, phase using entire sample -> should phase perfectly
+
+EAGLE: phase confidence = 0.99995
+
+Phased perfectly
+
+## 22 March 2022
+
+* Script to run pseudo-diploid analyses: `code/batch_diploid_analysis.sh`
+    * Wishlist: remove hard-coding of output directories (have it make based on date)
+* Results analysis: `analysis/first_phasing_results.Rmd`
+* Attempt at understanding how vcftools --diff-switch works: `analysis/shift_error_ex.Rmd`
+
+**Installing whatshap**
+
+```{bash echo=TRUE, eval=FALSE}
+# create conda env
+conda create --name whatshap
+# activate environment
+conda activate whatshao
+# install whatshap
+conda install whatshap nomkl
+```
+
+## 11 April 2022
+
+* Annotation of switches with CpG status and 3mer motif: `batch_annotate_switch.sh`
+* Get background CpG and 3mer rates: `background_dimer.py` and `background_3mer.py`
+* Sampled 200 pairs of AFR subjects: `sample_pairs_afr.csv`
+
+## 18 April 2022
+
+**NOTE:** Some of this was later re-done using a masked reference genome
+
+### Getting GC Content in Windows
+
+```{bash, eval=FALSE}
+curl -s http://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/hg38.chrom.sizes | \
+  grep -Ev "_|Y|M" > data/hg38.chrom.sizes
+    
+bedtools makewindows -g data/hg38.chrom.sizes -w 1000000 | sort -k 1,1V -k2,2n > data/genome.1000kb.sorted.bed
+
+bedtools makewindows -g data/hg38.chrom.sizes -w 5000000 | sort -k 1,1V -k2,2n > data/genome.5000kb.sorted.bed
+
+bedtools makewindows -g data/hg38.chrom.sizes -w 100000 | sort -k 1,1V -k2,2n > data/genome.100kb.sorted.bed
+
+bedtools makewindows -g data/hg38.chrom.sizes -w 10000 | sort -k 1,1V -k2,2n > data/genome.10kb.sorted.bed
+
+bedtools makewindows -g data/hg38.chrom.sizes -w 1000 | sort -k 1,1V -k2,2n > data/genome.1kb.sorted.bed
+
+# GC content
+bedtools nuc -fi /net/snowwhite/home/beckandy/research/1000G_LSCI/reference_data/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna -bed data/genome.1kb.sorted.bed | grep -E '#|chrX' > data/gc1kb_X_only.bed
+
+bedtools nuc -fi /net/snowwhite/home/beckandy/research/1000G_LSCI/reference_data/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna -bed data/genome.10kb.sorted.bed > data/gc10kb.bed
+
+bedtools nuc -fi /net/snowwhite/home/beckandy/research/1000G_LSCI/reference_data/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna -bed data/genome.100kb.sorted.bed > data/gc100kb.bed
+```
+
+## 19 April 2022
+
+### Masked VCF
+
+Re-did the step from March for creating the masked VCF, BUT we've decided to use a different mask file (1KGP pilot)
+
+```
+ 
+```
+
+## 20 April 2022
+
+### Masked reference genome
+
+First we need to get the complement of the pilot mask:
+
+```
+bedtools complement -i data/mask/mask_pilot_chrX.bed -g data/ref/hg38.chromX.sizes | bedtools sort > data/mask/mask_pilot_fasta.bed
+```
+
+Then subset fasta to X:
+
+```
+fastaindex -f ../1000G_LSCI/reference_data/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna -i ../1000G_LSCI/reference_data/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.in
+
+fastafetch -f ../1000G_LSCI/reference_data/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna -i ../1000G_LSCI/reference_data/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.in -q "chrX" > data/ref/chrX.fasta
+```
+
+Then we apply the mask to the fasta:
+```
+bedtools maskfasta -fi data/ref/chrX.fasta -bed data/mask/mask_pilot_fasta.bed -fo data/ref/chrX_mask.fasta
+samtools faidx data/ref/chrX_mask.fasta
+```
+
+Re-make window files using reduced hg38.chromX.sizes file:
+
+```
+grep 'chrX' data/ref/hg38.chrom.sizes > data/ref/hg38.chromX.sizes
+bedtools makewindows -g data/ref/hg38.chromX.sizes -w 100000 | sort -k 1,1V -k2,2n > data/ref/genome.100kb.sorted.bed
+
+bedtools makewindows -g data/ref/hg38.chromX.sizes -w 10000 | sort -k 1,1V -k2,2n > data/ref/genome.10kb.sorted.bed
+
+bedtools makewindows -g data/ref/hg38.chromX.sizes -w 1000 | sort -k 1,1V -k2,2n > data/ref/genome.1kb.sorted.bed
+```
+
+And finally get GC content in windows:
+
+```
+bedtools nuc -fi data/ref/chrX_mask.fasta -bed data/ref/genome.1kb.sorted.bed | grep -E '#|chrX' > data/gc1kb_X_only.bed
+
+bedtools nuc -fi data/ref/chrX_mask.fasta -bed data/ref/genome.10kb.sorted.bed > data/gc10kb_pilot.bed
+
+bedtools nuc -fi data/ref/chrX_mask.fasta -bed data/ref/genome.100kb.sorted.bed > data/gc100kb_pilot.bed
+
+# unmasked
+
+bedtools nuc -fi data/ref/chrX.fasta -bed data/ref/genome.1kb.sorted.bed | grep -E '#|chrX' > data/gc1kb_noMask.bed
+
+bedtools nuc -fi data/ref/chrX.fasta -bed data/ref/genome.10kb.sorted.bed > data/gc10kb_noMask.bed
+
+bedtools nuc -fi data/ref/chrX.fasta -bed data/ref/genome.100kb.sorted.bed > data/gc100kb_noMask.bed
+```
+
+## 23 May 2022
+
+Getting methylation maps from [GEO: GSM1127119](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM1127119)
+
+```
+wget https://ftp.ncbi.nlm.nih.gov/geo/samples/GSM1127nnn/GSM1127119/suppl/GSM1127119_UCSF-UBC.Testis_Spermatozoa_Primary_Cells.Bisulfite-Seq.390ATA.wig.gz
+
+gunzip GSM1127119_UCSF-UBC.Testis_Spermatozoa_Primary_Cells.Bisulfite-Seq.390ATA.wig.gz
+
+fetchChromSizes hg19 > hg19.chrom.sizes
+wigToBigWig GSM1127119_UCSF-UBC.Testis_Spermatozoa_Primary_Cells.Bisulfite-Seq.390ATA.wig hg19.chrom.sizes methylation.bw
+
+bigWigToBedGraph methylation.bw methylation.bed 
+
+wget https://hgdownload.soe.ucsc.edu/goldenPath/hg19/liftOver/hg19ToHg38.over.chain.gz
+gunzip hg19ToHg38.over.chain.gz
+
+liftOver methylation.bed hg19ToHg38.over.chain methylation_lo.bed unlifted.bed
+
+grep 'chrX' methylation_lo.bed | sort -k2,2n > methylation_chrX.bed
+```
+
+## 8 June 2022
+
+* Created a script to make bed file with CpG locations (`code/cpg_bed.py`)
+* Need to filter VCF to CpG
+
+`bedtools intersect -a file.vcf -b cpg_pos.bed -wa -header | bcftools query -f "%CHROM\t%POS\t%REF\n"`
+
+Get CpG Het COunts:
+
+```
+for i in `seq 1 300`; do
+echo $i
+bcftools view -e 'GT="1|1" | GT="0|0"' andy_input_${i}_truth.vcf | bedtools intersect -a - -b ../../../../data/cpg_pos.bed -wa -header | bcftools query -f "[%GT]\n" | wc -l >> cpg_hets.txt
+done
+```
+
+## 28 September 2022
+
+* Testing the effect of changing parameters
+    * shapeit4 -> does the --sequencing option reduce the number of errors?
+    * BEAGLE -> Do we see better results when we don't use the genetic map?
+    
+`batch_parameter_test.sh` generates the results

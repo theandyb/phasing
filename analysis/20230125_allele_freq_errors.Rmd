@@ -1,0 +1,79 @@
+---
+title: "20230125_allele_freq_errors"
+author: "Andy Beck"
+date: "2023-01-25"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+```{r}
+library(tidyverse)
+source("code/common_functions.R")
+
+# df_freq <- read_tsv("/net/snowwhite/home/beckandy/research/phasing/data/1kgp_freq.frq")
+# 
+# df_freq <- df_freq %>%
+#   separate(A1, c("a1", "f1"), sep=":") %>%
+#   separate(A2, c("a2", "f2"), sep = ":")
+# 
+# df_freq <- df_freq %>%
+#   rowwise() %>%
+#   mutate(maf = min(f1, f2))
+# 
+# df_freq <- df_freq %>%
+#   select(CHROM, POS, N_CHR, a1, a2, maf)
+
+# write_tsv(df_freq, "/net/snowwhite/home/beckandy/research/phasing/data/1kgp_freq.tsv")
+df_freq <- read_tsv("/net/snowwhite/home/beckandy/research/phasing/data/1kgp_freq.tsv")
+```
+
+Let's take a quick look at some basic summary statistics / visualizations for the 1KGP variant allele frequencies:
+
+```{r}
+df_freq %>%
+  ggplot(aes(x = maf)) + 
+  geom_density() +
+  ggtitle("Allele Frequency Distribution", "1000 Genomes Project 30x") +
+  xlab("Minor Allele Frequency")
+
+# same thing, but only for variants with maf > 0.05
+df_freq %>%
+  filter(maf > 0.05) %>%
+  ggplot(aes(x = maf)) + 
+  geom_density() +
+  ggtitle("Allele Frequency Distribution, maf > 0.05", "1000 Genomes Project 30x") +
+  xlab("Minor Allele Frequency")
+```
+
+## Parsing individual error files
+
+### Single example
+
+```{r}
+error_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/2023_switch_errors/switch_errors/eagle/annotated/"
+error_prefix <- "switch_"
+f_name <- paste0(error_dir, error_prefix, 1, ".csv")
+
+df_error <- read_csv(f_name)
+
+flip_pos <- get_flip_pos(df_error)
+df_error$is_flip <- (df_error$pos_start %in% flip_pos) | (df_error$pos_end %in% flip_pos)
+df_error$start_flip <- df_error$pos_start %in% flip_pos
+
+df_error <- df_error %>%
+  left_join(df_freq, by = c("pos_start" = "POS"))
+
+df_error %>%
+  ggplot(aes(x = maf)) +
+  geom_density() +
+  ggtitle("MAF at Errors", "Single Example")
+
+df_error %>%
+  ggplot(aes(maf)) +
+  geom_boxplot() +
+  ggtitle("MAF at Errors", "Single Example")
+```
+

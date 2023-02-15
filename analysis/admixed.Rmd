@@ -1,0 +1,235 @@
+---
+title: "admixed"
+author: "Andy Beck"
+date: "2022-12-09"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+## Setup and Common Functions
+
+```{r}
+library(tidyverse)
+library(janitor)
+source("code/common_functions.R")
+
+library(ggsci)
+theme_set(theme_bw(base_size = 18))
+
+pal1 <- pal_ucscgb()
+```
+
+## Single Super-Population Data
+
+```{r}
+pair_info_df <- read_delim("data/sample_pairs_16aug2022.csv", col_names = c("POP", "ID1", "ID2"))
+pair_info_df$SP <- c(rep("EUR", 200), rep("AFR", 200))
+
+eagle_single_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/9aug22_switch_errors/switch_errors/eagle/annotated/"
+shapeit_single_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/9aug22_switch_errors/switch_errors/shapeit/annotated/"
+beagle_single_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/9aug22_switch_errors/switch_errors/beagle/annotated/"
+
+gc_content_1kb <- read_tsv("data/gc1kb_X_only.bed")
+colnames(gc_content_1kb) <- c("CHR", "START", "END", "AT", "GC", "A", "C", "G", "T", "TOTAL", "OTHER", "LENGTH")
+gc_content_1kb  <- gc_content_1kb %>%
+  mutate(bin_id = (START / 1000) + 1)
+```
+
+From vcftools:
+
+```{r}
+df_switch_single <- lapply(c(1:400), 
+                    function(x){
+                      switch_summary(x, eagle_single_dir, shapeit_single_dir, beagle_single_dir, gc_content_1kb)
+                      }) %>%
+  bind_rows()
+
+df_switch_single$pop <- c(rep("EUR", 200), rep("AFR", 200))
+```
+
+From whatshap:
+
+```{r}
+df_wh_eagle <- get_all_whatshap("eagle")
+df_wh_beagle <- get_all_whatshap("beagle")
+df_wh_si <- get_all_whatshap("shapeit")
+```
+
+## Admixed Results
+
+```{r}
+pair_info_df_am <- read_delim("data/sample_pairs_admx_8nov22.csv", col_names = c("ID1", "ID2"))
+pair_info_df_am$SP <- "Admix"
+
+eagle_single_dir_ax <- "/net/snowwhite/home/beckandy/research/phasing/output/admix_switch_errors/switch_errors/eagle/annotated/"
+shapeit_single_dir_ax <- "/net/snowwhite/home/beckandy/research/phasing/output/admix_switch_errors/switch_errors/shapeit/annotated/"
+beagle_single_dir_ax <- "/net/snowwhite/home/beckandy/research/phasing/output/admix_switch_errors/switch_errors/beagle/annotated/"
+```
+
+From vcftools:
+
+```{r}
+df_switch_am <- lapply(c(1:200), 
+                    function(x){
+                      switch_summary(x, eagle_single_dir_ax, shapeit_single_dir_ax, beagle_single_dir_ax, gc_content_1kb)
+                      }) %>%
+  bind_rows()
+
+df_switch_am$pop <- "Admix"
+```
+
+From whatshap:
+
+```{r}
+df_wh_eagle_am <- get_all_whatshap("eagle", whatshap_dir = "/net/snowwhite/home/beckandy/research/phasing/output/admix_switch_errors/whatshap/", 
+                                   n = 200, pop="Admix")
+df_wh_beagle_am <- get_all_whatshap("beagle", whatshap_dir = "/net/snowwhite/home/beckandy/research/phasing/output/admix_switch_errors/whatshap/", 
+                                   n = 200, pop="Admix")
+df_wh_si_am <- get_all_whatshap("shapeit", whatshap_dir = "/net/snowwhite/home/beckandy/research/phasing/output/admix_switch_errors/whatshap/", 
+                                   n = 200, pop="Admix")
+```
+
+### Smoosh everything together
+
+```{r}
+df_vcftools <- bind_rows(df_switch_single, df_switch_am)
+df_wh_eagle <- bind_rows(df_wh_eagle, df_wh_eagle_am) 
+df_wh_beagle <- bind_rows(df_wh_beagle, df_wh_beagle_am) 
+df_wh_si <- bind_rows(df_wh_si, df_wh_si_am) 
+
+rm(df_switch_single, df_switch_am, df_wh_eagle_am, df_wh_beagle_am, df_wh_si_am)
+```
+
+Give everyone a unique id:
+
+```{r}
+df_vcftools$pair_id <- 1:600
+df_wh_beagle$id <- 1:600
+df_wh_eagle$id <- 1:600
+df_wh_si$id <- 1:600
+
+pair_info_df$id <- 1:400
+pair_info_df_am$id <- 401:600
+
+```
+
+
+## Error Rates: EAGLE
+
+```{r}
+df_wh_si %>%
+  select(id, pop, all_switchflip_rate) %>%
+  rename(shapeit = all_switchflip_rate) %>%
+  inner_join({df_wh_eagle %>% select(id, pop, all_switchflip_rate) %>% rename(eagle = all_switchflip_rate)}, by = c("id", "pop")) %>%
+  ggplot(aes(x = shapeit, y = eagle, colour = pop)) + 
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  ggtitle("Switch/Flip Rate", "#(Switches + Flips) / #(Heterozygous Sites)") +
+  xlab("SHAPEIT4 Error Rate") +
+  ylab("EAGLE2 Error Rate") +
+  guides(colour=guide_legend(title="Population")) +
+  scale_color_jco() +
+  theme_bw(base_size = 16) +
+  xlim(c(0,0.02)) + ylim(c(0,0.02))
+
+df_wh_si %>%
+  select(id, pop, n_het) %>%
+  ggplot(aes(y = n_het, color = pop)) +
+  geom_boxplot()
+
+
+df_wh_eagle %>%
+  mutate(flip_r = flips / n_het, 
+         er = switches/total_errors) %>% head
+
+df_wh_eagle %>%
+  ggplot(aes(x = pop, y = all_switchflip_rate, color = pop)) +
+  geom_violin(draw_quantiles = c(0.25, 0.5, 0.75)) +
+  ggtitle("EAGLE Total Error Rate", "(Switches + Flips) / Heterzygous Sites") +
+  xlab("Population") +
+  ylab("Error Rate")
+
+df_wh_beagle %>%
+  ggplot(aes(x = pop, y = all_switchflip_rate, color = pop)) +
+  geom_violin(draw_quantiles = c(0.25, 0.5, 0.75)) +
+  ggtitle("BEAGLE Total Error Rate", "(Switches + Flips) / Heterzygous Sites") +
+  xlab("Population") +
+  ylab("Error Rate")
+
+df_wh_si %>%
+  ggplot(aes(x = pop, y = all_switchflip_rate, color = pop)) +
+  geom_violin(draw_quantiles = c(0.25, 0.5, 0.75)) +
+  ggtitle("SHAPEIT Total Error Rate", "(Switches + Flips) / Heterzygous Sites") +
+  xlab("Population") +
+  ylab("Error Rate")
+```
+
+Let's look at the individuals composed of two chromosomes from admixed African American individuals:
+
+```{r}
+df_wh_eagle %>%
+  filter(pop == "AFR") %>%
+  left_join(pair_info_df, by = c("id")) %>%
+  ggplot(aes(x = POP, y = all_switchflip_rate, colour = POP)) +
+  geom_boxplot() +
+  xlab("Subpopulation") + ylab("Switch + Flip Rate") +
+  ggtitle("Phasing Errors in AFR Population Pseudo-diploids", "EAGLE") +
+  guides(colour="none")
+
+df_wh_beagle %>%
+  filter(pop == "AFR") %>%
+  left_join(pair_info_df, by = c("id")) %>%
+  ggplot(aes(x = POP, y = all_switchflip_rate, colour = POP)) +
+  geom_boxplot() +
+  xlab("Subpopulation") + ylab("Switch + Flip Rate") +
+  ggtitle("Phasing Errors in AFR Population Pseudo-diploids", "BEAGLE") +
+  guides(colour="none")
+
+df_wh_si %>%
+  filter(pop == "AFR") %>%
+  left_join(pair_info_df, by = c("id")) %>%
+  ggplot(aes(x = POP, y = all_switchflip_rate, colour = POP)) +
+  geom_boxplot() +
+  xlab("Subpopulation") + ylab("Switch + Flip Rate") +
+  ggtitle("Phasing Errors in AFR Population Pseudo-diploids", "SHAPEIT") +
+  guides(colour="none")
+
+
+df_wh_si %>%
+  filter(pop == "AFR") %>%
+  left_join(pair_info_df, by = c("id")) %>%
+  select(id, POP, all_switchflip_rate) %>%
+  rename(shapeit = all_switchflip_rate) %>%
+  inner_join({df_wh_eagle %>% select(id, all_switchflip_rate) %>% rename(eagle = all_switchflip_rate)}, by = c("id")) %>%
+  ggplot(aes(x = shapeit, y = eagle, colour = POP)) + 
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  ggtitle("Switch/Flip Rate", "#(Switches + Flips) / #(Heterozygous Sites)") +
+  xlab("SHAPEIT4 Error Rate") +
+  ylab("EAGLE2 Error Rate") +
+  guides(colour=guide_legend(title="Population")) +
+  scale_color_jco() +
+  theme_bw(base_size = 16) +
+  xlim(c(0,0.02)) + ylim(c(0,0.02))
+
+df_wh_beagle %>%
+  filter(pop == "AFR") %>%
+  left_join(pair_info_df, by = c("id")) %>%
+  select(id, POP, all_switchflip_rate) %>%
+  rename(beagle = all_switchflip_rate) %>%
+  inner_join({df_wh_eagle %>% select(id, all_switchflip_rate) %>% rename(eagle = all_switchflip_rate)}, by = c("id")) %>%
+  ggplot(aes(x = beagle, y = eagle, colour = POP)) + 
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  ggtitle("Switch/Flip Rate", "#(Switches + Flips) / #(Heterozygous Sites)") +
+  xlab("BEAGLE5 Error Rate") +
+  ylab("EAGLE2 Error Rate") +
+  guides(colour=guide_legend(title="Population")) +
+  scale_color_jco() +
+  theme_bw(base_size = 16) +
+  xlim(c(0,0.02)) + ylim(c(0,0.02))
+```
+

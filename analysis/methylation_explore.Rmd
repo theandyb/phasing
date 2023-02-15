@@ -1,0 +1,361 @@
+---
+title: "methylation_explore"
+author: "Andy Beck"
+date: "2022-05-16"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+```{r setup, echo=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(janitor)
+cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+```
+
+
+## Introduction
+
+File: `data/methylation_chrX.bed`
+
+```{r}
+background_meth <- read_tsv("data/methylation_chrX.bed", 
+                    col_names = c("chrom", "start", "stop", "meth"))
+
+background_meth %>%
+  head() %>%
+  knitr::kable()
+```
+
+Let's plot these values by position:
+
+```{r}
+background_meth %>%
+  ggplot(aes(x = start, y = meth)) +
+  geom_point() +
+  xlab("Start Position") +
+  ylab("Measure")
+```
+
+Wow, very helpful; let's take a look at the distribution of the range of values for the measure:
+
+```{r}
+background_meth %>%
+  ggplot(aes(x = meth)) + 
+  geom_histogram()
+```
+
+Okay, so if I use the rule >50% = methylated, what does our distribution of methylated vs unmethylated sites look like?
+
+```{r}
+
+background_meth %>%
+  mutate(is_meth = meth > 0.5) %>%
+  tabyl(is_meth)
+
+background_meth_rate <- background_meth %>%
+  mutate(is_meth = meth > 0.5) %>%
+  {sum(.$is_meth) / length(.$is_meth)}
+
+```
+
+```{r}
+meth_df[sample(1:nrow(meth_df), 50000, replace = F),] %>%
+  mutate(is_meth = as.numeric(meth > 0.5)) %>%
+  ggplot(aes(x = start, y = is_meth, colour = factor(is_meth))) +
+  geom_point()
+```
+
+Other things I might want to look at?
+
+* Runs of methylation
+
+## Runs of methylation
+
+```{r}
+meth_df <- meth_df %>%
+  mutate(is_meth = as.numeric(meth > 0.5))
+
+write_csv(meth_df, file = "output/meth_locations.csv")
+```
+
+```{r}
+meth_runs <- function(df){
+  final <- data.frame(start = numeric(), end = numeric(), type = numeric(), n = numeric())
+  current_start <- df$start[1]
+  current_end <- df$stop[1]
+  current_type <- df$is_meth[1]
+  counts <- 1
+  
+  for(i in 2:nrow(df)){
+    if(df$is_meth[i] == current_type){
+      current_end = df$stop[i]
+      counts <- counts + 1
+    } else{
+      final <- bind_rows(final, data.frame(start = current_start, end = current_end, type = current_type, n = counts))
+      current_start = df$start[i]
+      current_end = df$stop[i]
+      current_type = df$is_meth[i]
+      counts <- 1
+    }
+  }
+  final <- bind_rows(final, data.frame(start = current_start, end = current_end, type = current_type, n = counts))
+  return(final)
+}
+```
+
+```{r}
+runny_meth <- meth_runs(meth_df)
+```
+
+```{r}
+runny_meth %>%
+  ggplot(aes(x = n, y = type, group_by = factor(type), colour = factor(type))) + 
+  geom_boxplot()
+```
+
+```{r}
+runny_meth %>%
+  ggplot(aes(x = start, y = n, colour = factor(type))) +
+  geom_point()
+```
+
+## Compare to Ovary
+
+```{r}
+# https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM1010980
+
+ovary_df <- read_tsv("data/ovary/ovary_chrX.bed", 
+                    col_names = c("chrom", "start", "stop", "meth"))
+
+all_meth <- full_join(ovary_df, meth_df, by = c("chrom", "start", "stop")) %>%
+  rename(ovary = meth.x, testis = meth.y) 
+
+all_meth %>% summary()
+```
+
+```{r}
+ovary_df %>%
+  ggplot(aes(x = meth)) +
+  geom_boxplot() +
+  ggtitle("Methylation: Ovary (X Chromosome)")
+```
+
+```{r eval=FALSE}
+all_meth %>%
+  remove_missing() %>%
+  ggplot(aes(x = testis, y = ovary)) + geom_point()
+```
+
+```{r}
+all_meth %>%
+  select(testis, ovary) %>%
+  pivot_longer(testis:ovary, names_to = "sample", values_to = "methylation") %>%
+  ggplot(aes(x = methylation, y= sample, colour = sample)) + geom_boxplot()
+```
+
+```{r}
+all_meth %>%
+  drop_na(ovary, testis) %>%
+  mutate(ov_m = ovary > 0.5, ov_t = testis > 0.5) %>%
+  select(ov_m, ov_t) %>%
+  xtabs(~ ov_m + ov_t, data = .)
+```
+
+
+
+## Methylated Annotated Switches
+
+```{r}
+get_flip_pos <- function(df){
+  flip_list <- c()
+  in_progress <- FALSE
+  for(i in 1:(length(df$pos_start)-1)){
+    if(df$pos_end[i] == df$pos_start[i+1]){
+      if(!in_progress){
+        in_progress <- TRUE
+        flip_list <- c(flip_list, df$pos_end[i])
+      } else{
+        in_progress <- FALSE
+      }
+    } else{
+      in_progress <- FALSE
+    }
+  }
+  return(flip_list)
+}
+```
+
+
+
+Let's first take a look at a single pseudo-diploid and see what things look like.
+
+```{r}
+eagle_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/19april22_switch_errors/switch_errors/eagle/annotated"
+shapeit_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/19april22_switch_errors/switch_errors/shapeit/annotated"
+beagle_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/19april22_switch_errors/switch_errors/beagle/annotated"
+
+id <- 10
+
+s_file <- paste0(shapeit_dir, "/switch_meth_", id, ".csv")
+e_file <- paste0(eagle_dir, "/switch_meth_", id, ".csv")
+b_file <- paste0(beagle_dir, "/switch_meth_", id, ".csv")
+
+s_df <- read_csv(s_file)
+e_df <- read_csv(e_file)
+b_df <- read_csv(b_file)
+
+e_flip_list <- get_flip_pos(e_df)
+s_flip_list <- get_flip_pos(s_df)
+b_flip_list <- get_flip_pos(b_df)
+
+s_df$is_flip <- as.numeric(s_df$pos_start %in% s_flip_list)
+e_df$is_flip <- as.numeric(e_df$pos_start %in% e_flip_list)
+b_df$is_flip <- as.numeric(b_df$pos_start %in% b_flip_list)
+```
+
+```{r}
+s_df %>%
+  filter(cpg_start == 1) %>%
+  mutate(is_meth = meth > 0.5) %>%
+  ggplot(aes(x = meth)) + geom_boxplot() +
+  xlab("Methylation") +
+  ggtitle("Distribution of Methylation Measures: SHAPEIT")
+
+e_df %>%
+  filter(cpg_start == 1) %>%
+  mutate(is_meth = meth > 0.5) %>%
+  ggplot(aes(x = meth)) + geom_boxplot() +
+  xlab("Methylation") +
+  ggtitle("Distribution of Methylation Measures: EAGLE")
+
+b_df %>%
+  filter(cpg_start == 1) %>%
+  mutate(is_meth = meth > 0.5) %>%
+  ggplot(aes(x = meth)) + geom_boxplot() +
+  xlab("Methylation") + 
+  ggtitle("Distribution of Methylation Measures: BEAGLE")
+
+
+s_df %>%
+  filter(cpg_start == 1) %>%
+  mutate(is_meth = meth > 0.5) %>%
+  pull(is_meth) %>% table(useNA = "ifany")
+
+e_df %>%
+  filter(cpg_start == 1) %>%
+  mutate(is_meth = meth > 0.5) %>%
+  pull(is_meth) %>% table(useNA = "ifany")
+
+b_df %>%
+  filter(cpg_start == 1) %>%
+  mutate(is_meth = meth > 0.5) %>%
+  pull(is_meth) %>% table(useNA = "ifany")
+
+```
+
+```{r}
+meth_sum <- function(id, beagle_dir, eagle_dir, shapeit_dir, background_meth_rate){
+  s_file <- paste0(shapeit_dir, "/switch_meth_", id, ".csv")
+  e_file <- paste0(eagle_dir, "/switch_meth_", id, ".csv")
+  b_file <- paste0(beagle_dir, "/switch_meth_", id, ".csv")
+  
+  s_df <- read_csv(s_file, show_col_types = FALSE)
+  e_df <- read_csv(e_file, show_col_types = FALSE)
+  b_df <- read_csv(b_file, show_col_types = FALSE)
+  
+  e_flip_list <- get_flip_pos(e_df)
+  s_flip_list <- get_flip_pos(s_df)
+  b_flip_list <- get_flip_pos(b_df)
+  
+  s_df$is_flip <- as.numeric(s_df$pos_start %in% s_flip_list)
+  e_df$is_flip <- as.numeric(e_df$pos_start %in% e_flip_list)
+  b_df$is_flip <- as.numeric(b_df$pos_start %in% b_flip_list)
+  
+  p_meth_s <- {s_df %>% filter(is_flip == 1, cpg_start == 1) %>% select(meth) %>% drop_na() %>% dim() %>% .[1]} / 
+    {s_df %>% filter(is_flip == 1, cpg_start == 1) %>% dim() %>% .[1]}
+  p_meth_e <- {e_df %>% filter(is_flip == 1, cpg_start == 1) %>% select(meth) %>% drop_na() %>% dim() %>% .[1]} / 
+    {e_df %>% filter(is_flip == 1, cpg_start == 1) %>% dim() %>% .[1]}
+  p_meth_b <- {b_df %>% filter(is_flip == 1, cpg_start == 1) %>% select(meth) %>% drop_na() %>% dim() %>% .[1]} / 
+    {b_df %>% filter(is_flip == 1, cpg_start == 1) %>% dim() %>% .[1]}
+  
+  p_cpg_m_s <- {s_df %>% filter(cpg_start == 1) %>% select(meth) %>% drop_na() %>% dim() %>% .[1]} / 
+    {s_df %>% filter(cpg_start == 1) %>% dim() %>% .[1]}
+  p_cpg_m_e <- {e_df %>% filter(cpg_start == 1) %>% select(meth) %>% drop_na() %>% dim() %>% .[1]} / 
+    {e_df %>% filter(cpg_start == 1) %>% dim() %>% .[1]}
+  p_cpg_m_b <- {b_df %>% filter(cpg_start == 1) %>% select(meth) %>% drop_na() %>% dim() %>% .[1]} / 
+    {b_df %>% filter(cpg_start == 1) %>% dim() %>% .[1]}
+  
+  min_meth_s <- s_df %>% pull(meth) %>% min(na.rm = T)
+  min_meth_e <- e_df %>% pull(meth) %>% min(na.rm = T)
+  min_meth_b <- b_df %>% pull(meth) %>% min(na.rm = T)
+  
+  p_is_meth_s <- s_df %>% select(meth) %>% drop_na() %>% {sum(.$meth > 0.5) / dim(.)[1]}
+  p_is_meth_e <- e_df %>% select(meth) %>% drop_na() %>% {sum(.$meth > 0.5) / dim(.)[1]}
+  p_is_meth_b <- b_df %>% select(meth) %>% drop_na() %>% {sum(.$meth > 0.5) / dim(.)[1]}
+  
+  e_meth_s <- p_is_meth_s / background_meth_rate
+  e_meth_e <- p_is_meth_e / background_meth_rate
+  e_meth_b <- p_is_meth_b / background_meth_rate
+  
+  p_flip_is_meth_s <- s_df %>% filter(cpg_start == 1) %>% select(meth) %>% drop_na() %>% {sum(.$meth > 0.5) / dim(.)[1]}
+  p_flip_is_meth_e <- e_df %>% filter(cpg_start == 1) %>% select(meth) %>% drop_na() %>% {sum(.$meth > 0.5) / dim(.)[1]}
+  p_flip_is_meth_b <- b_df %>% filter(cpg_start == 1) %>% select(meth) %>% drop_na() %>% {sum(.$meth > 0.5) / dim(.)[1]}
+  
+  return(data.frame(p_meth_s = p_meth_s,
+                    p_meth_b = p_meth_b,
+                    p_meth_e = p_meth_e,
+                    min_meth_s = min_meth_s,
+                    min_meth_e = min_meth_e,
+                    min_meth_b = min_meth_b,
+                    p_is_meth_s = p_is_meth_s,
+                    p_is_meth_e = p_is_meth_e,
+                    p_is_meth_b = p_is_meth_b,
+                    p_cpg_m_s = p_cpg_m_s,
+                    p_cpg_m_e = p_cpg_m_e,
+                    p_cpg_m_b = p_cpg_m_b,
+                    p_flip_is_meth_s = p_flip_is_meth_s,
+                    p_flip_is_meth_e = p_flip_is_meth_e,
+                    p_flip_is_meth_b = p_flip_is_meth_b,
+                    e_meth_s = e_meth_s,
+                    e_meth_e = e_meth_e,
+                    e_meth_b = e_meth_b))
+}
+```
+
+```{r}
+meth_df <- lapply(c(1:300), 
+                    function(x){
+                      meth_sum(x, beagle_dir, eagle_dir, shapeit_dir, background_meth_rate)
+                      }) %>%
+  bind_rows()
+
+meth_df$pop <- c(rep("EUR", 100), rep("AFR", 200))
+```
+
+```{r}
+meth_df %>%
+  select(pop, p_is_meth_s:p_is_meth_b) %>%
+  rename(SHAPEIT = p_is_meth_s, BEAGLE = p_is_meth_b, EAGLE = p_is_meth_e) %>%
+  pivot_longer(SHAPEIT:BEAGLE, names_to = "Method", values_to = "pct_is_meth") %>%
+  ggplot(aes(x = pct_is_meth, colour = Method)) +
+  geom_density(show.legend = FALSE) +
+  stat_density(aes(x = pct_is_meth, colour = Method), geom="line", position = "identity", size = 0) +
+  ggtitle("Percent Sites with Values > 0.5") +
+  scale_colour_manual(values=cbPalette) +
+  guides(colour = guide_legend(override.aes=list(size=1)))
+```
+
+```{r}
+meth_df %>%
+  select(pop, p_meth_s:p_meth_e) %>%
+  rename(SHAPEIT = p_meth_s, BEAGLE = p_meth_b, EAGLE = p_meth_e) %>%
+  pivot_longer(SHAPEIT:EAGLE, names_to = "Method", values_to = "pct_meth") %>%
+  ggplot(aes(x = pct_meth, colour = Method)) +
+  geom_density(show.legend = FALSE) +
+  stat_density(aes(x = pct_meth, colour = Method), geom="line", position = "identity", size = 0) +
+  ggtitle("Percent Sites with Values") +
+  scale_colour_manual(values=cbPalette) +
+  guides(colour = guide_legend(override.aes=list(size=1)))
+```
+

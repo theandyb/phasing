@@ -59,7 +59,7 @@ With those preliminaries out of the way, let's take a look at these results.
 For a first pass, let's take a look at the information available for a single pseudo-diploid:
 
 ```{r}
-pair_id <- 1
+pair_id <- 123
 switch_err_eagle <- read_csv(paste0(eagle_switch_dir, "switch_", pair_id, ".csv"))
 switch_err_shapeit <- read_csv(paste0(shapeit_switch_dir, "switch_", pair_id, ".csv"))
 switch_err_beagle <- read_csv(paste0(beagle_switch_dir, "switch_", pair_id, ".csv"))
@@ -70,7 +70,7 @@ whatshap_shapeit <- read_tsv(paste0(whatshap_dir, "/shapeit/eval_", pair_id, ".t
 
 From the above we can get the raw number of total switches based on the dimension of the switch error data frames; in this example, we see that EAGLE has `r dim(switch_err_eagle)[1]` switches, BEAGLE has `r dim(switch_err_beagle)[1]` and SHAPEIT has `r dim(switch_err_shapeit)[1]` switches.
 
-From the whatshap output, we also get a breakdown between how many of the total switches are flips. For example, the breakdown between switches and flips (switches/flips) in EAGLE is `r whatshap_eagle$all_switchflips[1]`, and correspondingly in SHAPEIT we see `r whatshap_shapeit$all_switchflips[1]`. What we would really like is to know the locations of the flips, which we unfortunatly don't have from neither `vcftools` nor `whatshap`. Fortunately I believe the little chunk of code below correctly counts flips in the `vcftools` output:
+From the whatshap output, we also get a breakdown between how many of the total switches are flips. For example, the breakdown between switches and flips (switches/flips) in EAGLE is `r whatshap_eagle$all_switchflips[1]`, and correspondingly in SHAPEIT we see `r whatshap_shapeit$all_switchflips[1]`. What we would really like is to know the locations of the flips, which we unfortunately don't have from neither `vcftools` nor `whatshap`. Fortunately I believe the little chunk of code below correctly counts flips in the `vcftools` output:
 
 ```{r}
 count <- 0
@@ -148,10 +148,10 @@ Alright, one last thing we'll look at for this pair is the proportion of all swi
 background_dimer
 ```
 
-and by summing up the number of CG and GC sites and dividing by the total we see that the proportion of sites that are CpGs is `r (5619375 + 1133731) / sum(background_dimer$N)` (around 4.7%)
+and by summing up the number of CG and GC sites and dividing by the total we see that the proportion of sites that are CpGs is `r (1133731) / sum(background_dimer$N)` (<1%)
 
 ```{r}
-background_cpg <- (5619375 + 1133731) / sum(background_dimer$N)
+background_cpg <- (1133731) / sum(background_dimer$N)
 
 switch_err_eagle %>%
   filter(is_flip == TRUE) %>%
@@ -159,7 +159,7 @@ switch_err_eagle %>%
   table()
 ```
 
-Here for EAGLE we see that about 10.6% of flips occur at CpG sites.
+Here for EAGLE we see that about 17.8% of flips occur at CpG sites.
 
 ```{r}
 switch_err_beagle %>%
@@ -168,7 +168,7 @@ switch_err_beagle %>%
   table()
 ```
 
-~9.6% of BEAGLE's flips occur at CpGs/
+~17.8% of BEAGLE's flips occur at CpGs/
 
 ```{r}
 switch_err_shapeit %>%
@@ -177,7 +177,7 @@ switch_err_shapeit %>%
   table()
 ```
 
-SHAPEIT also has ~ 10.6% of its flips at CpG. Now looking at overall number of switches:
+SHAPEIT also has ~ 16.3% of its flips at CpG. Now looking at overall number of switches:
 
 ```{r}
 switch_err_eagle %>%
@@ -193,7 +193,7 @@ switch_err_shapeit %>%
   table()
 ```
 
-8.2%, 8.6% and 9.3% of errors at CpG.
+14.6%, 15.3% and 14.6% of errors at CpG.
 
 ### GC Content
 
@@ -268,7 +268,7 @@ df_pair$pair_id <- 1:300
 ### EAGLE Phase Confidence
 
 ```{r}
-input_cmd <- "grep \"^FAKE001\" /net/snowwhite/home/beckandy/research/phasing/output/19april22_switch_errors/slurm/pair.*.out | awk '{print($1, \"\\t\", $2)}'"
+input_cmd <- "grep \"^FAKE001\" /net/snowwhite/home/beckandy/research/phasing/output/19april22_switch_errors/slurm/pair.39509719*.out | awk '{print($1, \"\\t\", $2)}'"
 
 df_eagle_conf <- vroom::vroom(pipe(input_cmd), delim = "\t", col_names = c("f_name", "phase_confidence")) %>%
   rowwise() %>%
@@ -322,6 +322,23 @@ df_pseudo_hets %>%
   geom_density() +
   xlab("Number of heterozygous sites") +
   ggtitle("Number of Heterozygous Sites per Pseudo-diploid")
+```
+
+### Heterozygous CpG
+
+```{r}
+df_pseudo_hets_cpg <- read_tsv("/net/snowwhite/home/beckandy/research/phasing/output/19april22_switch_errors/vcf/truth/cpg_hets.txt",
+                               col_names = "n_het_cpg", show_col_types = FALSE)
+df_pseudo_hets_cpg$pair_id <- 1:300
+df_pseudo_hets_cpg$pop <- c(rep("EUR", 100), rep("AFR", 200))
+```
+
+```{r}
+df_pseudo_hets_cpg %>%
+  ggplot(aes(x = n_het_cpg, colour = pop)) +
+  geom_density() +
+  xlab("Number of heterozygous CpG sites") +
+  ggtitle("Number of Heterozygous CpG Sites per Pseudo-diploid")
 ```
 
 ### Switches and Flips
@@ -439,7 +456,8 @@ switch_df$pop <- c(rep("EUR", 100), rep("AFR", 200))
 df <- full_join(switch_df, df_pair, by = c("pair_id", "pop")) %>%
   full_join(df_pseudo_sites, by = c("pair_id", "pop")) %>%
   full_join(df_pseudo_hets, by = c("pair_id", "pop")) %>%
-  full_join(df_eagle_conf, by = c("pair_id", "pop"))
+  full_join(df_eagle_conf, by = c("pair_id", "pop")) %>%
+  full_join(df_pseudo_hets_cpg, by = c("pair_id", "pop"))
 ```
 
 ### Rates of Errors
@@ -809,8 +827,9 @@ df %>%
 ```{r}
 df %>%
   mutate(eagle = (n_switch_cpg_eagle/n_switch_eagle) / background_cpg,
-         shapeit = (n_switch_cpg_shapeit/n_switch_shapeit) / background_cpg) %>%
-  select(pair_id, pop, eagle, shapeit) %>%
+         shapeit = (n_switch_cpg_shapeit/n_switch_shapeit) / background_cpg,
+         beagle = (n_switch_cpg_beagle / n_switch_beagle) / background_cpg) %>%
+  select(pair_id, pop, eagle, beagle, shapeit) %>%
   pivot_longer(eagle:shapeit, "method", values_to = "flip_enrich") %>%
   ggplot(aes(x = flip_enrich, colour = method)) +
   geom_density() +
@@ -833,6 +852,30 @@ df %>%
   ggtitle("Flip CpG Enrichment") +
   labs(colour = "Population")
 ```
+
+### Compare rates of CpG Het to Flip CpG
+
+```{r}
+df %>%
+  mutate(shapeit = ( n_flip_cpg_shapeit  /n_flip_shapeit ) / ( n_het_cpg  /n_het_sites ),
+         eagle = ( n_flip_cpg_eagle  /n_flip_eagle ) / ( n_het_cpg  /n_het_sites ),
+         beagle = ( n_flip_cpg_beagle  /n_flip_beagle ) / ( n_het_cpg  /n_het_sites )) %>%
+  select(shapeit, eagle, beagle) %>%
+  pivot_longer(shapeit:beagle, names_to = "Method", values_to = "Enrichment") %>%
+  ggplot(aes(x = Enrichment, colour = Method )) + geom_boxplot() +
+  ggtitle("Enrichment of Flips at CpG") +
+  xlab("Proportion Flips CpG / Proportion Heterozygous Sites CpG")
+```
+
+```{r}
+df %>%
+  mutate(shapeit = ( n_flip_cpg_shapeit  /n_flip_shapeit ) / ( n_het_cpg  /n_het_sites ),
+         eagle = ( n_flip_cpg_eagle  /n_flip_eagle ) / ( n_het_cpg  /n_het_sites ),
+         beagle = ( n_flip_cpg_beagle  /n_flip_beagle ) / ( n_het_cpg  /n_het_sites )) %>%
+  select(shapeit, eagle, beagle) %>%
+  summary()
+```
+
 
 ## Additional Summary Information
 

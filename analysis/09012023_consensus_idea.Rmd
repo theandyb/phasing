@@ -1,0 +1,213 @@
+---
+title: "09012023_consensus_idea"
+author: "Andy Beck"
+date: "2023-01-09"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+The idea here is to take the phased VCFs from EAGLE, BEAGLE, and SHAPEIT and somehow combine them in order to come up with a single pair of haploids.
+
+```{r}
+library(tidyverse)
+id_df <- read_csv("/net/snowwhite/home/beckandy/research/phasing/data/sample_pairs_16aug2022.csv", 
+                  col_names = c("POP", "ID1", "ID2"))
+```
+
+```{r}
+whats_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/filter_switch_errors/whatshap/"
+
+df_wh_eagle <- read_tsv(paste0(whats_dir, "eagle/eval_1.tsv"))
+df_wh_beagle <- read_tsv(paste0(whats_dir, "beagle/eval_1.tsv"))
+df_wh_shapeit <- read_tsv(paste0(whats_dir, "shapeit/eval_1.tsv"))
+
+df_wh_eagle$all_switches
+df_wh_beagle$all_switches
+df_wh_shapeit$all_switches
+
+df_wh_eagle$all_switchflips
+df_wh_beagle$all_switchflips
+df_wh_shapeit$all_switchflips
+```
+
+# Result Analysis
+
+Having run the voting process on all 400 pseudo-diploids, let's load in the results for all samples.
+
+```{r}
+get_vote_res <- function(ids = 400){
+  res_dir <- "/net/snowwhite/home/beckandy/research/phasing/data/consensus/"
+  prefix <- "error_vote_"
+  suffix <- ".tsv"
+  df <- read_tsv(paste0(res_dir, prefix, 1, suffix), show_col_types = FALSE) %>% 
+    select(starts_with("all"))
+  for(i in 2:ids){
+    df <- bind_rows(df,
+                    {read_tsv(paste0(res_dir, prefix, i, suffix), show_col_types = FALSE) %>%
+                        select(starts_with("all"))})
+  }
+  df$id <- 1:ids
+  return(df)
+}
+
+df <- get_vote_res()
+df$id <- 1:400
+df$alg <- "vote"
+```
+
+Let's also gather these results for the 3 phasing algorithms:
+
+```{r}
+get_alg_res <- function(alg, 
+                        data_dir = "/net/snowwhite/home/beckandy/research/phasing/output/filter_switch_errors/whatshap/",
+                        ids = 400){
+  base_dir <- paste0(data_dir, alg, "/")
+  df <- read_tsv(paste0(base_dir, "eval_", 1,".tsv"), show_col_types = FALSE) %>%
+    select(starts_with("all"))
+  for(i in 2:ids){
+    df <- bind_rows(df, {
+      read_tsv(paste0(base_dir, "eval_", i,".tsv"), show_col_types = FALSE) %>%
+        select(starts_with("all"))
+    })
+  }
+  return(df)
+}
+df_beagle <- get_alg_res("beagle")
+df_eagle <- get_alg_res("eagle")
+df_shapeit <- get_alg_res("shapeit")
+
+df_beagle$id <- 1:400
+df_eagle$id <- 1:400
+df_shapeit$id <- 1:400
+
+df_beagle$alg <- "beagle"
+df_eagle$alg <- "eagle"
+df_shapeit$alg <- "shapeit"
+
+# smash everything together
+df <- bind_rows(df, df_beagle) %>%
+  bind_rows(df_eagle) %>%
+  bind_rows(df_shapeit)
+
+# save for later usage
+write_csv(df, "/net/snowwhite/home/beckandy/research/phasing/data/consensus/whatshap_counts.csv")
+```
+
+```{r}
+library(tidyverse)
+df <- read_csv("/net/snowwhite/home/beckandy/research/phasing/data/consensus/whatshap_counts.csv")
+
+df$pop <- c(rep(rep(c("EUR", "AFR"), each = 200), times = 4))
+```
+
+Plots by algorithm
+
+```{r}
+df %>%
+  select(id, pop, alg, all_switches) %>%
+  pivot_wider(id_cols = c(id, pop), names_from = alg, values_from = all_switches) %>%
+  ggplot(aes(x = beagle, y = vote, colour = pop)) +
+  geom_point() +
+  xlab("BEAGLE") +
+  ylab("VOTE") +
+  geom_abline(slope = 1, intercept = 0) +
+  ggtitle("Total Errors", "BEAGLE and VOTE")
+
+df %>%
+  select(id, pop, alg, all_switches) %>%
+  pivot_wider(id_cols = c(id, pop), names_from = alg, values_from = all_switches) %>%
+  ggplot(aes(x = eagle, y = vote, colour = pop)) +
+  geom_point() +
+  xlab("EAGLE") +
+  ylab("VOTE") +
+  geom_abline(slope = 1, intercept = 0) +
+  ggtitle("Total Errors", "EAGLE and VOTE")
+
+df %>%
+  select(id, pop, alg, all_switches) %>%
+  pivot_wider(id_cols = c(id, pop), names_from = alg, values_from = all_switches) %>%
+  ggplot(aes(x = shapeit, y = vote, colour = pop)) +
+  geom_point() +
+  xlab("SHAPEIT") +
+  ylab("VOTE") +
+  geom_abline(slope = 1, intercept = 0) +
+  ggtitle("Total Errors", "SHAPEIT and VOTE")
+```
+
+Separate flips from switches:
+
+```{r}
+df <- df %>%
+  separate(all_switchflips, into = c("switches", "flips"), sep = "/", remove = FALSE) %>%
+  mutate(switches = as.numeric(switches),
+         flips = as.numeric(flips))
+```
+
+Just switches:
+
+```{r}
+df %>%
+  select(id, pop, alg, switches) %>%
+  pivot_wider(id_cols = c(id, pop), names_from = alg, values_from = switches) %>%
+  ggplot(aes(x = beagle, y = vote, colour = pop)) +
+  geom_point() +
+  xlab("BEAGLE") +
+  ylab("VOTE") +
+  geom_abline(slope = 1, intercept = 0) +
+  ggtitle("Switches", "BEAGLE and VOTE")
+
+df %>%
+  select(id, pop, alg, switches) %>%
+  pivot_wider(id_cols = c(id, pop), names_from = alg, values_from = switches) %>%
+  ggplot(aes(x = eagle, y = vote, colour = pop)) +
+  geom_point() +
+  xlab("EAGLE") +
+  ylab("VOTE") +
+  geom_abline(slope = 1, intercept = 0) +
+  ggtitle("Switches", "EAGLE and VOTE")
+
+df %>%
+  select(id, pop, alg, switches) %>%
+  pivot_wider(id_cols = c(id, pop), names_from = alg, values_from = switches) %>%
+  ggplot(aes(x = shapeit, y = vote, colour = pop)) +
+  geom_point() +
+  xlab("SHAPEIT") +
+  ylab("VOTE") +
+  geom_abline(slope = 1, intercept = 0) +
+  ggtitle("Switches", "SHAPEIT and VOTE")
+```
+
+```{r}
+df %>%
+  select(id, pop, alg, flips) %>%
+  pivot_wider(id_cols = c(id, pop), names_from = alg, values_from = flips) %>%
+  ggplot(aes(x = beagle, y = vote, colour = pop)) +
+  geom_point() +
+  xlab("BEAGLE") +
+  ylab("VOTE") +
+  geom_abline(slope = 1, intercept = 0) +
+  ggtitle("Flips", "BEAGLE and VOTE")
+
+df %>%
+  select(id, pop, alg, flips) %>%
+  pivot_wider(id_cols = c(id, pop), names_from = alg, values_from = flips) %>%
+  ggplot(aes(x = eagle, y = vote, colour = pop)) +
+  geom_point() +
+  xlab("EAGLE") +
+  ylab("VOTE") +
+  geom_abline(slope = 1, intercept = 0) +
+  ggtitle("Flips", "EAGLE and VOTE")
+
+df %>%
+  select(id, pop, alg, flips) %>%
+  pivot_wider(id_cols = c(id, pop), names_from = alg, values_from = flips) %>%
+  ggplot(aes(x = shapeit, y = vote, colour = pop)) +
+  geom_point() +
+  xlab("SHAPEIT") +
+  ylab("VOTE") +
+  geom_abline(slope = 1, intercept = 0) +
+  ggtitle("Flips", "SHAPEIT and VOTE")
+```
