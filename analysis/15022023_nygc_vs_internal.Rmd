@@ -1,0 +1,262 @@
+---
+title: "15022023_nygc_vs_internal"
+author: "Andy Beck"
+date: "2023-02-15"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+```{r}
+library(tidyverse)
+library(janitor)
+source('code/common_functions.R')
+
+pair_info_df <- read_delim("data/sample_pairs_16aug2022.csv", col_names = c("POP", "ID1", "ID2"))
+pair_info_df$SP <- c(rep("EUR", 200), rep("AFR", 200))
+
+gc_content_1kb <- read_tsv("data/gc1kb_X_only.bed")
+colnames(gc_content_1kb) <- c("CHR", "START", "END", "AT", "GC", "A", "C", "G", "T", "TOTAL", "OTHER", "LENGTH")
+gc_content_1kb  <- gc_content_1kb %>%
+  mutate(bin_id = (START / 1000) + 1)
+```
+
+In this document we will compare the results from constructing the psuedo-diploids using either the VCF released by the NYGC, or the one we created internally by calling the variants against TOPMed. In both cases, the VCFs were filtered to remove:
+
+1. Samples other than the original 2,504 unrelated subjects
+2. Variants other than snps
+3. SNPs in either pseudo-autosomal region
+4. Variants outside the 1KGP pilot accessibility mask
+5. Remaining singleton variants.
+
+Let's first load the vcftools results:
+
+```{r}
+base_dir_old <- "/net/snowwhite/home/beckandy/research/phasing/output/filter_switch_errors/switch_errors/"
+eagle_dir_old <- paste0(base_dir_old, "eagle/annotated/")
+bagle_dir_old <- paste0(base_dir_old, "beagle/annotated/")
+shapeit_dir_old <- paste0(base_dir_old, "shapeit/annotated/")
+
+df_vcftools_old <- lapply(c(1:400), 
+                    function(x){
+                      switch_summary(x, eagle_dir_old, bagle_dir_old, shapeit_dir_old, gc_content_1kb)
+                      }) %>%
+  bind_rows()
+df_vcftools_old$pop <- c(rep("EUR", 200), rep("AFR", 200))
+
+base_dir_new <- "/net/snowwhite/home/beckandy/research/phasing/output/nygc/switch_errors/"
+eagle_dir_new <- paste0(base_dir_new, "eagle/annotated/")
+bagle_dir_new <- paste0(base_dir_new, "beagle/annotated/")
+shapeit_dir_new <- paste0(base_dir_new, "shapeit/annotated/")
+
+df_vcftools_new <- lapply(c(1:400), 
+                    function(x){
+                      switch_summary(x, eagle_dir_new, bagle_dir_new, shapeit_dir_new, gc_content_1kb)
+                      }) %>%
+  bind_rows()
+df_vcftools_new$pop <- c(rep("EUR", 200), rep("AFR", 200))
+```
+
+And now from whatshap:
+
+```{r}
+whatshap_dir_old <- "/net/snowwhite/home/beckandy/research/phasing/output/filter_switch_errors/whatshap"
+df_wh_eagle_old <- get_all_whatshap("eagle", whatshap_dir_old)
+df_wh_beagle_old <- get_all_whatshap("beagle", whatshap_dir_old)
+df_wh_si_old <- get_all_whatshap("shapeit", whatshap_dir_old)
+
+whatshap_dir_new <- "/net/snowwhite/home/beckandy/research/phasing/output/nygc/whatshap"
+df_wh_eagle_new <- get_all_whatshap("eagle", whatshap_dir_new)
+df_wh_beagle_new <- get_all_whatshap("beagle", whatshap_dir_new)
+df_wh_si_new <- get_all_whatshap("shapeit", whatshap_dir_new)
+```
+
+## Flips and Swtiches Comparison
+
+### SHAPEIT
+
+```{r}
+df_wh_si_new %>%
+  select(id, pop, flips) %>%
+  rename(new = flips) %>%
+  inner_join({df_wh_si_old %>%
+      select(id, pop, flips) %>%
+      rename(old = flips)}) %>%
+ ggplot(aes(x = old, y = new, colour = pop)) +
+  geom_point() +
+  xlab("Flips: Internal") +
+  ylab("Flips: NYGC") +
+  ggtitle("Flips: SHAPEIT") +
+  geom_abline(slope = 1, intercept = 0)
+
+df_wh_si_new %>%
+  mutate(p_flip = flips / n_het) %>%
+  select(id, pop, p_flip) %>%
+  rename(new = p_flip) %>%
+  inner_join({df_wh_si_old %>%
+      mutate(p_flip = flips / n_het) %>%
+      select(id, pop, p_flip) %>%
+      rename(old = p_flip)}) %>%
+ ggplot(aes(x = old, y = new, colour = pop)) +
+  geom_point() +
+  xlab("Flip rate: Internal") +
+  ylab("Flip rate: NYGC") +
+  ggtitle("Flips / Number of Heterozygous Sites: SHAPEIT") +
+  geom_abline(slope = 1, intercept = 0)  
+```
+
+```{r}
+df_wh_si_new %>%
+  select(id, pop, switches) %>%
+  rename(new = switches) %>%
+  inner_join({df_wh_si_old %>%
+      select(id, pop, switches) %>%
+      rename(old = switches)}) %>%
+ ggplot(aes(x = old, y = new, colour = pop)) +
+  geom_point() +
+  xlab("Switches: Internal") +
+  ylab("Switches: NYGC") +
+  ggtitle("Switches: SHAPEIT") +
+  geom_abline(slope = 1, intercept = 0)
+
+df_wh_si_new %>%
+  mutate(p_switch = switches / n_het) %>%
+  select(id, pop, p_switch) %>%
+  rename(new = p_switch) %>%
+  inner_join({df_wh_si_old %>%
+      mutate(p_switch = switches / n_het) %>%
+      select(id, pop, p_switch) %>%
+      rename(old = p_switch)}) %>%
+ ggplot(aes(x = old, y = new, colour = pop)) +
+  geom_point() +
+  xlab("Switch rate: Internal") +
+  ylab("Switch rate: NYGC") +
+  ggtitle("Switch / Number of Heterozygous Sites: SHAPEIT") +
+  geom_abline(slope = 1, intercept = 0)  
+```
+
+### EAGLE
+
+```{r}
+df_wh_eagle_new %>%
+  select(id, pop, flips) %>%
+  rename(new = flips) %>%
+  inner_join({df_wh_eagle_old %>%
+      select(id, pop, flips) %>%
+      rename(old = flips)}) %>%
+ ggplot(aes(x = old, y = new, colour = pop)) +
+  geom_point() +
+  xlab("Flips: Internal") +
+  ylab("Flips: NYGC") +
+  ggtitle("Flips: EAGLE") +
+  geom_abline(slope = 1, intercept = 0)
+
+df_wh_eagle_new %>%
+  mutate(p_flip = flips / n_het) %>%
+  select(id, pop, p_flip) %>%
+  rename(new = p_flip) %>%
+  inner_join({df_wh_eagle_old %>%
+      mutate(p_flip = flips / n_het) %>%
+      select(id, pop, p_flip) %>%
+      rename(old = p_flip)}) %>%
+ ggplot(aes(x = old, y = new, colour = pop)) +
+  geom_point() +
+  xlab("Flip rate: Internal") +
+  ylab("Flip rate: NYGC") +
+  ggtitle("Flips / Number of Heterozygous Sites: EAGLE") +
+  geom_abline(slope = 1, intercept = 0)  
+```
+
+```{r}
+df_wh_eagle_new %>%
+  select(id, pop, switches) %>%
+  rename(new = switches) %>%
+  inner_join({df_wh_eagle_old %>%
+      select(id, pop, switches) %>%
+      rename(old = switches)}) %>%
+ ggplot(aes(x = old, y = new, colour = pop)) +
+  geom_point() +
+  xlab("Switches: Internal") +
+  ylab("Switches: NYGC") +
+  ggtitle("Switches: EAGLE") +
+  geom_abline(slope = 1, intercept = 0)
+
+df_wh_eagle_new %>%
+  mutate(p_switch = switches / n_het) %>%
+  select(id, pop, p_switch) %>%
+  rename(new = p_switch) %>%
+  inner_join({df_wh_eagle_old %>%
+      mutate(p_switch = switches / n_het) %>%
+      select(id, pop, p_switch) %>%
+      rename(old = p_switch)}) %>%
+ ggplot(aes(x = old, y = new, colour = pop)) +
+  geom_point() +
+  xlab("Switch rate: Internal") +
+  ylab("Switch rate: NYGC") +
+  ggtitle("Switch / Number of Heterozygous Sites: EAGLE") +
+  geom_abline(slope = 1, intercept = 0)  
+```
+
+### BEAGLE
+
+```{r}
+df_wh_beagle_new %>%
+  select(id, pop, flips) %>%
+  rename(new = flips) %>%
+  inner_join({df_wh_beagle_old %>%
+      select(id, pop, flips) %>%
+      rename(old = flips)}) %>%
+ ggplot(aes(x = old, y = new, colour = pop)) +
+  geom_point() +
+  xlab("Flips: Internal") +
+  ylab("Flips: NYGC") +
+  ggtitle("Flips: BEAGLE") +
+  geom_abline(slope = 1, intercept = 0)
+
+df_wh_beagle_new %>%
+  mutate(p_flip = flips / n_het) %>%
+  select(id, pop, p_flip) %>%
+  rename(new = p_flip) %>%
+  inner_join({df_wh_beagle_old %>%
+      mutate(p_flip = flips / n_het) %>%
+      select(id, pop, p_flip) %>%
+      rename(old = p_flip)}) %>%
+ ggplot(aes(x = old, y = new, colour = pop)) +
+  geom_point() +
+  xlab("Flip rate: Internal") +
+  ylab("Flip rate: NYGC") +
+  ggtitle("Flips / Number of Heterozygous Sites: BEAGLE") +
+  geom_abline(slope = 1, intercept = 0)  
+```
+
+```{r}
+df_wh_beagle_new %>%
+  select(id, pop, switches) %>%
+  rename(new = switches) %>%
+  inner_join({df_wh_beagle_old %>%
+      select(id, pop, switches) %>%
+      rename(old = switches)}) %>%
+ ggplot(aes(x = old, y = new, colour = pop)) +
+  geom_point() +
+  xlab("Switches: Internal") +
+  ylab("Switches: NYGC") +
+  ggtitle("Switches: BEAGLE") +
+  geom_abline(slope = 1, intercept = 0)
+
+df_wh_beagle_new %>%
+  mutate(p_switch = switches / n_het) %>%
+  select(id, pop, p_switch) %>%
+  rename(new = p_switch) %>%
+  inner_join({df_wh_beagle_old %>%
+      mutate(p_switch = switches / n_het) %>%
+      select(id, pop, p_switch) %>%
+      rename(old = p_switch)}) %>%
+ ggplot(aes(x = old, y = new, colour = pop)) +
+  geom_point() +
+  xlab("Switch rate: Internal") +
+  ylab("Switch rate: NYGC") +
+  ggtitle("Switch / Number of Heterozygous Sites: BEAGLE") +
+  geom_abline(slope = 1, intercept = 0)  
+```
