@@ -1,0 +1,398 @@
+---
+title: "gnomAD vs NYGC vs TOPMed"
+author: "Andy Beck"
+date: "2023-03-07"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+In this document I will compare the results from running our pipeline on datasets from
+
+1. The NYGC
+2. gnomAD
+3. Internal (TOPMed)
+
+These three datasets all contain versions of the 1KGP deep-sequence release, with the difference being what panel/reference(?) they were called against. In all three cases, the VCFs were filtered to remove:
+
+1. Samples other than the 2,406 unrelated subjects present in the gnomAD release
+2. Variants other than snps
+3. SNPs in either pseudo-autosomal region
+4. Variants outside the 1KGP pilot accessibility mask
+5. Remaining singleton variants.
+
+```{r}
+library(tidyverse)
+library(janitor)
+source('code/common_functions.R')
+
+pair_info_df <- read_delim("data/sample_pairs_16aug2022.csv", col_names = c("POP", "ID1", "ID2"))
+pair_info_df$SP <- c(rep("EUR", 200), rep("AFR", 200))
+
+gc_content_1kb <- read_tsv("data/gc1kb_X_only.bed")
+colnames(gc_content_1kb) <- c("CHR", "START", "END", "AT", "GC", "A", "C", "G", "T", "TOTAL", "OTHER", "LENGTH")
+gc_content_1kb  <- gc_content_1kb %>%
+  mutate(bin_id = (START / 1000) + 1)
+```
+
+Loading the switch location files from vcftools:
+
+```{r}
+# Directories: TOPMed
+base_dir_int <- "/net/snowwhite/home/beckandy/research/phasing/output/filter_switch_errors/switch_errors/"
+eagle_dir_int <- paste0(base_dir_int, "eagle/annotated/")
+bagle_dir_int <- paste0(base_dir_int, "beagle/annotated/")
+shapeit_dir_int <- paste0(base_dir_int, "shapeit/annotated/")
+
+# Directories: NYGC
+base_dir_nygc <- "/net/snowwhite/home/beckandy/research/phasing/output/nygc/switch_errors/"
+eagle_dir_nygc <- paste0(base_dir_nygc, "eagle/annotated/")
+bagle_dir_nygc <- paste0(base_dir_nygc, "beagle/annotated/")
+shapeit_dir_nygc <- paste0(base_dir_nygc, "shapeit/annotated/")
+
+# Directories: gnomAD
+base_dir_gnomad <- "/net/snowwhite/home/beckandy/research/phasing/output/gnomad/switch_errors/"
+eagle_dir_gnomad <- paste0(base_dir_gnomad, "eagle/annotated/")
+bagle_dir_gnomad <- paste0(base_dir_gnomad, "beagle/annotated/")
+shapeit_dir_gnomad <- paste0(base_dir_gnomad, "shapeit/annotated/")
+
+# Data frames
+df_vcftools_int <- lapply(c(1:400), 
+                    function(x){
+                      switch_summary(x, eagle_dir_int, bagle_dir_int, shapeit_dir_int, gc_content_1kb)
+                      }) %>%
+  bind_rows()
+df_vcftools_int$pop <- c(rep("EUR", 200), rep("AFR", 200))
+
+## NYGC
+df_vcftools_nygc <- lapply(c(1:400), 
+                    function(x){
+                      switch_summary(x, eagle_dir_nygc, bagle_dir_nygc, shapeit_dir_nygc, gc_content_1kb)
+                      }) %>%
+  bind_rows()
+df_vcftools_nygc$pop <- c(rep("EUR", 200), rep("AFR", 200))
+
+## gnomAD
+df_vcftools_gnomad <- lapply(c(1:400), 
+                    function(x){
+                      switch_summary(x, eagle_dir_gnomad, bagle_dir_gnomad, shapeit_dir_gnomad, gc_content_1kb)
+                      }) %>%
+  bind_rows()
+df_vcftools_gnomad$pop <- c(rep("EUR", 200), rep("AFR", 200))
+```
+
+And now from whatshap:
+
+```{r}
+whatshap_dir_int <- "/net/snowwhite/home/beckandy/research/phasing/output/filter_switch_errors/whatshap"
+df_wh_eagle_int <- get_all_whatshap("eagle", whatshap_dir_int)
+df_wh_beagle_int <- get_all_whatshap("beagle", whatshap_dir_int)
+df_wh_si_int <- get_all_whatshap("shapeit", whatshap_dir_int)
+
+whatshap_dir_nygc <- "/net/snowwhite/home/beckandy/research/phasing/output/nygc/whatshap"
+df_wh_eagle_nygc <- get_all_whatshap("eagle", whatshap_dir_nygc)
+df_wh_beagle_nygc <- get_all_whatshap("beagle", whatshap_dir_nygc)
+df_wh_si_nygc <- get_all_whatshap("shapeit", whatshap_dir_nygc)
+
+whatshap_dir_gnomad <- "/net/snowwhite/home/beckandy/research/phasing/output/gnomad/whatshap"
+df_wh_eagle_gnomad <- get_all_whatshap("eagle", whatshap_dir_gnomad)
+df_wh_beagle_gnomad <- get_all_whatshap("beagle", whatshap_dir_gnomad)
+df_wh_si_gnomad <- get_all_whatshap("shapeit", whatshap_dir_gnomad)
+```
+
+## Flips and Swtiches Comparison
+
+### SHAPEIT
+
+#### gnomAD and TOPMed
+
+```{r}
+df_wh_si_gnomad %>%
+  select(id, pop, flips) %>%
+  rename(gnomAD = flips) %>%
+  inner_join({df_wh_si_int %>%
+      select(id, pop, flips) %>%
+      rename(TOPMed = flips)}) %>%
+ ggplot(aes(x = TOPMed, y = gnomAD, colour = pop)) +
+  geom_point() +
+  xlab("Flips: Internal") +
+  ylab("Flips: gnomAD") +
+  ggtitle("Flips: SHAPEIT") +
+  geom_abline(slope = 1, intercept = 0)
+
+df_wh_si_gnomad %>%
+  mutate(p_flip = flips / n_het) %>%
+  select(id, pop, p_flip) %>%
+  rename(gnomAD = p_flip) %>%
+  inner_join({df_wh_si_int %>%
+      mutate(p_flip = flips / n_het) %>%
+      select(id, pop, p_flip) %>%
+      rename(TOPMed = p_flip)}) %>%
+ ggplot(aes(x = TOPMed, y = gnomAD, colour = pop)) +
+  geom_point() +
+  xlab("Flip rate: Internal") +
+  ylab("Flip rate: gnomAD") +
+  ggtitle("Flips / Number of Heterozygous Sites: SHAPEIT") +
+  geom_abline(slope = 1, intercept = 0)
+```
+
+#### gnomAD and NYGC
+
+```{r}
+df_wh_si_gnomad %>%
+  select(id, pop, flips) %>%
+  rename(gnomAD = flips) %>%
+  inner_join({df_wh_si_nygc %>%
+      select(id, pop, flips) %>%
+      rename(NYGC = flips)}) %>%
+ ggplot(aes(x = NYGC, y = gnomAD, colour = pop)) +
+  geom_point() +
+  xlab("Flips: NYGC") +
+  ylab("Flips: gnomAD") +
+  ggtitle("Flips: SHAPEIT") +
+  geom_abline(slope = 1, intercept = 0)
+
+df_wh_si_gnomad %>%
+  mutate(p_flip = flips / n_het) %>%
+  select(id, pop, p_flip) %>%
+  rename(gnomAD = p_flip) %>%
+  inner_join({df_wh_si_nygc %>%
+      mutate(p_flip = flips / n_het) %>%
+      select(id, pop, p_flip) %>%
+      rename(NYGC = p_flip)}) %>%
+ ggplot(aes(x = NYGC, y = gnomAD, colour = pop)) +
+  geom_point() +
+  xlab("Flip rate: NYGC") +
+  ylab("Flip rate: gnomAD") +
+  ggtitle("Flips / Number of Heterozygous Sites: SHAPEIT") +
+  geom_abline(slope = 1, intercept = 0)  
+```
+
+#### TOPMed and NYGC
+
+```{r}
+df_wh_si_int %>%
+  select(id, pop, flips) %>%
+  rename(TOPMed = flips) %>%
+  inner_join({df_wh_si_nygc %>%
+      select(id, pop, flips) %>%
+      rename(NYGC = flips)}) %>%
+ ggplot(aes(x = NYGC, y = TOPMed, colour = pop)) +
+  geom_point() +
+  xlab("Flips: NYGC") +
+  ylab("Flips: TOPMed") +
+  ggtitle("Flips: SHAPEIT") +
+  geom_abline(slope = 1, intercept = 0)
+
+df_wh_si_int %>%
+  mutate(p_flip = flips / n_het) %>%
+  select(id, pop, p_flip) %>%
+  rename(TOPMed = p_flip) %>%
+  inner_join({df_wh_si_nygc %>%
+      mutate(p_flip = flips / n_het) %>%
+      select(id, pop, p_flip) %>%
+      rename(NYGC = p_flip)}) %>%
+ ggplot(aes(x = NYGC, y = TOPMed, colour = pop)) +
+  geom_point() +
+  xlab("Flip rate: NYGC") +
+  ylab("Flip rate: TOPMed") +
+  ggtitle("Flips / Number of Heterozygous Sites: SHAPEIT") +
+  geom_abline(slope = 1, intercept = 0)  
+```
+
+### EAGLE
+
+#### gnomAD and TOPMed
+
+```{r}
+df_wh_eagle_gnomad %>%
+  select(id, pop, flips) %>%
+  rename(gnomAD = flips) %>%
+  inner_join({df_wh_eagle_int %>%
+      select(id, pop, flips) %>%
+      rename(TOPMed = flips)}) %>%
+ ggplot(aes(x = TOPMed, y = gnomAD, colour = pop)) +
+  geom_point() +
+  xlab("Flips: Internal") +
+  ylab("Flips: gnomAD") +
+  ggtitle("Flips: EAGLE") +
+  geom_abline(slope = 1, intercept = 0)
+
+df_wh_eagle_gnomad %>%
+  mutate(p_flip = flips / n_het) %>%
+  select(id, pop, p_flip) %>%
+  rename(gnomAD = p_flip) %>%
+  inner_join({df_wh_eagle_int %>%
+      mutate(p_flip = flips / n_het) %>%
+      select(id, pop, p_flip) %>%
+      rename(TOPMed = p_flip)}) %>%
+ ggplot(aes(x = TOPMed, y = gnomAD, colour = pop)) +
+  geom_point() +
+  xlab("Flip rate: Internal") +
+  ylab("Flip rate: gnomAD") +
+  ggtitle("Flips / Number of Heterozygous Sites: EAGLE") +
+  geom_abline(slope = 1, intercept = 0)
+```
+
+#### gnomAD and NYGC
+
+```{r}
+df_wh_eagle_gnomad %>%
+  select(id, pop, flips) %>%
+  rename(gnomAD = flips) %>%
+  inner_join({df_wh_eagle_nygc %>%
+      select(id, pop, flips) %>%
+      rename(NYGC = flips)}) %>%
+ ggplot(aes(x = NYGC, y = gnomAD, colour = pop)) +
+  geom_point() +
+  xlab("Flips: NYGC") +
+  ylab("Flips: gnomAD") +
+  ggtitle("Flips: EAGLE") +
+  geom_abline(slope = 1, intercept = 0)
+
+df_wh_eagle_gnomad %>%
+  mutate(p_flip = flips / n_het) %>%
+  select(id, pop, p_flip) %>%
+  rename(gnomAD = p_flip) %>%
+  inner_join({df_wh_eagle_nygc %>%
+      mutate(p_flip = flips / n_het) %>%
+      select(id, pop, p_flip) %>%
+      rename(NYGC = p_flip)}) %>%
+ ggplot(aes(x = NYGC, y = gnomAD, colour = pop)) +
+  geom_point() +
+  xlab("Flip rate: NYGC") +
+  ylab("Flip rate: gnomAD") +
+  ggtitle("Flips / Number of Heterozygous Sites: EAGLE") +
+  geom_abline(slope = 1, intercept = 0)  
+```
+
+#### TOPMed and NYGC
+
+```{r}
+df_wh_eagle_int %>%
+  select(id, pop, flips) %>%
+  rename(TOPMed = flips) %>%
+  inner_join({df_wh_eagle_nygc %>%
+      select(id, pop, flips) %>%
+      rename(NYGC = flips)}) %>%
+ ggplot(aes(x = NYGC, y = TOPMed, colour = pop)) +
+  geom_point() +
+  xlab("Flips: NYGC") +
+  ylab("Flips: TOPMed") +
+  ggtitle("Flips: EAGLE") +
+  geom_abline(slope = 1, intercept = 0)
+
+df_wh_eagle_int %>%
+  mutate(p_flip = flips / n_het) %>%
+  select(id, pop, p_flip) %>%
+  rename(TOPMed = p_flip) %>%
+  inner_join({df_wh_eagle_nygc %>%
+      mutate(p_flip = flips / n_het) %>%
+      select(id, pop, p_flip) %>%
+      rename(NYGC = p_flip)}) %>%
+ ggplot(aes(x = NYGC, y = TOPMed, colour = pop)) +
+  geom_point() +
+  xlab("Flip rate: NYGC") +
+  ylab("Flip rate: TOPMed") +
+  ggtitle("Flips / Number of Heterozygous Sites: EAGLE") +
+  geom_abline(slope = 1, intercept = 0)  
+```
+### BEAGLE
+
+#### gnomAD and TOPMed
+
+```{r}
+df_wh_beagle_gnomad %>%
+  select(id, pop, flips) %>%
+  rename(gnomAD = flips) %>%
+  inner_join({df_wh_beagle_int %>%
+      select(id, pop, flips) %>%
+      rename(TOPMed = flips)}) %>%
+ ggplot(aes(x = TOPMed, y = gnomAD, colour = pop)) +
+  geom_point() +
+  xlab("Flips: Internal") +
+  ylab("Flips: gnomAD") +
+  ggtitle("Flips: BEAGLE") +
+  geom_abline(slope = 1, intercept = 0)
+
+df_wh_beagle_gnomad %>%
+  mutate(p_flip = flips / n_het) %>%
+  select(id, pop, p_flip) %>%
+  rename(gnomAD = p_flip) %>%
+  inner_join({df_wh_beagle_int %>%
+      mutate(p_flip = flips / n_het) %>%
+      select(id, pop, p_flip) %>%
+      rename(TOPMed = p_flip)}) %>%
+ ggplot(aes(x = TOPMed, y = gnomAD, colour = pop)) +
+  geom_point() +
+  xlab("Flip rate: Internal") +
+  ylab("Flip rate: gnomAD") +
+  ggtitle("Flips / Number of Heterozygous Sites: BEAGLE") +
+  geom_abline(slope = 1, intercept = 0)
+```
+
+#### gnomAD and NYGC
+
+```{r}
+df_wh_beagle_gnomad %>%
+  select(id, pop, flips) %>%
+  rename(gnomAD = flips) %>%
+  inner_join({df_wh_beagle_nygc %>%
+      select(id, pop, flips) %>%
+      rename(NYGC = flips)}) %>%
+ ggplot(aes(x = NYGC, y = gnomAD, colour = pop)) +
+  geom_point() +
+  xlab("Flips: NYGC") +
+  ylab("Flips: gnomAD") +
+  ggtitle("Flips: BEAGLE") +
+  geom_abline(slope = 1, intercept = 0)
+
+df_wh_beagle_gnomad %>%
+  mutate(p_flip = flips / n_het) %>%
+  select(id, pop, p_flip) %>%
+  rename(gnomAD = p_flip) %>%
+  inner_join({df_wh_beagle_nygc %>%
+      mutate(p_flip = flips / n_het) %>%
+      select(id, pop, p_flip) %>%
+      rename(NYGC = p_flip)}) %>%
+ ggplot(aes(x = NYGC, y = gnomAD, colour = pop)) +
+  geom_point() +
+  xlab("Flip rate: NYGC") +
+  ylab("Flip rate: gnomAD") +
+  ggtitle("Flips / Number of Heterozygous Sites: BEAGLE") +
+  geom_abline(slope = 1, intercept = 0)  
+```
+
+#### TOPMed and NYGC
+
+```{r}
+df_wh_beagle_int %>%
+  select(id, pop, flips) %>%
+  rename(TOPMed = flips) %>%
+  inner_join({df_wh_beagle_nygc %>%
+      select(id, pop, flips) %>%
+      rename(NYGC = flips)}) %>%
+ ggplot(aes(x = NYGC, y = TOPMed, colour = pop)) +
+  geom_point() +
+  xlab("Flips: NYGC") +
+  ylab("Flips: TOPMed") +
+  ggtitle("Flips: BEAGLE") +
+  geom_abline(slope = 1, intercept = 0)
+
+df_wh_beagle_int %>%
+  mutate(p_flip = flips / n_het) %>%
+  select(id, pop, p_flip) %>%
+  rename(TOPMed = p_flip) %>%
+  inner_join({df_wh_beagle_nygc %>%
+      mutate(p_flip = flips / n_het) %>%
+      select(id, pop, p_flip) %>%
+      rename(NYGC = p_flip)}) %>%
+ ggplot(aes(x = NYGC, y = TOPMed, colour = pop)) +
+  geom_point() +
+  xlab("Flip rate: NYGC") +
+  ylab("Flip rate: TOPMed") +
+  ggtitle("Flips / Number of Heterozygous Sites: BEAGLE") +
+  geom_abline(slope = 1, intercept = 0)  
+```
