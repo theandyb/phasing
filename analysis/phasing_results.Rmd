@@ -1,23 +1,35 @@
 ---
-title: "masked_diploid_results"
+title: "10aug22_diploid_results"
 author: "Andy Beck"
-date: "2022-04-20"
+date: "2022-08-10"
 output: workflowr::wflow_html
 editor_options:
   chunk_output_type: console
 ---
 
+## Libraries and global variables
+
 ```{r}
 library(tidyverse)
+library(janitor)
+source("code/common_functions.R")
 
-eagle_switch_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/19april22_switch_errors/switch_errors/eagle/annotated/"
-shapeit_switch_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/19april22_switch_errors/switch_errors/shapeit/annotated/"
-beagle_switch_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/19april22_switch_errors/switch_errors/beagle/annotated/"
-num_sites_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/19april22_switch_errors/vcf_n_sites/"
-whatshap_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/19april22_switch_errors/whatshap/"
+library(ggsci)
+theme_set(theme_bw(base_size = 18))
 
-pair_info_df <- read_delim("data/sample_pairs_all.csv", col_names = c("POP", "ID1", "ID2"))
-pair_info_df$SP <- c(rep("EUR", 100), rep("AFR", 200))
+pal1 <- pal_ucscgb()
+
+svg_out_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/figures/paper_svg/"
+
+eagle_switch_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/switch_errors/eagle/annotated/"
+shapeit_switch_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/switch_errors/shapeit/annotated/"
+beagle_switch_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/switch_errors/beagle/annotated/"
+num_sites_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/vcf_n_sites/"
+whatshap_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/whatshap/"
+whatshap_dir2 <- "/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/whatshap/"
+
+pair_info_df <- read_delim("data/sample_pairs_18apr2023.csv", col_names = c("POP", "ID1", "ID2"))
+pair_info_df$SP <- c(rep("EUR", 200), rep("AFR", 200))
 
 gc_content_1kb <- read_tsv("data/gc1kb_X_only.bed")
 colnames(gc_content_1kb) <- c("CHR", "START", "END", "AT", "GC", "A", "C", "G", "T", "TOTAL", "OTHER", "LENGTH")
@@ -26,1056 +38,922 @@ gc_content_1kb  <- gc_content_1kb %>%
 
 background_dimer <- read_csv("/net/snowwhite/home/beckandy/research/phasing/output/background_rates/dimer.csv")
 background_3mer <- read_csv("/net/snowwhite/home/beckandy/research/phasing/output/background_rates/3mer.csv")
+
+cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+
+background_cpg_het <- 229868 / 1567042
 ```
 
-
-## Introduction
-
-We've refined our analyses in a few ways since the first run-through of this pseudo-diploid analysis. First let's list out everything I've done to get to this point:
-
-1. Subset the reference genome to just the X chromosome using `fastafetch`
-2. Download pilot mask from 1KGP along with chromosome lengths for hg38
-    * Take complement of mask with bedtools to get file with masked regions (as opposed to included regions)
-3. Mask both the reference fasta (`bedtools maskfasta`) and the 1KGP X chromosome vcf
-    * `freeze9.1000g.chrX.filtered.gtonly.minDP10.minAC1.PASS.phased.vcf.gz`
-4. Make window files (`bedtools makewindows`)
-5. Get GC content in windows (`bedtools nuc`) using masked fasta
-6. Remove PAR from X chromosome
-
-Using these masked reference and variant files, we proceeded to do our pseudo-diploid generation on 100 EUR and 200 AFR pairs:
-
-1. Sample a sub-population from 1KGP super-population (EUR or AFR)
-2. Sample 2 male samples from sub-population
-3. Remove remaining heterozygous sites in either subject (should not be heterozygous in non-PAR)
-4. Create truth VCF with haploids pasted together, and test vcf with sites in haploids shuffled
-5. Create reference VCF by removing two sampled subjects
-6. Phase the test VCF using EAGLE2, BEAGLE5, and SHAPEIT4
-7. Compare phasing results and truth using `vcftools` and `whatshap`
-
-With those preliminaries out of the way, let's take a look at these results.
-
-## Example of a single pseudodiploid
-
-For a first pass, let's take a look at the information available for a single pseudo-diploid:
+## Single Pseudo-diploid Example
 
 ```{r}
 pair_id <- 123
-switch_err_eagle <- read_csv(paste0(eagle_switch_dir, "switch_", pair_id, ".csv"))
-switch_err_shapeit <- read_csv(paste0(shapeit_switch_dir, "switch_", pair_id, ".csv"))
-switch_err_beagle <- read_csv(paste0(beagle_switch_dir, "switch_", pair_id, ".csv"))
+bin_size = 1000
+switch_err_eagle <- read_csv(paste0(eagle_switch_dir, "switch_", pair_id, ".csv")) %>% 
+  mutate(bin_id = ceiling(pos_start / bin_size))
+switch_err_shapeit <- read_csv(paste0(shapeit_switch_dir, "switch_", pair_id, ".csv")) %>%
+  mutate(bin_id = ceiling(pos_start / bin_size))
+switch_err_beagle <- read_csv(paste0(beagle_switch_dir, "switch_", pair_id, ".csv")) %>%
+  mutate(bin_id = ceiling(pos_start / bin_size))
 
-whatshap_eagle <- read_tsv(paste0(whatshap_dir, "/eagle/eval_", pair_id, ".tsv"))
-whatshap_shapeit <- read_tsv(paste0(whatshap_dir, "/shapeit/eval_", pair_id, ".tsv"))
-```
+whatshap_eagle <- read_tsv(paste0(whatshap_dir, "/eagle/eval_", pair_id, ".tsv")) %>% 
+  clean_names() %>%
+  select(all_assessed_pairs, all_switches, all_switch_rate, all_switchflips, all_switchflip_rate) %>%
+  mutate(switches = as.numeric(str_split(all_switchflips, "/")[[1]][1]),
+         flips = as.numeric(str_split(all_switchflips, "/")[[1]][2])) %>%
+  rename(n_het = all_assessed_pairs, total_errors = all_switches, error_rate = all_switch_rate) %>%
+  select(-all_switchflips)
 
-From the above we can get the raw number of total switches based on the dimension of the switch error data frames; in this example, we see that EAGLE has `r dim(switch_err_eagle)[1]` switches, BEAGLE has `r dim(switch_err_beagle)[1]` and SHAPEIT has `r dim(switch_err_shapeit)[1]` switches.
+whatshap_shapeit <- read_tsv(paste0(whatshap_dir2, "/shapeit/eval_", pair_id, ".tsv")) %>% 
+  clean_names() %>%
+  select(all_assessed_pairs, all_switches, all_switch_rate, all_switchflips, all_switchflip_rate) %>%
+  mutate(switches = as.numeric(str_split(all_switchflips, "/")[[1]][1]),
+         flips = as.numeric(str_split(all_switchflips, "/")[[1]][2])) %>%
+  rename(n_het = all_assessed_pairs, total_errors = all_switches, error_rate = all_switch_rate) %>%
+  select(-all_switchflips)
+whatshap_beagle <- read_tsv(paste0(whatshap_dir, "/beagle/eval_", pair_id, ".tsv")) %>% 
+  clean_names() %>%
+  select(all_assessed_pairs, all_switches, all_switch_rate, all_switchflips, all_switchflip_rate) %>%
+  mutate(switches = as.numeric(str_split(all_switchflips, "/")[[1]][1]),
+         flips = as.numeric(str_split(all_switchflips, "/")[[1]][2])) %>%
+  rename(n_het = all_assessed_pairs, total_errors = all_switches, error_rate = all_switch_rate) %>%
+  select(-all_switchflips)
 
-From the whatshap output, we also get a breakdown between how many of the total switches are flips. For example, the breakdown between switches and flips (switches/flips) in EAGLE is `r whatshap_eagle$all_switchflips[1]`, and correspondingly in SHAPEIT we see `r whatshap_shapeit$all_switchflips[1]`. What we would really like is to know the locations of the flips, which we unfortunately don't have from neither `vcftools` nor `whatshap`. Fortunately I believe the little chunk of code below correctly counts flips in the `vcftools` output:
-
-```{r}
-count <- 0
-in_progress <- FALSE
-for(i in 1:(length(switch_err_eagle$pos_start)-1)){
-  if(switch_err_eagle$pos_end[i] == switch_err_eagle$pos_start[i+1]){
-    if(!in_progress){
-      count <- count+1
-      in_progress <- TRUE
-    } else{
-      in_progress <- FALSE
-    }
-  } else{
-    in_progress <- FALSE
-  }
-}
-print(count)
-```
-
-Let's wrap this in a function and get a list of flip positions:
-
-```{r}
-get_flip_pos <- function(df){
-  flip_list <- c()
-  in_progress <- FALSE
-  for(i in 1:(length(df$pos_start)-1)){
-    if(df$pos_end[i] == df$pos_start[i+1]){
-      if(!in_progress){
-        in_progress <- TRUE
-        flip_list <- c(flip_list, df$pos_end[i])
-      } else{
-        in_progress <- FALSE
-      }
-    } else{
-      in_progress <- FALSE
-    }
-  }
-  return(flip_list)
-}
-
+flip_pos_beagle <- get_flip_pos(switch_err_beagle)
 flip_pos_eagle <- get_flip_pos(switch_err_eagle)
 flip_pos_shapeit <- get_flip_pos(switch_err_shapeit)
-flip_pos_beagle <- get_flip_pos(switch_err_beagle)
-```
 
-Just to satisfy my curiosity, let's see how many of the flip positions are shared between the methods:
+switch_err_beagle$is_flip <- (switch_err_beagle$pos_start %in% flip_pos_beagle) | (switch_err_beagle$pos_end %in% flip_pos_beagle)
 
-```{r}
-intersect(flip_pos_eagle, flip_pos_shapeit) %>% length()
-```
+switch_err_eagle$is_flip <- (switch_err_eagle$pos_start %in% flip_pos_eagle) | (switch_err_eagle$pos_end %in% flip_pos_eagle)
 
-```{r}
-intersect(flip_pos_eagle, flip_pos_beagle) %>% length()
-```
+switch_err_shapeit$is_flip <- (switch_err_shapeit$pos_start %in% flip_pos_shapeit) | (switch_err_shapeit$pos_end %in% flip_pos_shapeit)
 
-```{r}
-intersect(flip_pos_shapeit, flip_pos_beagle) %>% length()
-```
-
-```{r}
-intersect(flip_pos_shapeit, flip_pos_beagle) %>% intersect(flip_pos_eagle) %>% length()
-```
-
-And moving on, let's go ahead and annotate each switch in the `vcftools` output with whether or not it is a flip:
-
-```{r}
-switch_err_eagle$is_flip <- switch_err_eagle$pos_start %in% flip_pos_eagle
-switch_err_shapeit$is_flip <- switch_err_shapeit$pos_start %in% flip_pos_shapeit
-switch_err_beagle$is_flip <- switch_err_beagle$pos_start %in% flip_pos_beagle
-```
-
-Alright, one last thing we'll look at for this pair is the proportion of all switches and flips are CpGs and contrast this with the background rate of dimers. For reference, the distribution of dimers in the X chromosome is:
-
-```{r}
-background_dimer
-```
-
-and by summing up the number of CG and GC sites and dividing by the total we see that the proportion of sites that are CpGs is `r (1133731) / sum(background_dimer$N)` (<1%)
-
-```{r}
-background_cpg <- (1133731) / sum(background_dimer$N)
-
-switch_err_eagle %>%
-  filter(is_flip == TRUE) %>%
-  pull(cpg_start) %>%
-  table()
-```
-
-Here for EAGLE we see that about 17.8% of flips occur at CpG sites.
-
-```{r}
-switch_err_beagle %>%
-  filter(is_flip == TRUE) %>%
-  pull(cpg_start) %>%
-  table()
-```
-
-~17.8% of BEAGLE's flips occur at CpGs/
-
-```{r}
-switch_err_shapeit %>%
-  filter(is_flip == TRUE) %>%
-  pull(cpg_start) %>%
-  table()
-```
-
-SHAPEIT also has ~ 16.3% of its flips at CpG. Now looking at overall number of switches:
-
-```{r}
-switch_err_eagle %>%
-  pull(cpg_start) %>%
-  table()
-
-switch_err_beagle %>%
-  pull(cpg_start) %>%
-  table()
-
-switch_err_shapeit %>%
-  pull(cpg_start) %>%
-  table()
-```
-
-14.6%, 15.3% and 14.6% of errors at CpG.
-
-### GC Content
-
-```{r}
-switch_err_eagle <- switch_err_eagle %>%
-  mutate(bin_id = ceiling(pos_start / 1000))
-
-switch_err_beagle <- switch_err_beagle %>%
-  mutate(bin_id = ceiling(pos_start / 1000))
-
-switch_err_shapeit <- switch_err_shapeit %>%
-  mutate(bin_id = ceiling(pos_start / 1000))
+switch_err_beagle$start_flip <- switch_err_beagle$pos_end %in% flip_pos_beagle
+switch_err_eagle$start_flip <- switch_err_eagle$pos_end %in% flip_pos_eagle
+switch_err_shapeit$start_flip <- switch_err_shapeit$pos_end %in% flip_pos_shapeit
 
 switch_err_eagle <- switch_err_eagle %>%
-    left_join({gc_content_1kb %>% select(bin_id, GC)}, by = "bin_id")
+  left_join({gc_content_1kb %>% select(bin_id, GC)}, by = "bin_id")
 
 switch_err_beagle <- switch_err_beagle %>%
-    left_join({gc_content_1kb %>% select(bin_id, GC)}, by = "bin_id")
-  
+  left_join({gc_content_1kb %>% select(bin_id, GC)}, by = "bin_id")
+
 switch_err_shapeit <- switch_err_shapeit %>%
-    left_join({gc_content_1kb %>% select(bin_id, GC)}, by = "bin_id")
-```
+  left_join({gc_content_1kb %>% select(bin_id, GC)}, by = "bin_id")
 
-Let's first look at what the GC content chromosome-wide looks like in X:
+# Compute distance between distinct errors
 
-```{r}
-gc_content_1kb %>%
-  filter(GC > 0) %>%
-  ggplot(aes(x = bin_id, y = GC)) +
-  geom_point()
-```
-
-```{r}
-gc_content_1kb %>%
-  filter(GC > 0) %>%
-  ggplot(aes(x = GC)) +
-  geom_boxplot()
-```
-
-And now for our errors, we can see how the distribution of GC content in the windows they occur in compare to the chromosome-wide distribution:
-
-```{r}
 switch_err_beagle %>%
-  ggplot(aes(x = GC)) +
-  geom_boxplot()
+  filter(is_flip == F | start_flip == T) %>% # filter out latter halves of flips
+  pull(pos_start) %>%
+  diff(lag = 1)
+# Overlap of errors
+
+intersect({switch_err_beagle %>% filter(start_flip) %>% pull(pos_start)},
+          {switch_err_eagle %>% filter(start_flip) %>% pull(pos_start)}) %>%
+  length()
+
+intersect({switch_err_shapeit %>% filter(start_flip) %>% pull(pos_start)},
+          {switch_err_eagle %>% filter(start_flip) %>% pull(pos_start)}) %>%
+  length()
+
+intersect({switch_err_shapeit %>% filter(start_flip) %>% pull(pos_start)},
+          {switch_err_beagle %>% filter(start_flip) %>% pull(pos_start)}) %>%
+  length()
+
+intersect(intersect({switch_err_beagle %>% filter(start_flip) %>% pull(pos_start)},
+          {switch_err_eagle %>% filter(start_flip) %>% pull(pos_start)}), 
+          {switch_err_shapeit %>% filter(start_flip) %>% pull(pos_start)}) %>%
+  length()
+
+# Number of flips starting at CpG
+switch_err_beagle %>%
+  filter(start_flip == TRUE) %>%
+  pull(cpg_start) %>%
+  sum()
+
+switch_err_eagle %>%
+  filter(start_flip == TRUE) %>%
+  pull(cpg_start) %>%
+  sum()
+
+switch_err_shapeit %>%
+  filter(start_flip == TRUE) %>%
+  pull(cpg_start) %>%
+  sum()
+
+# Number of non-flips starting at CpG
+switch_err_beagle %>%
+  filter(is_flip == FALSE) %>%
+  pull(cpg_start) %>%
+  sum()
+
+switch_err_eagle %>%
+  filter(is_flip == FALSE) %>%
+  pull(cpg_start) %>%
+  sum()
+
+switch_err_shapeit %>%
+  filter(is_flip == FALSE) %>%
+  pull(cpg_start) %>%
+  sum()
 ```
 
 
+## Summary statistics on all pseudo-diploids
 
-## Summary Statisitics Across All Pseudo-diploids
-
-Let's grab:
-
-* Number of heterozygous sites per diploid
-* EAGLE phase confidence
-* Total number of switch errors for each method
-* Number of flips for each method
-* Percent of flips and switches that were CpG site
-* Average percent GC in 1kb windows
-
-### Pair information
+From vcftools:
 
 ```{r}
-df_pair <- read_csv("/net/snowwhite/home/beckandy/research/phasing/data/sample_pairs_all.csv",
-                    col_names = c("pop", "sub1", "sub2"), show_col_types = FALSE) %>%
-  rename(sub_pop = pop)
-df_pair$pop <- c(rep("EUR", 100), rep("AFR", 200))
-df_pair$pair_id <- 1:300
-```
-
-
-### EAGLE Phase Confidence
-
-```{r}
-input_cmd <- "grep \"^FAKE001\" /net/snowwhite/home/beckandy/research/phasing/output/19april22_switch_errors/slurm/pair.39509719*.out | awk '{print($1, \"\\t\", $2)}'"
-
-df_eagle_conf <- vroom::vroom(pipe(input_cmd), delim = "\t", col_names = c("f_name", "phase_confidence")) %>%
-  rowwise() %>%
-  mutate(pair_id = as.numeric(str_split(f_name, "\\.")[[1]][3])) %>%
-  select(pair_id, phase_confidence) %>%
-  arrange(pair_id)
-df_eagle_conf$pop <- c(rep("EUR", 100), rep("AFR", 200))
-```
-
-Oh, let's make a density plot, shall we?
-
-```{r}
-df_eagle_conf %>%
-  ggplot(aes(x = phase_confidence, colour = pop)) +
-  geom_density() +
-  ggtitle("EAGLE2 Phase Confidence")
-```
-
-
-### Number of sites
-
-```{r}
-input_cmd <- "cat /net/snowwhite/home/beckandy/research/phasing/output/19april22_switch_errors/vcf_n_sites/*all*"
-df_pseudo_sites <- vroom::vroom(pipe(input_cmd), delim = "\t", col_names = c("pair_id", "n_sites"))  %>%
-  arrange(pair_id)
-df_pseudo_sites$pop <- c(rep("EUR", 100), rep("AFR", 200))
-```
-
-And just to plot things out as we go, let's look at the density stratified by super-pop:
-
-```{r}
-df_pseudo_sites %>%
-  ggplot(aes(x = n_sites, colour = pop)) +
-  geom_density() +
-  ggtitle("Number of Sites per Pseudo-diploid")
-```
-
-### Number of heterozygous sites
-
-```{r}
-input_cmd <-  "cat /net/snowwhite/home/beckandy/research/phasing/output/19april22_switch_errors/vcf_n_sites/*hets*"
-df_pseudo_hets <- vroom::vroom(pipe(input_cmd), delim = "\t", col_names = c("pair_id", "n_het_sites"))  %>%
-  arrange(pair_id)
-
-df_pseudo_hets$pop <- c(rep("EUR", 100), rep("AFR", 200))
-```
-
-```{r}
-df_pseudo_hets %>%
-  ggplot(aes(x = n_het_sites, colour = pop)) +
-  geom_density() +
-  xlab("Number of heterozygous sites") +
-  ggtitle("Number of Heterozygous Sites per Pseudo-diploid")
-```
-
-### Heterozygous CpG
-
-```{r}
-df_pseudo_hets_cpg <- read_tsv("/net/snowwhite/home/beckandy/research/phasing/output/19april22_switch_errors/vcf/truth/cpg_hets.txt",
-                               col_names = "n_het_cpg", show_col_types = FALSE)
-df_pseudo_hets_cpg$pair_id <- 1:300
-df_pseudo_hets_cpg$pop <- c(rep("EUR", 100), rep("AFR", 200))
-```
-
-```{r}
-df_pseudo_hets_cpg %>%
-  ggplot(aes(x = n_het_cpg, colour = pop)) +
-  geom_density() +
-  xlab("Number of heterozygous CpG sites") +
-  ggtitle("Number of Heterozygous CpG Sites per Pseudo-diploid")
-```
-
-### Switches and Flips
-
-```{r}
-switch_summary <- function(pair_id, eagle_dir, beagle_dir, shapeit_dir, gc_content_1kb, bin_size = 1000){
-  switch_err_eagle <- read_csv(paste0(eagle_dir, "switch_", pair_id, ".csv"), show_col_types = FALSE) %>%
-    mutate(bin_id = ceiling(pos_start / bin_size))
-  switch_err_beagle <- read_csv(paste0(beagle_dir, "switch_", pair_id, ".csv"), show_col_types = FALSE) %>%
-    mutate(bin_id = ceiling(pos_start / bin_size))
-  switch_err_shapeit <- read_csv(paste0(shapeit_dir, "switch_", pair_id, ".csv"), show_col_types = FALSE) %>%
-    mutate(bin_id = ceiling(pos_start / bin_size))
-  
-  switch_err_eagle <- switch_err_eagle %>%
-    left_join({gc_content_1kb %>% select(bin_id, GC)}, by = "bin_id")
-  
-  switch_err_beagle <- switch_err_beagle %>%
-    left_join({gc_content_1kb %>% select(bin_id, GC)}, by = "bin_id")
-  
-  switch_err_shapeit <- switch_err_shapeit %>%
-    left_join({gc_content_1kb %>% select(bin_id, GC)}, by = "bin_id")
-  
-  # get positions of flips
-  flip_pos_eagle <- get_flip_pos(switch_err_eagle)
-  flip_pos_beagle <- get_flip_pos(switch_err_beagle)
-  flip_pos_shapeit <- get_flip_pos(switch_err_shapeit)
-  
-  # Assign switches flip status
-  switch_err_eagle$is_flip <- switch_err_eagle$pos_start %in% flip_pos_eagle
-  switch_err_beagle$is_flip <- switch_err_beagle$pos_start %in% flip_pos_beagle
-  switch_err_shapeit$is_flip <- switch_err_shapeit$pos_start %in% flip_pos_shapeit
-  
-  # stats we want to pull
-  n_switch_eagle <- length(switch_err_eagle$pos_start)
-  n_switch_beagle <- length(switch_err_beagle$pos_start)
-  n_switch_shapeit <- length(switch_err_shapeit$pos_start)
-  
-  n_flip_eagle <- sum(switch_err_eagle$is_flip)
-  n_flip_beagle <- sum(switch_err_beagle$is_flip)
-  n_flip_shapeit <- sum(switch_err_shapeit$is_flip)
-  
-  n_other_eagle <- n_switch_eagle - 2*n_flip_eagle
-  n_other_beagle <- n_switch_beagle - 2*n_flip_beagle
-  n_other_shapeit <- n_switch_shapeit - 2*n_flip_shapeit
-  
-  n_switch_cpg_eagle <- switch_err_eagle %>%
-    filter(cpg_start == 1) %>%
-    pull(is_flip) %>%
-    length()
-  n_switch_cpg_beagle <- switch_err_beagle %>%
-    filter(cpg_start == 1) %>%
-    pull(is_flip) %>%
-    length()
-  n_switch_cpg_shapeit <- switch_err_shapeit %>%
-    filter(cpg_start == 1) %>%
-    pull(is_flip) %>%
-    length()
-  
-  n_flip_cpg_eagle <- switch_err_eagle %>%
-    filter(cpg_start == 1) %>%
-    pull(is_flip) %>%
-    sum()
-  n_flip_cpg_beagle <- switch_err_beagle %>%
-    filter(cpg_start == 1) %>%
-    pull(is_flip) %>%
-    sum()
-  n_flip_cpg_shapeit <- switch_err_shapeit %>%
-    filter(cpg_start == 1) %>%
-    pull(is_flip) %>%
-    sum()
-  
-  mean_gc_switch_eagle <- mean(switch_err_eagle$GC)
-  mean_gc_switch_beagle <- mean(switch_err_beagle$GC)
-  mean_gc_switch_shapeit <- mean(switch_err_shapeit$GC)
-  
-  
-  return(data.frame(pair_id = pair_id,
-                    n_switch_eagle = n_switch_eagle,
-                    n_switch_beagle = n_switch_beagle,
-                    n_switch_shapeit = n_switch_shapeit,
-                    n_flip_eagle = n_flip_eagle,
-                    n_flip_beagle = n_flip_beagle,
-                    n_flip_shapeit = n_flip_shapeit,
-                    n_other_eagle = n_other_eagle,
-                    n_other_beagle = n_other_beagle,
-                    n_other_shapeit = n_other_shapeit,
-                    n_switch_cpg_eagle = n_switch_cpg_eagle,
-                    n_switch_cpg_beagle = n_switch_cpg_beagle,
-                    n_switch_cpg_shapeit = n_switch_cpg_shapeit,
-                    n_flip_cpg_eagle = n_flip_cpg_eagle,
-                    n_flip_cpg_beagle = n_flip_cpg_beagle,
-                    n_flip_cpg_shapeit = n_flip_cpg_shapeit,
-                    mean_gc_switch_eagle = mean_gc_switch_eagle,
-                    mean_gc_switch_beagle = mean_gc_switch_beagle,
-                    mean_gc_switch_shapeit = mean_gc_switch_shapeit
-                    ))
-}
-```
-
-And now let's get the rows for all 300 pseudo-diploids:
-
-```{r}
-switch_df <- lapply(c(1:300), 
+df_vcftools <- lapply(c(1:400), 
                     function(x){
                       switch_summary(x, eagle_switch_dir, beagle_switch_dir, shapeit_switch_dir, gc_content_1kb)
                       }) %>%
   bind_rows()
 
-switch_df$pop <- c(rep("EUR", 100), rep("AFR", 200))
+df_vcftools$pop <- c(rep("EUR", 200), rep("AFR", 200))
 ```
 
-### Smash everything together into a single data frame
+From whatshap:
 
 ```{r}
-df <- full_join(switch_df, df_pair, by = c("pair_id", "pop")) %>%
-  full_join(df_pseudo_sites, by = c("pair_id", "pop")) %>%
-  full_join(df_pseudo_hets, by = c("pair_id", "pop")) %>%
-  full_join(df_eagle_conf, by = c("pair_id", "pop")) %>%
-  full_join(df_pseudo_hets_cpg, by = c("pair_id", "pop"))
+df_wh_eagle <- get_all_whatshap("eagle")
+df_wh_beagle <- get_all_whatshap("beagle")
+df_wh_si <- get_all_whatshap("shapeit")
 ```
-
-### Rates of Errors
-
-```{r}
-df %>%
-  mutate(eagle_flip_rate = n_flip_eagle / n_het_sites,
-         beagle_flip_rate = n_flip_beagle / n_het_sites,
-         shapeit_flip_rate = n_flip_shapeit / n_het_sites) %>%
-  select(eagle_flip_rate, beagle_flip_rate, shapeit_flip_rate) %>%
-  summary()
-
-df %>%
-  mutate(eagle_flip_rate = n_flip_eagle / n_het_sites,
-         beagle_flip_rate = n_flip_beagle / n_het_sites,
-         shapeit_flip_rate = n_flip_shapeit / n_het_sites) %>%
-  select(eagle_flip_rate, beagle_flip_rate, shapeit_flip_rate) %>%
-  ggplot(aes(x = shapeit_flip_rate)) + geom_boxplot()
-
-
-df %>%
-  mutate(eagle_error_rate = n_switch_eagle / n_het_sites,
-         beagle_error_rate = n_switch_beagle / n_het_sites,
-         shapeit_error_rate = n_switch_shapeit / n_het_sites) %>%
-  select(eagle_error_rate, beagle_error_rate, shapeit_error_rate) %>%
-  summary()
-```
-
-
-And now: we make graphs
-
-**Number of switch error**
+Raw counts:
 
 ```{r}
-df %>%
-  ggplot(aes(x = n_switch_eagle, y = n_switch_shapeit, colour = pop)) +
+df_wh_si %>%
+  select(id, pop, switches) %>%
+  rename(shapeit = switches) %>%
+  inner_join({df_wh_eagle %>% select(id, pop, switches) %>% rename(eagle = switches)}, by = c("id", "pop")) %>%
+  ggplot(aes(x = shapeit, y = eagle, colour = pop)) + 
   geom_point() +
   geom_abline(slope = 1, intercept = 0) +
-  xlab("Total Errors: EAGLE") +
-  ylab("Total Errors: SHAPEIT") +
-  ggtitle("Total Errors by Method") +
-  labs(colour = "Population")
+  ggtitle("Switches") +
+  xlab("SHAPEIT5 Switches") +
+  ylab("EAGLE2 Switches") +
+  guides(colour=guide_legend(title="Population")) +
+  scale_color_jco() +
+  theme_bw(base_size = 16) +
+  theme(legend.position = c(0.2, .85))
 ```
 
 ```{r}
-df %>%
-  ggplot(aes(x = n_switch_eagle, y = n_switch_beagle, colour = pop)) +
+df_wh_si %>%
+  select(id, pop, switches) %>%
+  rename(shapeit = switches) %>%
+  inner_join({df_wh_beagle %>% select(id, pop, switches) %>% rename(beagle = switches)}, by = c("id", "pop")) %>%
+  ggplot(aes(x = shapeit, y = beagle, colour = pop)) + 
   geom_point() +
   geom_abline(slope = 1, intercept = 0) +
-  xlab("Total Errors: EAGLE") +
-  ylab("Total Errors: BEAGLE") +
-  ggtitle("Total Errors by Method") +
-  labs(colour = "Population")
+  ggtitle("Switches") +
+  xlab("SHAPEIT5 Switches") +
+  ylab("BEAGLE5 Switches") +
+  guides(colour=guide_legend(title="Population")) +
+  scale_color_jco() +
+  theme_bw(base_size = 16) +
+  theme(legend.position = c(0.8, .2))
 ```
 
 ```{r}
-df %>%
-  ggplot(aes(x = n_switch_shapeit, y = n_switch_beagle, colour = pop)) +
+df_wh_eagle %>%
+  select(id, pop, switches) %>%
+  rename(eagle = switches) %>%
+  inner_join({df_wh_beagle %>% select(id, pop, switches) %>% rename(beagle = switches)}, by = c("id", "pop")) %>%
+  ggplot(aes(x = eagle, y = beagle, colour = pop)) + 
   geom_point() +
   geom_abline(slope = 1, intercept = 0) +
-  xlab("Total Errors: SHAPEIT") +
-  ylab("Total Errors: BEAGLE") +
-  ggtitle("Total Errors by Method") +
-  labs(colour = "Population")
+  ggtitle("Switches") +
+  xlab("EAGLE2 Switches") +
+  ylab("BEAGLE5 Switches") +
+  guides(colour=guide_legend(title="Population")) +
+  scale_color_jco() +
+  theme_bw(base_size = 16) +
+  theme(legend.position = c(0.8, .2))
 ```
 
 
-```{r}
-sum(df$n_switch_eagle > df$n_switch_shapeit)
-sum(df$n_switch_beagle > df$n_switch_shapeit)
-sum(df$n_switch_beagle > df$n_switch_eagle)
-```
-
-
+Plot error rates against pairs of methods:
 
 ```{r}
-df %>%
-  mutate(non_flip_eagle = n_switch_eagle - (2*n_flip_eagle),
-         non_flip_shapeit = n_switch_shapeit - (2*n_flip_shapeit)) %>%
-  ggplot(aes(x = non_flip_eagle, y = non_flip_shapeit, colour = pop)) +
+out_file <- paste0(svg_out_dir, "error_rate_si_e.svg")
+df_wh_si %>%
+  select(id, pop, all_switchflip_rate) %>%
+  rename(shapeit = all_switchflip_rate) %>%
+  inner_join({df_wh_eagle %>% select(id, pop, all_switchflip_rate) %>% rename(eagle = all_switchflip_rate)}, by = c("id", "pop")) %>%
+  ggplot(aes(x = shapeit, y = eagle, colour = pop)) + 
   geom_point() +
   geom_abline(slope = 1, intercept = 0) +
-  xlab("Switch Errors: EAGLE") +
-  ylab("Switch Errors: SHAPEIT") +
-  ggtitle("Switch Errors by Method", "Total Errors - 2*Flip Errors") +
-  labs(colour = "Population")
+  ggtitle("Switch/Flip Rate", "#(Switches + Flips) / #(Heterozygous Sites)") +
+  xlab("SHAPEIT5 Error Rate") +
+  ylab("EAGLE2 Error Rate") +
+  guides(colour=guide_legend(title="Population")) +
+  scale_color_jco() +
+  theme_bw(base_size = 16) +
+  xlim(c(0,0.006)) + ylim(c(0,0.006)) +
+  theme(legend.position = c(0.8, .2))
+ggsave(filename = out_file, width = 5.33, height = 4.26, dpi = 300, units = "in")
+
 ```
 
 ```{r}
-df %>%
-  mutate(non_flip_eagle = n_switch_eagle - (2*n_flip_eagle),
-         non_flip_beagle = n_switch_beagle - (2*n_flip_beagle)) %>%
-  ggplot(aes(x = non_flip_eagle, y = non_flip_beagle, colour = pop)) +
+df_wh_si %>%
+  select(id, pop, all_switchflip_rate) %>%
+  rename(shapeit = all_switchflip_rate) %>%
+  inner_join({df_wh_beagle %>% select(id, pop, all_switchflip_rate) %>% rename(beagle = all_switchflip_rate)}, by = c("id", "pop")) %>%
+  ggplot(aes(x = shapeit, y = beagle, colour = pop)) + 
   geom_point() +
   geom_abline(slope = 1, intercept = 0) +
-  xlab("Switch Errors: EAGLE") +
-  ylab("Switch Errors: BEAGLE") +
-  ggtitle("Switch Errors by Method", "Total Errors - 2*Flip Errors") +
-  labs(colour = "Population")
+  ggtitle("Switch/Flip Rate", "#(Switches + Flips) / #(Heterozygous Sites)")  +
+  xlab("SHAPEIT5 Error Rate") +
+  ylab("BEAGLE5 Error Rate") +
+  guides(colour=guide_legend(title="Population")) + 
+  scale_color_jco() +
+  theme_bw(base_size = 16) +
+  xlim(c(0,0.006)) + ylim(c(0,0.006)) +
+  theme(legend.position = c(0.8, .2))
+out_file <- paste0(svg_out_dir, "error_rate_si_b.svg")
+ggsave(filename = out_file, width = 5.33, height = 4.26, dpi = 300, units = "in")
 ```
 
 ```{r}
-df %>%
-  mutate(non_flip_shapeit = n_switch_shapeit - (2*n_flip_shapeit),
-         non_flip_beagle = n_switch_beagle - (2*n_flip_beagle)) %>%
-  ggplot(aes(x = non_flip_shapeit, y = non_flip_beagle, colour = pop)) +
+df_wh_eagle %>%
+  select(id, pop, all_switchflip_rate) %>%
+  rename(eagle = all_switchflip_rate) %>%
+  inner_join({df_wh_beagle %>% select(id, pop, all_switchflip_rate) %>% rename(beagle = all_switchflip_rate)}, by = c("id", "pop")) %>%
+  ggplot(aes(x = eagle, y = beagle, colour = pop)) + 
   geom_point() +
   geom_abline(slope = 1, intercept = 0) +
-  xlab("Switch Errors: SHAPEIT") +
-  ylab("Switch Errors: BEAGLE") +
-  ggtitle("Switch Errors by Method", "Total Errors - 2*Flip Errors") +
-  labs(colour = "Population")
+  ggtitle("Switch/Flip Rate", "#(Switches + Flips) / #(Heterozygous Sites)")  +
+  xlab("EAGLE2 Error Rate") +
+  ylab("BEAGLE5 Error Rate") +
+  guides(colour=guide_legend(title="Population")) + 
+  scale_color_jco() +
+  theme_bw(base_size = 16) +
+  xlim(c(0,0.006)) + ylim(c(0,0.006)) +
+  theme(legend.position = c(0.8, .2))
+out_file <- paste0(svg_out_dir, "error_rate_e_b.svg")
+ggsave(filename = out_file, width = 5.33, height = 4.26, dpi = 300, units = "in")
 ```
 
-**Number of switch error - % heterozygosity**
+### Flips by method
 
 ```{r}
-df %>%
-  mutate(pct_het = n_het_sites / n_sites) %>%
-  ggplot(aes(x = n_switch_eagle, y = n_switch_shapeit, colour = pct_het)) +
+df_wh_si %>%
+  select(id, pop, flips, n_het) %>%
+  rename(shapeit = flips) %>%
+  inner_join({df_wh_eagle %>% select(id, pop, flips) %>% rename(eagle = flips)}, by = c("id", "pop")) %>%
+  ggplot(aes(x = shapeit, y = eagle, colour = pop)) + 
   geom_point() +
   geom_abline(slope = 1, intercept = 0) +
-  xlab("Switch Errors: EAGLE") +
-  ylab("Switch Errors: SHAPEIT") +
-  ggtitle("Switch Errors by Method") +
-  labs(colour = "Percent Heterozygosity")
+  ggtitle("Flips per pseudo-diplod") +
+  xlab("SHAPEIT5 flips") +
+  ylab("EAGLE2 flips") +
+  guides(colour=guide_legend(title="Population")) +
+  scale_color_jco() +
+  theme_bw(base_size = 16) +
+  theme(legend.position = c(0.8, .2))
 ```
 
-**Number of flip error**
-
 ```{r}
-df %>%
-  ggplot(aes(x = n_flip_eagle, y = n_flip_shapeit, colour = pop)) +
+df_wh_si %>%
+  select(id, pop, flips, n_het) %>%
+  rename(shapeit = flips) %>%
+  inner_join({df_wh_beagle %>% select(id, pop, flips) %>% rename(beagle = flips)}, by = c("id", "pop")) %>%
+  ggplot(aes(x = shapeit, y = beagle, colour = pop)) + 
   geom_point() +
   geom_abline(slope = 1, intercept = 0) +
-  xlab("Flips: EAGLE") +
-  ylab("Flips: SHAPEIT") +
-  ggtitle("Flips by Method") +
-  labs(colour = "Population")
+  ggtitle("Flips per pseudo-diplod") +
+  xlab("SHAPEIT5 flips") +
+  ylab("BEAGLE5 flips") +
+  guides(colour=guide_legend(title="Population")) +
+  scale_color_jco() +
+  theme_bw(base_size = 16) +
+  theme(legend.position = c(0.8, .2))
 ```
 
 ```{r}
-df %>%
-  ggplot(aes(x = n_flip_eagle, y = n_flip_beagle, colour = pop)) +
+df_wh_eagle %>%
+  select(id, pop, flips, n_het) %>%
+  rename(eagle = flips) %>%
+  inner_join({df_wh_beagle %>% select(id, pop, flips) %>% rename(beagle = flips)}, by = c("id", "pop")) %>%
+  ggplot(aes(x = eagle, y = beagle, colour = pop)) + 
   geom_point() +
   geom_abline(slope = 1, intercept = 0) +
-  xlab("Flips: EAGLE") +
-  ylab("Flips: BEAGLE") +
-  ggtitle("Flips by Method") +
-  labs(colour = "Population")
+  ggtitle("Flips per pseudo-diplod") +
+  xlab("EAGLE2 flips") +
+  ylab("BEAGLE5 flips") +
+  guides(colour=guide_legend(title="Population")) +
+  scale_color_jco() +
+  theme_bw(base_size = 16) +
+  theme(legend.position = c(0.8, .2))
 ```
 
+#### Flip Rate
 ```{r}
-df %>%
-  ggplot(aes(x = n_flip_shapeit, y = n_flip_beagle, colour = pop)) +
+df_wh_si %>%
+  select(id, pop, flips, n_het) %>%
+  mutate(flips = flips / (n_het)) %>%
+  rename(shapeit = flips) %>%
+  inner_join({df_wh_eagle %>% 
+      select(id, pop, flips, n_het) %>% 
+      mutate(flips = flips / (n_het)) %>%
+      rename(eagle = flips)}, by = c("id", "pop")) %>%
+  ggplot(aes(x = shapeit, y = eagle, colour = pop)) + 
   geom_point() +
   geom_abline(slope = 1, intercept = 0) +
-  xlab("Flips: SHAPEIT") +
-  ylab("Flips: BEAGLE") +
-  ggtitle("Flips by Method") +
-  labs(colour = "Population")
+  ggtitle("Flip Rate", "#(Flips) / #(Heterozygous Sites)") +
+  xlab("SHAPEIT5 Flip Rate") +
+  ylab("EAGLE2 flips") +
+  guides(colour=guide_legend(title="Population")) + 
+  scale_color_jco() +
+  theme_bw(base_size = 16) +
+  xlim(c(0,0.003)) + ylim(c(0,0.003)) +
+  theme(legend.position = c(0.8, .2))
+out_file <- paste0(svg_out_dir, "flip_rate_s_e.svg")
+ggsave(filename = out_file, width = 5.33, height = 4.26, dpi = 300, units = "in")
+
+df_wh_si %>%
+  select(id, pop, flips, n_het) %>%
+  mutate(flips = flips / (n_het)) %>%
+  rename(shapeit = flips) %>%
+  inner_join({df_wh_beagle %>% 
+      select(id, pop, flips, n_het) %>% 
+      mutate(flips = flips / (n_het)) %>%
+      rename(beagle = flips)}, by = c("id", "pop")) %>%
+  ggplot(aes(x = shapeit, y = beagle, colour = pop)) + 
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  ggtitle("Flip Rate", "# Flips / #(Heterozygous Sites)") +
+  xlab("SHAPEIT5 Flip Rate") +
+  ylab("BEAGLE5 Flip Rate") +
+  guides(colour=guide_legend(title="Population")) +
+  scale_color_jco() +
+  theme_bw(base_size = 16) +
+  xlim(c(0,0.003)) + ylim(c(0,0.003)) +
+  theme(legend.position = c(0.8, .2))
+out_file <- paste0(svg_out_dir, "flip_rate_s_b.svg")
+ggsave(filename = out_file, width = 5.33, height = 4.26, dpi = 300, units = "in")
+
+df_wh_eagle %>%
+  select(id, pop, flips, n_het) %>%
+  mutate(flips = flips / (n_het)) %>%
+  rename(eagle = flips) %>%
+  inner_join({df_wh_beagle %>% 
+      select(id, pop, flips, n_het) %>% 
+      mutate(flips = flips / (n_het)) %>%
+      rename(beagle = flips)}, by = c("id", "pop")) %>%
+  ggplot(aes(x = eagle, y = beagle, colour = pop)) + 
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  ggtitle("Flip Rate", "# Flips / #(Heterozygous Sites)") +
+  xlab("EAGLE2 flips") +
+  ylab("BEAGLE5 flips") +
+  guides(colour=guide_legend(title="Population")) +
+  scale_color_jco() +
+  theme_bw(base_size = 16) +
+  xlim(c(0,0.003)) + ylim(c(0,0.003)) +
+  theme(legend.position = c(0.8, .2))
+out_file <- paste0(svg_out_dir, "flip_rate_b_e.svg")
+ggsave(filename = out_file, width = 5.33, height = 4.26, dpi = 300, units = "in")
+```
+
+#### Tables for ASHG 2022
+
+```{r}
+library(corrr)
+df_wh_beagle %>% 
+  select(pop, id, n_het) %>% 
+  rename(beagle = n_het) %>%
+  full_join({
+    df_wh_eagle %>%
+      select(pop, id, n_het) %>%
+      rename(eagle = n_het)
+  }) %>%
+  select(eagle, beagle) %>%
+  correlate()
+```
+
+
+```{r}
+old <- options(pillar.sigfig = 7)
+df_wh_beagle %>% 
+  select(pop, n_het, total_errors, switches, flips)  %>%
+  mutate(error_rate = total_errors / n_het,
+         flip_rate = flips / n_het, 
+         non_flip_rate = switches / n_het) %>%
+  group_by(pop) %>%
+  summarize(across(n_het:non_flip_rate, ~ mean(.x, na.rm=T))) 
+df_wh_eagle %>% 
+  select(pop, n_het, total_errors, switches, flips) %>%
+  mutate(error_rate = total_errors / n_het,
+         flip_rate = flips / n_het, 
+         non_flip_rate = switches / n_het) %>%
+  group_by(pop) %>%
+  summarize(across(n_het:non_flip_rate, ~ mean(.x, na.rm=T))) 
+df_wh_si %>% 
+  select(pop, n_het, total_errors, switches, flips) %>%
+  mutate(error_rate = total_errors / n_het,
+         flip_rate = flips / n_het, 
+         non_flip_rate = switches / n_het) %>%
+  group_by(pop) %>%
+  summarize(across(n_het:non_flip_rate, ~ mean(.x, na.rm=T))) 
+```
+
+### Errors at CpGs
+
+Proportion of errors at CpG
+
+```{r}
+df_vcftools %>%
+  mutate(prop_error_eagle = n_switch_cpg_eagle / n_switch_eagle,
+         prop_error_shapeit = n_switch_cpg_shapeit / n_switch_shapeit,
+         prop_error_beagle = n_switch_cpg_beagle / n_switch_beagle) %>%
+  select(pop, starts_with("prop_error")) %>%
+  rename(EAGLE2 = prop_error_eagle,
+         BEAGLE5 = prop_error_beagle,
+         SHAPEIT5 = prop_error_shapeit) %>%
+  pivot_longer(-pop, names_to = "method",  values_to = "prop") %>%
+  ggplot(aes(x = method, y = prop)) + 
+  geom_boxplot() +
+  xlab("Phasing Method") +
+  ylab("Proportion of errors at CpG") +
+  geom_abline(aes(slope = 0, intercept = background_cpg_het, colour = 'red'), show.legend = TRUE) +
+  scale_color_manual(values = "red") +
+  ggtitle("Proportion of Phasing Errors at CpG Sites") +
+  theme_bw(base_size = 14) + labs(color = "") +
+  scale_color_discrete(labels = "Background CpG Rate") +
+  theme(legend.position = c(0.75, 0.9),
+        legend.box.background = element_rect(color="black", linewidth=1),
+        legend.title=element_blank())
+out_file <- paste0(svg_out_dir, "prop_errors_cpg.svg")
+ggsave(filename = out_file, width = 8.05, height = 6.44, dpi = 300, units = "in")
+
+df_vcftools %>%
+  mutate(prop_error_eagle = n_flip_cpg_eagle / n_flip_eagle,
+         prop_error_shapeit = n_flip_cpg_shapeit / n_flip_shapeit,
+         prop_error_beagle = n_flip_cpg_beagle / n_flip_beagle) %>%
+  select(pop, starts_with("prop_error")) %>%
+  rename(EAGLE2 = prop_error_eagle,
+         BEAGLE5 = prop_error_beagle,
+         SHAPEIT5 = prop_error_shapeit) %>%
+  pivot_longer(-pop, names_to = "method",  values_to = "prop") %>%
+  ggplot(aes(x = method, y = prop)) + 
+  geom_boxplot() +
+  xlab("Phasing Method") +
+  ylab("Proportion of flips at CpG") +
+  geom_abline(aes(slope = 0, intercept = background_cpg_het, colour = 'red'), show.legend = TRUE) +
+  ggtitle("Proportion of Flips Starting at CpG Sites") +
+  theme_bw(base_size = 14)  +
+  scale_color_discrete(labels = "Background CpG Rate") +
+  theme(legend.position = c(0.75, 0.9),
+        legend.box.background = element_rect(color="black", linewidth=1),
+        legend.title=element_blank())
+out_file <- paste0(svg_out_dir, "prop_flips_cpg.svg")
+ggsave(filename = out_file, width = 8.05, height = 6.44, dpi = 300, units = "in")
 ```
 
 ```{r}
-sum(df$n_flip_shapeit > df$n_flip_eagle)
-sum(df$n_flip_beagle > df$n_flip_eagle)
-sum(df$n_flip_shapeit > df$n_flip_beagle)
+df_vcftools %>%
+  mutate(prop_error_eagle = n_other_cpg_eagle / n_other_eagle,
+         prop_error_shapeit = n_other_cpg_shapeit / n_other_shapeit,
+         prop_error_beagle = n_other_cpg_beagle / n_other_beagle) %>%
+  select(pop, starts_with("prop_error")) %>%
+  rename(EAGLE = prop_error_eagle,
+         BEAGLE = prop_error_beagle,
+         SHAPEIT = prop_error_shapeit) %>%
+  pivot_longer(-pop, names_to = "method",  values_to = "prop") %>%
+  ggplot(aes(x = method, y = prop)) + 
+  geom_boxplot() +
+  xlab("Method") +
+  ylab("Proportion of switches at CpG") + 
+  geom_abline(aes(slope = 0, intercept = background_cpg_het, colour = 'red'), show.legend = TRUE) +
+  ggtitle("Proportion of Switches Starting at CpG Sites") +
+  theme_bw(base_size = 14)  +
+  scale_color_discrete(labels = "Background CpG Rate") +
+  theme(legend.position = c(0.75, 0.9),
+        legend.box.background = element_rect(color="black", linewidth=1),
+        legend.title=element_blank())
 ```
 
+
 ```{r}
-df %>%
+df_vcftools %>%
   ggplot(aes(x = n_switch_cpg_eagle, y = n_switch_cpg_shapeit, colour = pop)) +
   geom_point() +
   geom_abline(slope = 1, intercept = 0) +
-  xlab("Switches: EAGLE") +
-  ylab("Switches: SHAPEIT") +
-  ggtitle("Total Errors by Method at CpG") +
-  labs(colour = "Population")
+  ggtitle("Errors at CpGs") +
+  xlab("Errors EAGLE2") +
+  ylab("Errors SHAPEIT5") +
+  guides(colour=guide_legend(title="Population"))
 ```
 
+## background CpG
+
 ```{r}
-df %>%
-  ggplot(aes(x = n_switch_cpg_eagle, y = n_switch_cpg_beagle, colour = pop)) +
-  geom_point() +
-  geom_abline(slope = 1, intercept = 0) +
-  xlab("Switches: EAGLE") +
-  ylab("Switches: BEAGLE") +
-  ggtitle("Total Errors by Method at CpG") +
-  labs(colour = "Population")
+# df_cpg_hets  <- read_csv("/net/snowwhite/home/beckandy/research/phasing/data/ref/chrX_hets_anno.csv")
+# table(df_cpg_hets$cpg_start)
+# 254473 / (254437 + 1505670)
 ```
 
+## frequency information
+
 ```{r}
-df %>%
-  ggplot(aes(x = n_switch_cpg_beagle, y = n_switch_cpg_shapeit, colour = pop)) +
-  geom_point() +
-  geom_abline(slope = 1, intercept = 0) +
-  xlab("Switches: BEAGLE") +
-  ylab("Switches: SHAPEIT") +
-  ggtitle("Total Errors by Method at CpG") +
-  labs(colour = "Population")
+library(readr)
+# df_freq <- read_tsv("/net/snowwhite/home/beckandy/research/phasing/output/chrX_maf.tsv") %>%
+#   filter(N_ALLELES == 2) %>%
+#   rowwise() %>%
+#   mutate(AF1 = as.numeric(str_split(A1, ":")[[1]][2]),
+#          AF2 = as.numeric(str_split(A2, ":")[[1]][2])) %>%
+#   mutate(maf = min(AF1, AF2))
+# 
+# # save off to avoid long load times
+# write_tsv(df_freq, "/net/snowwhite/home/beckandy/research/phasing/output/chrX_maf_simple.tsv")
+
+df_freq <- read_tsv("/net/snowwhite/home/beckandy/research/phasing/output/chrX_maf_simple.tsv")
+
+df_freq %>%
+  ggplot(aes(x = maf)) + geom_histogram()
 ```
 
-Flips at CpGs
+## significance of enrichment
 
 ```{r}
-df %>%
-  ggplot(aes(x = n_flip_cpg_eagle, y = n_flip_cpg_shapeit, colour = pop)) +
-  geom_point() +
-  geom_abline(slope = 1, intercept = 0) +
-  xlab("Flips: EAGLE") +
-  ylab("Flips: SHAPEIT") +
-  ggtitle("Flips by Method at CpG") +
-  labs(colour = "Population")
+
+df_vcftools %>%
+  mutate(prop_error_eagle = n_switch_cpg_eagle / n_switch_eagle,
+         prop_error_shapeit = n_switch_cpg_shapeit / n_switch_shapeit,
+         prop_error_beagle = n_switch_cpg_beagle / n_switch_beagle) %>%
+  pull(prop_error_eagle) %>%
+  t.test(mu = 254437 / (254437 + 1505670))
+
+df_vcftools %>%
+  mutate(prop_error_eagle = n_switch_cpg_eagle / n_switch_eagle,
+         prop_error_shapeit = n_switch_cpg_shapeit / n_switch_shapeit,
+         prop_error_beagle = n_switch_cpg_beagle / n_switch_beagle) %>%
+  pull(prop_error_beagle) %>%
+  t.test(mu = 254437 / (254437 + 1505670))
+
+df_vcftools %>%
+  mutate(prop_error_eagle = n_switch_cpg_eagle / n_switch_eagle,
+         prop_error_shapeit = n_switch_cpg_shapeit / n_switch_shapeit,
+         prop_error_beagle = n_switch_cpg_beagle / n_switch_beagle) %>%
+  pull(prop_error_shapeit) %>%
+  t.test(mu = 254437 / (254437 + 1505670))
+
+
 ```
 
-```{r}
-df %>%
-  ggplot(aes(x = n_flip_cpg_eagle, y = n_flip_cpg_beagle, colour = pop)) +
-  geom_point() +
-  geom_abline(slope = 1, intercept = 0) +
-  xlab("Flips: EAGLE") +
-  ylab("Flips: BEAGLE") +
-  ggtitle("Flips by Method at CpG") +
-  labs(colour = "Population")
-```
+## Chi square on all 300 diploids
 
 ```{r}
-df %>%
-  ggplot(aes(x = n_flip_cpg_beagle, y = n_flip_cpg_shapeit, colour = pop)) +
-  geom_point() +
-  geom_abline(slope = 1, intercept = 0) +
-  xlab("Flips: BEAGLE") +
-  ylab("Flips: SHAPEIT") +
-  ggtitle("Flips by Method at CpG") +
-  labs(colour = "Population")
-```
+exp_p <-  254437 / (254437 + 1505670)
 
-Proportion of switches at CpGs
-
-```{r}
-df %>%
-  mutate(prop1 = n_switch_cpg_eagle / n_switch_eagle,
-         prop2 = n_switch_cpg_shapeit / n_switch_shapeit) %>%
-  ggplot(aes(x = prop1, y = prop2, colour = pop)) +
-  geom_point() +
-  geom_abline(slope = 1, intercept = 0) +
-  xlab("Proportion Switches CpG: EAGLE") +
-  ylab("Proportion Switches CpG: SHAPEIT") +
-  ggtitle("Proportion Switches CpG by Method") +
-  labs(colour = "Population")
-```
-
-```{r}
-df %>%
-  mutate(prop1 = n_switch_cpg_eagle / n_switch_eagle,
-         prop2 = n_switch_cpg_beagle / n_switch_beagle) %>%
-  ggplot(aes(x = prop1, y = prop2, colour = pop)) +
-  geom_point() +
-  geom_abline(slope = 1, intercept = 0) +
-  xlab("Proportion Switches CpG: EAGLE") +
-  ylab("Proportion Switches CpG: BEAGLE") +
-  ggtitle("Proportion Switches CpG by Method") +
-  labs(colour = "Population")
-```
-
-```{r}
-df %>%
-  mutate(prop1 = n_switch_cpg_beagle / n_switch_beagle,
-         prop2 = n_switch_cpg_shapeit / n_switch_shapeit) %>%
-  ggplot(aes(x = prop1, y = prop2, colour = pop)) +
-  geom_point() +
-  geom_abline(slope = 1, intercept = 0) +
-  xlab("Proportion Switches CpG: BEAGLE") +
-  ylab("Proportion Switches CpG: SHAPEIT") +
-  ggtitle("Proportion Switches CpG by Method") +
-  labs(colour = "Population")
-```
-
-Density version of above plot:
-
-```{r}
-df %>%
-  mutate(eagle = n_switch_cpg_eagle / n_switch_eagle,
-         shapeit = n_switch_cpg_shapeit / n_switch_shapeit,
-         beagle = n_switch_cpg_beagle / n_switch_beagle) %>%
-  select(pair_id, pop, eagle, shapeit, beagle) %>%
-  pivot_longer(eagle:beagle, "method", values_to = "switch_enrich") %>%
-  ggplot(aes(x = switch_enrich, colour = method)) +
+df_vcftools %>%
+  select(pair_id, n_switch_cpg_beagle, n_switch_beagle) %>%
+  mutate(exp_switch = exp_p * n_switch_beagle) %>%
+  mutate(chi_res = (n_switch_cpg_beagle - exp_switch)^2 / exp_switch) %>%
+  ggplot(aes(x = chi_res)) +
   geom_density() +
-  ggtitle("Total Error Proportion CpG") + 
-  xlab("CpG Error Proportion") +
-  labs(colour = "Method")
-```
+  geom_vline(xintercept = qchisq(0.05, df = 1, lower.tail = F)) +
+  ggtitle("Chi-Square Test: BEAGLE5", "Proportion of Errors at CpGs = Proportion 1KGP Variants at CpG") +
+  xlab("Density") +
+  ylab("Chi Square Statistics")
 
-Proportion Flips at CpG
-
-```{r}
-df %>%
-  mutate(prop1 = n_flip_cpg_eagle / n_flip_eagle,
-         prop2 = n_flip_cpg_shapeit / n_flip_shapeit) %>%
-  ggplot(aes(x = prop1, y = prop2, colour = pop)) +
-  geom_point() +
-  geom_abline(slope = 1, intercept = 0) +
-  xlab("Proportion Flips CpG: EAGLE") +
-  ylab("Proportion Flips CpG: SHAPEIT") +
-  ggtitle("Proportion Flips CpG by Method") +
-  labs(colour = "Population")
-```
-
-```{r}
-df %>%
-  mutate(prop1 = n_flip_cpg_eagle / n_flip_eagle,
-         prop2 = n_flip_cpg_beagle / n_flip_beagle) %>%
-  ggplot(aes(x = prop1, y = prop2, colour = pop)) +
-  geom_point() +
-  geom_abline(slope = 1, intercept = 0) +
-  xlab("Proportion Flips CpG: EAGLE") +
-  ylab("Proportion Flips CpG: BEAGLE") +
-  ggtitle("Proportion Flips CpG by Method") +
-  labs(colour = "Population")
-```
-
-```{r}
-df %>%
-  mutate(prop1 = n_flip_cpg_beagle / n_flip_beagle,
-         prop2 = n_flip_cpg_shapeit / n_flip_shapeit) %>%
-  ggplot(aes(x = prop1, y = prop2, colour = pop)) +
-  geom_point() +
-  geom_abline(slope = 1, intercept = 0) +
-  xlab("Proportion Flips CpG: BEAGLE") +
-  ylab("Proportion Flips CpG: SHAPEIT") +
-  ggtitle("Proportion Flips CpG by Method") +
-  labs(colour = "Population")
-```
-
-```{r}
-df %>%
-  mutate(eagle = n_flip_cpg_eagle / n_flip_eagle,
-         shapeit = n_flip_cpg_shapeit / n_flip_shapeit,
-         beagle = n_flip_cpg_beagle / n_flip_beagle) %>%
-  select(pair_id, pop, eagle, shapeit, beagle) %>%
-  pivot_longer(eagle:beagle, "method", values_to = "flip_enrich") %>%
-  ggplot(aes(x = flip_enrich, colour = method)) +
+df_vcftools %>%
+  select(pair_id, n_switch_cpg_eagle, n_switch_eagle) %>%
+  mutate(exp_switch = exp_p * n_switch_eagle) %>%
+  mutate(chi_res = (n_switch_cpg_eagle - exp_switch)^2 / exp_switch) %>%
+  ggplot(aes(x = chi_res)) +
   geom_density() +
-  ggtitle("Flip Proportion CpG") + 
-  xlab("CpG Flip Proportion") +
-  labs(colour = "Method")
-```
+  geom_vline(xintercept = qchisq(0.05, df = 1, lower.tail = F)) +
+  ggtitle("Chi-Square Test: EAGLE2", "Proportion of Errors at CpGs = Proportion 1KGP Variants at CpG") +
+  xlab("Density") +
+  ylab("Chi Square Statistics")
 
-### New stuff post meeting
-
-Ratio of proportion errors to background CpG rate
-
-```{r}
-df %>%
-  mutate(enrich_eagle = (n_switch_cpg_eagle/n_switch_eagle) / background_cpg,
-         enrich_shapeit = (n_switch_cpg_shapeit/n_switch_shapeit) / background_cpg) %>%
-  ggplot(aes(x = enrich_eagle, y = enrich_shapeit, color = pop)) +
-  geom_point() +
-  geom_abline(slope = 1, intercept = 0) +
-  ggtitle("Total Error CpG Enrichment") +
-  xlab("EAGLE enrichment") +
-  ylab("SHAPEIT enrichment") +
-  labs(colour = "Population")
-```
-
-```{r}
-df %>%
-  mutate(eagle = (n_switch_cpg_eagle/n_switch_eagle) / background_cpg,
-         shapeit = (n_switch_cpg_shapeit/n_switch_shapeit) / background_cpg,
-         beagle = (n_switch_cpg_beagle / n_switch_beagle) / background_cpg) %>%
-  select(pair_id, pop, eagle, beagle, shapeit) %>%
-  pivot_longer(eagle:shapeit, "method", values_to = "flip_enrich") %>%
-  ggplot(aes(x = flip_enrich, colour = method)) +
+df_vcftools %>%
+  select(pair_id, n_switch_cpg_shapeit, n_switch_shapeit) %>%
+  mutate(exp_switch = exp_p * n_switch_shapeit) %>%
+  mutate(chi_res = (n_switch_cpg_shapeit - exp_switch)^2 / exp_switch) %>%
+  ggplot(aes(x = chi_res)) +
   geom_density() +
-  ggtitle("Flip Proportion CpG") + 
-  xlab("CpG Flip Proportion") +
-  labs(colour = "Method")
+  geom_vline(xintercept = qchisq(0.05, df = 1, lower.tail = F)) +
+  ggtitle("Chi-Square Test: SHAPEIT5", "Proportion of Errors at CpGs = Proportion 1KGP Variants at CpG") +
+  xlab("Density") +
+  ylab("Chi Square Statistics")
+
+
+pchisq(9.22, df = 1, lower.tail = FALSE)
 ```
 
-CpG Flip Enrichment
+Flips:
 
 ```{r}
-df %>%
-  mutate(enrich_eagle = (n_flip_cpg_eagle/n_flip_eagle) / background_cpg,
-         enrich_shapeit = (n_flip_cpg_shapeit/n_flip_shapeit) / background_cpg) %>%
-  ggplot(aes(x = enrich_eagle, y = enrich_shapeit, color = pop)) +
-  geom_point() +
-  geom_abline(slope = 1, intercept = 0) +
-  xlab("EAGLE enrichment") +
-  ylab("SHAPEIT enrichment") +
-  ggtitle("Flip CpG Enrichment") +
-  labs(colour = "Population")
+df_vcftools %>%
+  select(pair_id, n_flip_cpg_beagle, n_flip_beagle) %>%
+  mutate(exp_switch = exp_p * n_flip_beagle) %>%
+  mutate(chi_res = (n_flip_cpg_beagle - exp_switch)^2 / exp_switch) %>%
+  ggplot(aes(x = chi_res)) +
+  geom_density() +
+  geom_vline(xintercept = qchisq(0.05, df = 1, lower.tail = F)) +
+  ggtitle("Chi-Square Test: BEAGLE5", "Proportion of Flips at CpGs = Proportion 1KGP Variants at CpG") +
+  xlab("Density") +
+  ylab("Chi Square Statistics")
+
+df_vcftools %>%
+  select(pair_id, n_flip_cpg_eagle, n_flip_eagle) %>%
+  mutate(exp_switch = exp_p * n_flip_eagle) %>%
+  mutate(chi_res = (n_flip_cpg_eagle - exp_switch)^2 / exp_switch) %>%
+  ggplot(aes(x = chi_res)) +
+  geom_density() +
+  geom_vline(xintercept = qchisq(0.05, df = 1, lower.tail = F)) +
+  ggtitle("Chi-Square Test: EAGLE2", "Proportion of Flips at CpGs = Proportion 1KGP Variants at CpG") +
+  xlab("Density") +
+  ylab("Chi Square Statistics")
+
+df_vcftools %>%
+  select(pair_id, n_flip_shapeit, n_flip_cpg_shapeit) %>%
+  mutate(exp_switch = exp_p * n_flip_shapeit) %>%
+  mutate(chi_res = (n_flip_cpg_shapeit - exp_switch)^2 / exp_switch) %>%
+  ggplot(aes(x = chi_res)) +
+  geom_density() +
+  geom_vline(xintercept = qchisq(0.05, df = 1, lower.tail = F)) +
+  ggtitle("Chi-Square Test: SHAPEIT5", "Proportion of Flips at CpGs = Proportion 1KGP Variants at CpG") +
+  xlab("Density") +
+  ylab("Chi Square Statistics")
 ```
 
-### Compare rates of CpG Het to Flip CpG
+## Distance Metrics
 
 ```{r}
-df %>%
-  mutate(shapeit = ( n_flip_cpg_shapeit  /n_flip_shapeit ) / ( n_het_cpg  /n_het_sites ),
-         eagle = ( n_flip_cpg_eagle  /n_flip_eagle ) / ( n_het_cpg  /n_het_sites ),
-         beagle = ( n_flip_cpg_beagle  /n_flip_beagle ) / ( n_het_cpg  /n_het_sites )) %>%
-  select(shapeit, eagle, beagle) %>%
-  pivot_longer(shapeit:beagle, names_to = "Method", values_to = "Enrichment") %>%
-  ggplot(aes(x = Enrichment, colour = Method )) + geom_boxplot() +
-  ggtitle("Enrichment of Flips at CpG") +
-  xlab("Proportion Flips CpG / Proportion Heterozygous Sites CpG")
-```
-
-```{r}
-df %>%
-  mutate(shapeit = ( n_flip_cpg_shapeit  /n_flip_shapeit ) / ( n_het_cpg  /n_het_sites ),
-         eagle = ( n_flip_cpg_eagle  /n_flip_eagle ) / ( n_het_cpg  /n_het_sites ),
-         beagle = ( n_flip_cpg_beagle  /n_flip_beagle ) / ( n_het_cpg  /n_het_sites )) %>%
-  select(shapeit, eagle, beagle) %>%
-  summary()
-```
-
-
-## Additional Summary Information
-
-Average number of flips and switches per pseudo-diploid:
-
-```{r}
-df %>%
-  select(pop, n_switch_eagle, n_switch_cpg_eagle,
-         n_flip_eagle, n_flip_cpg_eagle,
-         n_switch_shapeit, n_switch_cpg_shapeit,
-         n_flip_shapeit, n_flip_cpg_shapeit) %>%
-  group_by(pop) %>%
-  summarize(mean_switch_eagle = mean(n_switch_eagle),
-            sd_switch_eagle = sd(n_switch_eagle),
-            mean_switch_cpg_eagle = mean(n_switch_cpg_eagle),
-            sd_switch_cpg_eagle = sd(n_switch_cpg_eagle)) %>%
-  knitr::kable()
-```
-
-```{r}
-df %>%
-  select(pop,
-         n_switch_shapeit, n_switch_cpg_shapeit) %>%
-  group_by(pop) %>%
-  summarize(mean_switch_shapeit = mean(n_switch_shapeit),
-            sd_switch_shapeit = sd(n_switch_shapeit),
-            mean_switch_cpg_shapeit = mean(n_switch_cpg_shapeit),
-            sd_switch_cpg_shapeit = sd(n_switch_cpg_shapeit)) %>%
-  knitr::kable()
-```
-
-```{r}
-df %>%
-  select(pop, n_flip_eagle, n_flip_cpg_eagle) %>%
-  group_by(pop) %>%
-  summarize(mean_flip_eagle = mean(n_flip_eagle),
-            sd_flip_eagle = sd(n_flip_eagle),
-            mean_flip_cpg_eagle = mean(n_flip_cpg_eagle),
-            sd_flip_cpg_eagle = sd(n_flip_cpg_eagle)) %>%
-  knitr::kable()
+df_vcftools %>%
+  select(pop, starts_with("median")) %>%
+  rename(EAGLE = median_dist_eagle ,
+         BEAGLE = median_dist_beagle ,
+         SHAPEIT = median_dist_shapeit ) %>%
+  pivot_longer(-pop, names_to = "method",  values_to = "med_dist") %>%
+  ggplot(aes(x = method, y = med_dist)) + 
+  geom_boxplot() +
+  xlab("Method") +
+  ylab("Median Distance Between Errors") + 
+  ggtitle("Median Distance Between Errors") +
+  theme_bw(base_size = 14)
 ```
 
 
-```{r}
-df %>%
-  select(pop, n_flip_shapeit, n_flip_cpg_shapeit) %>%
-  group_by(pop) %>%
-  summarize(mean_flip_shapeit = mean(n_flip_shapeit),
-            sd_flip_shapeit = sd(n_flip_shapeit),
-            mean_flip_cpg_shapeit = mean(n_flip_cpg_shapeit),
-            sd_flip_cpg_shapeit = sd(n_flip_cpg_shapeit)) %>%
-  knitr::kable()
-```
 
-
-Average number flips and switches per 1kb bin:
+## MAF of switch sites (single pseudo-diploid)
 
 ```{r}
-bin_summary <- function(pair_id, eagle_dir, shapeit_dir, gc_content_1kb){
-  switch_err_eagle <- read_csv(paste0(eagle_dir, "switch_", pair_id, ".csv"), show_col_types = FALSE) %>%
-    mutate(bin_id = ceiling(pos_start / 1000),
-           big_bin_id = ceiling(pos_start / 1000000))
-  switch_err_shapeit <- read_csv(paste0(shapeit_dir, "switch_", pair_id, ".csv"), show_col_types = FALSE) %>%
-    mutate(bin_id = ceiling(pos_start / 1000),
-           big_bin_id = ceiling(pos_start / 1000000))
+df_pd_eagle <-  read_csv(paste0(eagle_switch_dir, "switch_", 1, ".csv"), show_col_types = FALSE) 
+df_pd_shapeit <- read_csv(paste0(shapeit_switch_dir, "switch_", 1, ".csv"), show_col_types = FALSE) 
+df_pd_beagle <- read_csv(paste0(beagle_switch_dir, "switch_", 1, ".csv"), show_col_types = FALSE) 
+
+flip_pos_eagle <- get_flip_pos(df_pd_eagle)
+flip_pos_beagle <- get_flip_pos(df_pd_beagle)
+flip_pos_shapeit <- get_flip_pos(df_pd_shapeit)
+
+# Assign switches flip status
+df_pd_eagle$is_flip <- df_pd_eagle$pos_end %in% flip_pos_eagle
+df_pd_beagle$is_flip <- df_pd_beagle$pos_end %in% flip_pos_beagle
+df_pd_shapeit$is_flip <- df_pd_shapeit$pos_end %in% flip_pos_shapeit
+
+df_pd_eagle$part_of_flip <- ifelse(df_pd_eagle$is_flip, TRUE, df_pd_eagle$pos_start %in% flip_pos_eagle)
+df_pd_beagle$part_of_flip <- ifelse(df_pd_beagle$is_flip, TRUE, df_pd_beagle$pos_start %in% flip_pos_beagle)
+df_pd_shapeit$part_of_flip <- ifelse(df_pd_shapeit$is_flip, TRUE, df_pd_shapeit$pos_start %in% flip_pos_shapeit)
+
+# match start pos to maf
+df_pd_beagle <- df_pd_beagle %>%
+  inner_join({df_freq %>% select(POS, maf)}, by=c("pos_start" = "POS"))
+
+df_pd_eagle <- df_pd_eagle %>%
+  inner_join({df_freq %>% select(POS, maf)}, by=c("pos_start" = "POS"))
+
+df_pd_shapeit <- df_pd_shapeit %>%
+  inner_join({df_freq %>% select(POS, maf)}, by=c("pos_start" = "POS"))
+
+df_pd_maf <- df_pd_beagle %>%
+  select(maf, is_flip) %>%
+  mutate(method = "beagle") %>%
+  bind_rows({df_pd_eagle %>% select(maf, is_flip) %>% mutate(method = "eagle")}) %>%
+   bind_rows({df_pd_shapeit %>% select(maf, is_flip) %>% mutate(method = "shapeit")})
+
+df_pd_maf %>%
+  ggplot(aes(x = maf, colour = method)) +
+  geom_density() +
+  ggtitle("MAF at switch sites", "EUR: HG01530, HG01610") +
+  xlab("MAF") +
+  ylab("Density")
+
+df_pd_maf %>%
+  filter(is_flip) %>%
+  ggplot(aes(x = maf, colour = method)) +
+  geom_density() +
+  ggtitle("MAF at flip sites", "EUR: HG01530, HG01610") +
+  xlab("MAF") +
+  ylab("Density")
   
-  switch_err_eagle <- switch_err_eagle %>%
-    left_join({gc_content_1kb %>% select(bin_id, GC)}, by = "bin_id")
+get_dens_for_pd <- function(pair_id){
+  print(pair_id)
+  df_pd_eagle <-  read_csv(paste0(eagle_switch_dir, "switch_", pair_id, ".csv"), show_col_types = FALSE) 
+  df_pd_shapeit <- read_csv(paste0(shapeit_switch_dir, "switch_", pair_id, ".csv"), show_col_types = FALSE) 
+  df_pd_beagle <- read_csv(paste0(beagle_switch_dir, "switch_", pair_id, ".csv"), show_col_types = FALSE) 
   
-  switch_err_shapeit <- switch_err_shapeit %>%
-    left_join({gc_content_1kb %>% select(bin_id, GC)}, by = "bin_id")
-  
-  # get positions of flips
-  flip_pos_eagle <- get_flip_pos(switch_err_eagle)
-  flip_pos_shapeit <- get_flip_pos(switch_err_shapeit)
+  flip_pos_eagle <- get_flip_pos(df_pd_eagle)
+  flip_pos_beagle <- get_flip_pos(df_pd_beagle)
+  flip_pos_shapeit <- get_flip_pos(df_pd_shapeit)
   
   # Assign switches flip status
-  switch_err_eagle$is_flip <- switch_err_eagle$pos_start %in% flip_pos_eagle
-  switch_err_shapeit$is_flip <- switch_err_shapeit$pos_start %in% flip_pos_shapeit
+  df_pd_eagle$is_flip <- df_pd_eagle$pos_end %in% flip_pos_eagle
+  df_pd_beagle$is_flip <- df_pd_beagle$pos_end %in% flip_pos_beagle
+  df_pd_shapeit$is_flip <- df_pd_shapeit$pos_end %in% flip_pos_shapeit
   
-  n_switch_bin_eagle <- switch_err_eagle %>%
-    select(big_bin_id) %>%
-    group_by(big_bin_id) %>%
-    summarize(n_switch_eagle = n())
+  df_pd_eagle$part_of_flip <- ifelse(df_pd_eagle$is_flip, TRUE, df_pd_eagle$pos_start %in% flip_pos_eagle)
+  df_pd_beagle$part_of_flip <- ifelse(df_pd_beagle$is_flip, TRUE, df_pd_beagle$pos_start %in% flip_pos_beagle)
+  df_pd_shapeit$part_of_flip <- ifelse(df_pd_shapeit$is_flip, TRUE, df_pd_shapeit$pos_start %in% flip_pos_shapeit)
   
-  n_switch_bin_shapeit <- switch_err_shapeit %>%
-    select(big_bin_id) %>%
-    group_by(big_bin_id) %>%
-    summarize(n_switch_shapeit = n())
+  # match start pos to maf
+  df_pd_beagle <- df_pd_beagle %>%
+    inner_join({df_freq %>% select(POS, maf)}, by=c("pos_start" = "POS"))
   
-  n_flip_bin_eagle <- switch_err_eagle %>%
-    filter(is_flip == TRUE) %>%
-    select(big_bin_id) %>%
-    group_by(big_bin_id) %>%
-    summarize(n_flip_eagle = n())
+  df_pd_eagle <- df_pd_eagle %>%
+    inner_join({df_freq %>% select(POS, maf)}, by=c("pos_start" = "POS"))
   
-  n_flip_bin_shapeit <- switch_err_shapeit %>%
-    filter(is_flip == TRUE) %>%
-    select(big_bin_id) %>%
-    group_by(big_bin_id) %>%
-    summarize(n_flip_shapeit = n())
+  df_pd_shapeit <- df_pd_shapeit %>%
+    inner_join({df_freq %>% select(POS, maf)}, by=c("pos_start" = "POS"))
   
-  final <- full_join(n_switch_bin_eagle, n_switch_bin_shapeit, by = "big_bin_id") %>%
-    full_join(n_flip_bin_eagle, by = "big_bin_id") %>%
-    full_join(n_flip_bin_shapeit, by = "big_bin_id") %>%
-    replace_na(list("n_switch_eagle" = 0, "n_switch_shapeit" = 0,
-                    "n_flip_eagle" = 0, "n_flip_shapeit" = 0))
-  final$pair_id <- pair_id
-  return(final)
+  df_pd_maf <- df_pd_beagle %>%
+    select(maf, is_flip) %>%
+    mutate(method = "beagle") %>%
+    bind_rows({df_pd_eagle %>% select(maf, is_flip) %>% mutate(method = "eagle")}) %>%
+     bind_rows({df_pd_shapeit %>% select(maf, is_flip) %>% mutate(method = "shapeit")})
+  
+  med_maf <- median(df_pd_maf$maf, na.rm = T)
+  med_maf_flip <- df_pd_maf %>%
+    filter(is_flip) %>%
+    pull(maf) %>%
+    median(na.rm=T)
+  
+  p1 <- df_pd_maf %>%
+    ggplot(aes(x = maf, colour = method)) +
+    geom_density() +
+    ggtitle("MAF at switch sites", paste0(pair_info_df$SP[pair_id],": ",pair_info_df$ID1[pair_id]," ", pair_info_df$ID2[pair_id], "; Median MAF: ", med_maf )) +
+    xlab("MAF") +
+    ylab("Density")
+  print(p1)
+  
+  p2 <- df_pd_maf %>%
+    filter(is_flip) %>%
+    ggplot(aes(x = maf, colour = method)) +
+    geom_density() +
+    ggtitle("MAF at flip sites", paste0(pair_info_df$SP[pair_id],": ",pair_info_df$ID1[pair_id]," ", pair_info_df$ID2[pair_id], "; Median MAF: ", med_maf_flip)) +
+    xlab("MAF") +
+    ylab("Density")
+  print(p2)
 }
+
+get_dens_for_pd(sample(101:300, 1))
+get_dens_for_pd(sample(1:100, 1))
+
+df_freq %>%
+  ggplot(aes(x = maf)) +
+  geom_boxplot()
+```
+
+## Distribution of errors across MB windows
+
+```{r}
+pair_id <- 27
+df_pd_eagle <-  read_csv(paste0(eagle_switch_dir, "switch_", pair_id, ".csv"), show_col_types = FALSE) 
+df_pd_shapeit <- read_csv(paste0(shapeit_switch_dir, "switch_", pair_id, ".csv"), show_col_types = FALSE) 
+df_pd_beagle <- read_csv(paste0(beagle_switch_dir, "switch_", pair_id, ".csv"), show_col_types = FALSE) 
+
+flip_pos_eagle <- get_flip_pos(df_pd_eagle)
+flip_pos_beagle <- get_flip_pos(df_pd_beagle)
+flip_pos_shapeit <- get_flip_pos(df_pd_shapeit)
+
+# Assign switches flip status
+df_pd_eagle$is_flip <- df_pd_eagle$pos_end %in% flip_pos_eagle
+df_pd_beagle$is_flip <- df_pd_beagle$pos_end %in% flip_pos_beagle
+df_pd_shapeit$is_flip <- df_pd_shapeit$pos_end %in% flip_pos_shapeit
+
+df_pd_eagle$part_of_flip <- ifelse(df_pd_eagle$is_flip, TRUE, df_pd_eagle$pos_start %in% flip_pos_eagle)
+df_pd_beagle$part_of_flip <- ifelse(df_pd_beagle$is_flip, TRUE, df_pd_beagle$pos_start %in% flip_pos_beagle)
+df_pd_shapeit$part_of_flip <- ifelse(df_pd_shapeit$is_flip, TRUE, df_pd_shapeit$pos_start %in% flip_pos_shapeit)
+
+df_pd_eagle$bin <- ceiling(df_pd_eagle$pos_start / 1000)
+df_pd_beagle$bin <- ceiling(df_pd_beagle$pos_start / 1000)
+df_pd_shapeit$bin <- ceiling(df_pd_shapeit$pos_start / 1000)
+
+df_pd_eagle %>%
+  select(bin) %>%
+  group_by(bin) %>%
+  summarize(n = n()) %>%
+  pull(n) %>%
+  table()
+
+counts_per_bin <- function(ids = 1:200, bin_w = 1000){
+  df_pd_eagle <-  read_csv(paste0(eagle_switch_dir, "switch_", ids[1], ".csv"), show_col_types = FALSE) 
+  df_pd_shapeit <- read_csv(paste0(shapeit_switch_dir, "switch_", ids[1], ".csv"), show_col_types = FALSE) 
+  df_pd_beagle <- read_csv(paste0(beagle_switch_dir, "switch_", ids[1], ".csv"), show_col_types = FALSE) 
+  
+  df_pd_eagle$bin <- ceiling(df_pd_eagle$pos_start / bin_w)
+  df_pd_beagle$bin <- ceiling(df_pd_beagle$pos_start / bin_w)
+  df_pd_shapeit$bin <- ceiling(df_pd_shapeit$pos_start / bin_w)
+  
+  df_pd_eagle <- df_pd_eagle %>%
+    select(bin) %>%
+    group_by(bin) %>%
+    summarize(n = n())
+  df_pd_beagle <- df_pd_beagle %>%
+    select(bin) %>%
+    group_by(bin) %>%
+    summarize(n = n())
+  df_pd_shapeit <- df_pd_shapeit %>%
+    select(bin) %>%
+    group_by(bin) %>%
+    summarize(n = n())
+  
+  if(length(ids) == 1){
+    df_pd_eagle$method = "eagle"
+    df_pd_beagle$method = "beagle"
+    df_pd_shapeit$method = "shapeit"
+    
+    df <- bind_rows(df_pd_beagle, df_pd_eagle) %>%
+      bind_rows(df_pd_shapeit)
+    return(df)
+  }
+  
+  for(i in 2:length(ids)){
+    df_pd_eagle2 <-  read_csv(paste0(eagle_switch_dir, "switch_", ids[i], ".csv"), show_col_types = FALSE) 
+    df_pd_shapeit2 <- read_csv(paste0(shapeit_switch_dir, "switch_", ids[i], ".csv"), show_col_types = FALSE) 
+    df_pd_beagle2 <- read_csv(paste0(beagle_switch_dir, "switch_", ids[i], ".csv"), show_col_types = FALSE) 
+    
+    df_pd_eagle2$bin <- ceiling(df_pd_eagle2$pos_start / bin_w)
+    df_pd_beagle2$bin <- ceiling(df_pd_beagle2$pos_start / bin_w)
+    df_pd_shapeit2$bin <- ceiling(df_pd_shapeit2$pos_start / bin_w)
+    
+    df_pd_eagle2 <- df_pd_eagle2 %>%
+      select(bin) %>%
+      group_by(bin) %>%
+      summarize(n = n())
+    df_pd_beagle2 <- df_pd_beagle2 %>%
+      select(bin) %>%
+      group_by(bin) %>%
+      summarize(n = n())
+    df_pd_shapeit2 <- df_pd_shapeit2 %>%
+      select(bin) %>%
+      group_by(bin) %>%
+      summarize(n = n())
+    
+    df_pd_eagle <- df_pd_eagle %>%
+      full_join(df_pd_eagle2, by = "bin") %>%
+      replace_na(list("n.x" = 0, "n.y" = 0)) %>%
+      mutate(n = n.x + n.y) %>%
+      select(bin, n)
+    df_pd_beagle <- df_pd_beagle %>%
+      full_join(df_pd_beagle2, by = "bin") %>%
+      replace_na(list("n.x" = 0, "n.y" = 0)) %>%
+      mutate(n = n.x + n.y) %>%
+      select(bin, n)
+    df_pd_shapeit <- df_pd_shapeit %>%
+      full_join(df_pd_shapeit2, by = "bin") %>%
+      replace_na(list("n.x" = 0, "n.y" = 0)) %>%
+      mutate(n = n.x + n.y) %>%
+      select(bin, n)
+  }
+  df_pd_eagle$method = "eagle"
+  df_pd_beagle$method = "beagle"
+  df_pd_shapeit$method = "shapeit"
+  
+  df <- bind_rows(df_pd_beagle, df_pd_eagle) %>%
+    bind_rows(df_pd_shapeit)
+  return(df)
+}
+
+eur_cnt_1mb <- counts_per_bin(1:200 ,bin_w = 1e6)
+afr_cnt_1mb <- counts_per_bin(201:400, bin_w = 1e6)
 ```
 
 ```{r}
-bin_df_EUR <- lapply(c(1:100), 
-                    function(x){
-                      bin_summary(x, eagle_switch_dir, shapeit_switch_dir, gc_content_1kb)
-                      }) %>%
-  bind_rows()
 
-bin_df_AFR <- lapply(c(101:300), 
-                    function(x){
-                      bin_summary(x, eagle_switch_dir, shapeit_switch_dir, gc_content_1kb)
-                      }) %>%
-  bind_rows()
-```
-
-Counts per bin
-
-```{r}
-cnt_per_bin_EUR <- bin_df_EUR %>%
-  group_by(big_bin_id) %>%
-  summarize(n_switch_eagle = sum(n_switch_eagle),
-            n_switch_shapeit = sum(n_switch_shapeit),
-            n_flip_eagle = sum(n_flip_eagle),
-            n_flip_shapeit = sum(n_flip_shapeit))
-
-cnt_per_bin_AFR <- bin_df_AFR %>%
-  group_by(big_bin_id) %>%
-  summarize(n_switch_eagle = sum(n_switch_eagle),
-            n_switch_shapeit = sum(n_switch_shapeit),
-            n_flip_eagle = sum(n_flip_eagle),
-            n_flip_shapeit = sum(n_flip_shapeit))
-
-cnt_per_bin_AFR$pop <- "AFR"
-cnt_per_bin_EUR$pop <- "EUR"
-
-cnt_per_bin <- bind_rows(cnt_per_bin_AFR, cnt_per_bin_EUR)
-```
-
-```{r}
-cnt_per_bin %>%
-  ggplot(aes(x = big_bin_id, y = n_switch_eagle, colour = pop)) +
-  geom_point() +
-  geom_line()
-```
-
-```{r}
-cnt_per_bin_EUR %>%
-  select(big_bin_id, n_switch_eagle, n_switch_shapeit) %>%
-  rename(EAGLE = n_switch_eagle, SHAPEIT = n_switch_shapeit) %>%
-  pivot_longer(EAGLE:SHAPEIT, names_to = "Method", values_to = "Switches") %>%
-  ggplot(aes(x = big_bin_id, y = Switches, colour = Method)) +
-  geom_point() +
+afr_cnt_1mb %>%
+  ggplot(aes(x = bin, y = n, colour = method)) +
   geom_line() +
-  xlab("Bin (MB)") +
-  ggtitle("Total Errors per MB Bin - EUR")
+  ggtitle("Total switches per MB Bin: AFR PDs") +
+  xlab("MB Bin") +
+  ylab("Switches") +
+  scale_color_manual(values = cbPalette)
+
+eur_cnt_1mb %>%
+  ggplot(aes(x = bin, y = n, colour = method)) +
+  geom_line() +
+  ggtitle("Total switches per MB Bin: EUR PDs") +
+  xlab("MB Bin") +
+  ylab("Switches") +
+  scale_color_manual(values = cbPalette)
 ```
 
-```{r}
-cnt_per_bin_EUR %>%
-  select(big_bin_id, n_flip_eagle, n_flip_shapeit) %>%
-  rename(EAGLE = n_flip_eagle, SHAPEIT = n_flip_shapeit) %>%
-  pivot_longer(EAGLE:SHAPEIT, names_to = "Method", values_to = "Flips") %>%
-  ggplot(aes(x = big_bin_id, y = Flips, colour = Method)) +
-  geom_point() +
-  geom_line() +
-  xlab("Bin (MB)") +
-  ggtitle("Total Flips per MB Bin - EUR")
-```
-
-```{r}
-cnt_per_bin_AFR %>%
-  select(big_bin_id, n_switch_eagle, n_switch_shapeit) %>%
-  rename(EAGLE = n_switch_eagle, SHAPEIT = n_switch_shapeit) %>%
-  pivot_longer(EAGLE:SHAPEIT, names_to = "Method", values_to = "Switches") %>%
-  ggplot(aes(x = big_bin_id, y = Switches, colour = Method)) +
-  geom_point() +
-  geom_line() +
-  xlab("Bin (MB)") +
-  ggtitle("Total Errors per MB Bin - AFR")
-```
-
-```{r}
-cnt_per_bin_AFR %>%
-  select(big_bin_id, n_flip_eagle, n_flip_shapeit) %>%
-  rename(EAGLE = n_flip_eagle, SHAPEIT = n_flip_shapeit) %>%
-  pivot_longer(EAGLE:SHAPEIT, names_to = "Method", values_to = "Flips") %>%
-  ggplot(aes(x = big_bin_id, y = Flips, colour = Method)) +
-  geom_point() +
-  geom_line() +
-  xlab("Bin (MB)") +
-  ggtitle("Total Flips per MB Bin - AFR")
-```
