@@ -552,6 +552,14 @@ output/final_switch_errors/vote
 </tr>
 <tr>
 <td style="text-align:left;">
+/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/vote/easy/
+</td>
+<td style="text-align:left;">
+output/final_switch_errors/vote/easy
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 /net/snowwhite/home/beckandy/research/phasing/data/consensus/whatshap_counts.csv
 </td>
 <td style="text-align:left;">
@@ -566,13 +574,13 @@ data/consensus/whatshap_counts.csv
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrong120e783">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongc6008a6">
 <span class="glyphicon glyphicon-ok text-success"
-aria-hidden="true"></span> <strong>Repository version:</strong> 120e783
+aria-hidden="true"></span> <strong>Repository version:</strong> c6008a6
 </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrong120e783"
+<div id="strongRepositoryversionstrongc6008a6"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -581,7 +589,7 @@ and connecting the code version to the results is critical for
 reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version 120e783.
+The results in this page were generated with repository version c6008a6.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -702,6 +710,40 @@ Message
 Rmd
 </td>
 <td>
+c6008a6
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-06
+</td>
+<td>
+wflow_publish("analysis/09012023_consensus_idea.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+d225c8e
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-06
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 120e783
 </td>
 <td>
@@ -763,6 +805,8 @@ chr (3): POP, ID1, ID2
 
 ℹ Use `spec()` to retrieve the full column specification for this data.
 ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>cbPalette &lt;- c(&quot;#999999&quot;, &quot;#E69F00&quot;, &quot;#56B4E9&quot;, &quot;#009E73&quot;, &quot;#F0E442&quot;, &quot;#0072B2&quot;, &quot;#D55E00&quot;, &quot;#CC79A7&quot;)
+library(ggsci)</code></pre>
 <pre class="r"><code>whats_dir &lt;- &quot;/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/whatshap/&quot;
 
 # df_wh_eagle &lt;- read_tsv(paste0(whats_dir, &quot;eagle/eval_1.tsv&quot;))
@@ -781,10 +825,10 @@ chr (3): POP, ID1, ID2
 <h1>Result Analysis</h1>
 <p>Having run the voting process on all 400 pseudo-diploids, let’s load
 in the results for all samples.</p>
-<pre class="r"><code>get_vote_res &lt;- function(ids = 400){
-  res_dir &lt;- &quot;/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/vote/&quot;
-  prefix &lt;- &quot;error_vote_&quot;
-  suffix &lt;- &quot;.tsv&quot;
+<pre class="r"><code>get_vote_res &lt;- function(ids = 400, 
+                         res_dir = &quot;/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/vote/&quot;,
+                         prefix = &quot;error_vote_&quot;,
+                         suffix = &quot;.tsv&quot;){
   df &lt;- read_tsv(paste0(res_dir, prefix, 1, suffix), show_col_types = FALSE) %&gt;% 
     select(starts_with(&quot;all&quot;))
   for(i in 2:ids){
@@ -797,8 +841,11 @@ in the results for all samples.</p>
 }
 
 # df &lt;- get_vote_res()
+# df_easy &lt;- get_vote_res(res_dir = &quot;/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/vote/easy/&quot;)
 # df$id &lt;- 1:400
-# df$alg &lt;- &quot;vote&quot;</code></pre>
+# df_easy$id &lt;- 1:400
+# df$alg &lt;- &quot;vote&quot;
+# df_easy$alg &lt;-&quot;simple_vote&quot;</code></pre>
 <p>Let’s also gather these results for the 3 phasing algorithms:</p>
 <pre class="r"><code>get_alg_res &lt;- function(alg, 
                         data_dir = &quot;/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/whatshap/&quot;,
@@ -829,10 +876,11 @@ in the results for all samples.</p>
 # # smash everything together
 # df &lt;- bind_rows(df, df_beagle) %&gt;%
 #   bind_rows(df_eagle) %&gt;%
-#   bind_rows(df_shapeit)
-# 
-# # save for later usage
-# write_csv(df, &quot;/net/snowwhite/home/beckandy/research/phasing/data/consensus/whatshap_counts.csv&quot;)</code></pre>
+#   bind_rows(df_shapeit) %&gt;%
+#   bind_rows(df_easy)
+
+# save for later usage
+#write_csv(df, &quot;/net/snowwhite/home/beckandy/research/phasing/data/consensus/whatshap_counts.csv&quot;)</code></pre>
 <pre class="r"><code>df &lt;- read_csv(&quot;/net/snowwhite/home/beckandy/research/phasing/data/consensus/whatshap_counts.csv&quot;)</code></pre>
 <pre><code>Rows: 2000 Columns: 7
 ── Column specification ────────────────────────────────────────────────────────
@@ -847,13 +895,53 @@ dbl (5): all_assessed_pairs, all_switches, all_switch_rate, all_switchflip_r...
 <pre class="r"><code>df %&gt;%
   select(id, pop, alg, all_switches) %&gt;%
   pivot_wider(id_cols = c(id, pop), names_from = alg, values_from = all_switches) %&gt;%
-  ggplot(aes(x = vote_easy, y = vote, colour = pop)) +
+  ggplot(aes(x = simple_vote, y = vote, colour = pop)) +
   geom_point() +
   xlab(&quot;EASY&quot;) +
   ylab(&quot;VOTE&quot;) +
   geom_abline(slope = 1, intercept = 0) +
-  ggtitle(&quot;Total Errors&quot;, &quot;EASY and VOTE&quot;)</code></pre>
+  ggtitle(&quot;Total Errors&quot;, &quot;EASY and VOTE&quot;) +
+  scale_color_jco() +
+  theme_classic(base_size = 13) +
+  theme(legend.position = c(0.8, .2))</code></pre>
 <p><img src="figure/09012023_consensus_idea.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-1">
+Past versions of unnamed-chunk-6-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+d225c8e
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-06
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>df %&gt;%
   select(id, pop, alg, all_switches) %&gt;%
   pivot_wider(id_cols = c(id, pop), names_from = alg, values_from = all_switches) %&gt;%
@@ -862,8 +950,48 @@ dbl (5): all_assessed_pairs, all_switches, all_switch_rate, all_switchflip_r...
   xlab(&quot;BEAGLE&quot;) +
   ylab(&quot;VOTE&quot;) +
   geom_abline(slope = 1, intercept = 0) +
-  ggtitle(&quot;Total Errors&quot;, &quot;BEAGLE and VOTE&quot;)</code></pre>
+  ggtitle(&quot;Total Errors&quot;, &quot;BEAGLE and VOTE&quot;) +
+  scale_color_jco() +
+  theme_classic(base_size = 13) +
+  theme(legend.position = c(0.8, .2))</code></pre>
 <p><img src="figure/09012023_consensus_idea.Rmd/unnamed-chunk-6-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-2">
+Past versions of unnamed-chunk-6-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+d225c8e
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-06
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>df %&gt;%
   select(id, pop, alg, all_switches) %&gt;%
   pivot_wider(id_cols = c(id, pop), names_from = alg, values_from = all_switches) %&gt;%
@@ -872,8 +1000,48 @@ dbl (5): all_assessed_pairs, all_switches, all_switch_rate, all_switchflip_r...
   xlab(&quot;EAGLE&quot;) +
   ylab(&quot;VOTE&quot;) +
   geom_abline(slope = 1, intercept = 0) +
-  ggtitle(&quot;Total Errors&quot;, &quot;EAGLE and VOTE&quot;)</code></pre>
+  ggtitle(&quot;Total Errors&quot;, &quot;EAGLE and VOTE&quot;) +
+  scale_color_jco() +
+  theme_classic(base_size = 13) +
+  theme(legend.position = c(0.8, .2))</code></pre>
 <p><img src="figure/09012023_consensus_idea.Rmd/unnamed-chunk-6-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-3">
+Past versions of unnamed-chunk-6-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+d225c8e
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-06
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>df %&gt;%
   select(id, pop, alg, all_switches) %&gt;%
   pivot_wider(id_cols = c(id, pop), names_from = alg, values_from = all_switches) %&gt;%
@@ -882,8 +1050,48 @@ dbl (5): all_assessed_pairs, all_switches, all_switch_rate, all_switchflip_r...
   xlab(&quot;SHAPEIT&quot;) +
   ylab(&quot;VOTE&quot;) +
   geom_abline(slope = 1, intercept = 0) +
-  ggtitle(&quot;Total Errors&quot;, &quot;SHAPEIT and VOTE&quot;)</code></pre>
+  ggtitle(&quot;Total Errors&quot;, &quot;SHAPEIT and VOTE&quot;) +
+  scale_color_jco() +
+  theme_classic(base_size = 13) +
+  theme(legend.position = c(0.8, .2))</code></pre>
 <p><img src="figure/09012023_consensus_idea.Rmd/unnamed-chunk-6-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-4">
+Past versions of unnamed-chunk-6-4.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+d225c8e
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-06
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Separate flips from switches:</p>
 <pre class="r"><code>df &lt;- df %&gt;%
   separate(all_switchflips, into = c(&quot;switches&quot;, &quot;flips&quot;), sep = &quot;/&quot;, remove = FALSE) %&gt;%
@@ -898,8 +1106,48 @@ dbl (5): all_assessed_pairs, all_switches, all_switch_rate, all_switchflip_r...
   xlab(&quot;BEAGLE&quot;) +
   ylab(&quot;VOTE&quot;) +
   geom_abline(slope = 1, intercept = 0) +
-  ggtitle(&quot;Switches&quot;, &quot;BEAGLE and VOTE&quot;)</code></pre>
+  ggtitle(&quot;Switches&quot;, &quot;BEAGLE and VOTE&quot;) +
+  scale_color_jco() +
+  theme_classic(base_size = 13) +
+  theme(legend.position = c(0.8, .2))</code></pre>
 <p><img src="figure/09012023_consensus_idea.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-1">
+Past versions of unnamed-chunk-8-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+d225c8e
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-06
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>df %&gt;%
   select(id, pop, alg, switches) %&gt;%
   pivot_wider(id_cols = c(id, pop), names_from = alg, values_from = switches) %&gt;%
@@ -908,8 +1156,48 @@ dbl (5): all_assessed_pairs, all_switches, all_switch_rate, all_switchflip_r...
   xlab(&quot;EAGLE&quot;) +
   ylab(&quot;VOTE&quot;) +
   geom_abline(slope = 1, intercept = 0) +
-  ggtitle(&quot;Switches&quot;, &quot;EAGLE and VOTE&quot;)</code></pre>
+  ggtitle(&quot;Switches&quot;, &quot;EAGLE and VOTE&quot;) +
+  scale_color_jco() +
+  theme_classic(base_size = 13) +
+  theme(legend.position = c(0.8, .2))</code></pre>
 <p><img src="figure/09012023_consensus_idea.Rmd/unnamed-chunk-8-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-2">
+Past versions of unnamed-chunk-8-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+d225c8e
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-06
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>df %&gt;%
   select(id, pop, alg, switches) %&gt;%
   pivot_wider(id_cols = c(id, pop), names_from = alg, values_from = switches) %&gt;%
@@ -918,8 +1206,48 @@ dbl (5): all_assessed_pairs, all_switches, all_switch_rate, all_switchflip_r...
   xlab(&quot;SHAPEIT&quot;) +
   ylab(&quot;VOTE&quot;) +
   geom_abline(slope = 1, intercept = 0) +
-  ggtitle(&quot;Switches&quot;, &quot;SHAPEIT and VOTE&quot;)</code></pre>
+  ggtitle(&quot;Switches&quot;, &quot;SHAPEIT and VOTE&quot;) +
+  scale_color_jco() +
+  theme_classic(base_size = 13) +
+  theme(legend.position = c(0.8, .2))</code></pre>
 <p><img src="figure/09012023_consensus_idea.Rmd/unnamed-chunk-8-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-3">
+Past versions of unnamed-chunk-8-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+d225c8e
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-06
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>df %&gt;%
   select(id, pop, alg, flips) %&gt;%
   pivot_wider(id_cols = c(id, pop), names_from = alg, values_from = flips) %&gt;%
@@ -928,8 +1256,48 @@ dbl (5): all_assessed_pairs, all_switches, all_switch_rate, all_switchflip_r...
   xlab(&quot;BEAGLE&quot;) +
   ylab(&quot;VOTE&quot;) +
   geom_abline(slope = 1, intercept = 0) +
-  ggtitle(&quot;Flips&quot;, &quot;BEAGLE and VOTE&quot;)</code></pre>
+  ggtitle(&quot;Flips&quot;, &quot;BEAGLE and VOTE&quot;) +
+  scale_color_jco() +
+  theme_classic(base_size = 13) +
+  theme(legend.position = c(0.8, .2))</code></pre>
 <p><img src="figure/09012023_consensus_idea.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-1">
+Past versions of unnamed-chunk-9-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+d225c8e
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-06
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>df %&gt;%
   select(id, pop, alg, flips) %&gt;%
   pivot_wider(id_cols = c(id, pop), names_from = alg, values_from = flips) %&gt;%
@@ -938,8 +1306,48 @@ dbl (5): all_assessed_pairs, all_switches, all_switch_rate, all_switchflip_r...
   xlab(&quot;EAGLE&quot;) +
   ylab(&quot;VOTE&quot;) +
   geom_abline(slope = 1, intercept = 0) +
-  ggtitle(&quot;Flips&quot;, &quot;EAGLE and VOTE&quot;)</code></pre>
+  ggtitle(&quot;Flips&quot;, &quot;EAGLE and VOTE&quot;) +
+  scale_color_jco() +
+  theme_classic(base_size = 13) +
+  theme(legend.position = c(0.8, .2))</code></pre>
 <p><img src="figure/09012023_consensus_idea.Rmd/unnamed-chunk-9-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-2">
+Past versions of unnamed-chunk-9-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+d225c8e
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-06
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>df %&gt;%
   select(id, pop, alg, flips) %&gt;%
   pivot_wider(id_cols = c(id, pop), names_from = alg, values_from = flips) %&gt;%
@@ -948,8 +1356,48 @@ dbl (5): all_assessed_pairs, all_switches, all_switch_rate, all_switchflip_r...
   xlab(&quot;SHAPEIT&quot;) +
   ylab(&quot;VOTE&quot;) +
   geom_abline(slope = 1, intercept = 0) +
-  ggtitle(&quot;Flips&quot;, &quot;SHAPEIT and VOTE&quot;)</code></pre>
+  ggtitle(&quot;Flips&quot;, &quot;SHAPEIT and VOTE&quot;) +
+  scale_color_jco() +
+  theme_classic(base_size = 13) +
+  theme(legend.position = c(0.8, .2))</code></pre>
 <p><img src="figure/09012023_consensus_idea.Rmd/unnamed-chunk-9-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-3">
+Past versions of unnamed-chunk-9-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+d225c8e
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-06
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -982,9 +1430,9 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] lubridate_1.9.2 forcats_1.0.0   stringr_1.5.0   dplyr_1.1.2    
- [5] purrr_1.0.1     readr_2.1.4     tidyr_1.3.0     tibble_3.2.1   
- [9] ggplot2_3.4.2   tidyverse_2.0.0 workflowr_1.7.0
+ [1] ggsci_3.0.0     lubridate_1.9.2 forcats_1.0.0   stringr_1.5.0  
+ [5] dplyr_1.1.2     purrr_1.0.1     readr_2.1.4     tidyr_1.3.0    
+ [9] tibble_3.2.1    ggplot2_3.4.2   tidyverse_2.0.0 workflowr_1.7.0
 
 loaded via a namespace (and not attached):
  [1] sass_0.4.1       utf8_1.2.2       generics_0.1.3   stringi_1.7.12  
