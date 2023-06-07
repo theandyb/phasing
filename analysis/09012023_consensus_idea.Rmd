@@ -13,24 +13,24 @@ The idea here is to take the phased VCFs from EAGLE, BEAGLE, and SHAPEIT and som
 
 ```{r}
 library(tidyverse)
-id_df <- read_csv("/net/snowwhite/home/beckandy/research/phasing/data/sample_pairs_16aug2022.csv", 
+id_df <- read_csv("/net/snowwhite/home/beckandy/research/phasing/data/sample_pairs_18apr2023.csv", 
                   col_names = c("POP", "ID1", "ID2"))
 ```
 
 ```{r}
-whats_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/filter_switch_errors/whatshap/"
+whats_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/whatshap/"
 
-df_wh_eagle <- read_tsv(paste0(whats_dir, "eagle/eval_1.tsv"))
-df_wh_beagle <- read_tsv(paste0(whats_dir, "beagle/eval_1.tsv"))
-df_wh_shapeit <- read_tsv(paste0(whats_dir, "shapeit/eval_1.tsv"))
-
-df_wh_eagle$all_switches
-df_wh_beagle$all_switches
-df_wh_shapeit$all_switches
-
-df_wh_eagle$all_switchflips
-df_wh_beagle$all_switchflips
-df_wh_shapeit$all_switchflips
+# df_wh_eagle <- read_tsv(paste0(whats_dir, "eagle/eval_1.tsv"))
+# df_wh_beagle <- read_tsv(paste0(whats_dir, "beagle/eval_1.tsv"))
+# df_wh_shapeit <- read_tsv(paste0(whats_dir, "shapeit/eval_1.tsv"))
+# 
+# df_wh_eagle$all_switches
+# df_wh_beagle$all_switches
+# df_wh_shapeit$all_switches
+# 
+# df_wh_eagle$all_switchflips
+# df_wh_beagle$all_switchflips
+# df_wh_shapeit$all_switchflips
 ```
 
 # Result Analysis
@@ -39,7 +39,7 @@ Having run the voting process on all 400 pseudo-diploids, let's load in the resu
 
 ```{r}
 get_vote_res <- function(ids = 400){
-  res_dir <- "/net/snowwhite/home/beckandy/research/phasing/data/consensus/"
+  res_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/vote/"
   prefix <- "error_vote_"
   suffix <- ".tsv"
   df <- read_tsv(paste0(res_dir, prefix, 1, suffix), show_col_types = FALSE) %>% 
@@ -53,16 +53,16 @@ get_vote_res <- function(ids = 400){
   return(df)
 }
 
-df <- get_vote_res()
-df$id <- 1:400
-df$alg <- "vote"
+# df <- get_vote_res()
+# df$id <- 1:400
+# df$alg <- "vote"
 ```
 
 Let's also gather these results for the 3 phasing algorithms:
 
 ```{r}
 get_alg_res <- function(alg, 
-                        data_dir = "/net/snowwhite/home/beckandy/research/phasing/output/filter_switch_errors/whatshap/",
+                        data_dir = "/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/whatshap/",
                         ids = 400){
   base_dir <- paste0(data_dir, alg, "/")
   df <- read_tsv(paste0(base_dir, "eval_", 1,".tsv"), show_col_types = FALSE) %>%
@@ -75,37 +75,46 @@ get_alg_res <- function(alg,
   }
   return(df)
 }
-df_beagle <- get_alg_res("beagle")
-df_eagle <- get_alg_res("eagle")
-df_shapeit <- get_alg_res("shapeit")
-
-df_beagle$id <- 1:400
-df_eagle$id <- 1:400
-df_shapeit$id <- 1:400
-
-df_beagle$alg <- "beagle"
-df_eagle$alg <- "eagle"
-df_shapeit$alg <- "shapeit"
-
-# smash everything together
-df <- bind_rows(df, df_beagle) %>%
-  bind_rows(df_eagle) %>%
-  bind_rows(df_shapeit)
-
-# save for later usage
-write_csv(df, "/net/snowwhite/home/beckandy/research/phasing/data/consensus/whatshap_counts.csv")
+# df_beagle <- get_alg_res("beagle")
+# df_eagle <- get_alg_res("eagle")
+# df_shapeit <- get_alg_res("shapeit")
+# 
+# df_beagle$id <- 1:400
+# df_eagle$id <- 1:400
+# df_shapeit$id <- 1:400
+# 
+# df_beagle$alg <- "beagle"
+# df_eagle$alg <- "eagle"
+# df_shapeit$alg <- "shapeit"
+# 
+# # smash everything together
+# df <- bind_rows(df, df_beagle) %>%
+#   bind_rows(df_eagle) %>%
+#   bind_rows(df_shapeit)
+# 
+# # save for later usage
+# write_csv(df, "/net/snowwhite/home/beckandy/research/phasing/data/consensus/whatshap_counts.csv")
 ```
 
 ```{r}
-library(tidyverse)
 df <- read_csv("/net/snowwhite/home/beckandy/research/phasing/data/consensus/whatshap_counts.csv")
 
-df$pop <- c(rep(rep(c("EUR", "AFR"), each = 200), times = 4))
+df$pop <- c(rep(rep(c("EUR", "AFR"), each = 200), times = 5))
 ```
 
 Plots by algorithm
 
 ```{r}
+df %>%
+  select(id, pop, alg, all_switches) %>%
+  pivot_wider(id_cols = c(id, pop), names_from = alg, values_from = all_switches) %>%
+  ggplot(aes(x = vote_easy, y = vote, colour = pop)) +
+  geom_point() +
+  xlab("EASY") +
+  ylab("VOTE") +
+  geom_abline(slope = 1, intercept = 0) +
+  ggtitle("Total Errors", "EASY and VOTE")
+
 df %>%
   select(id, pop, alg, all_switches) %>%
   pivot_wider(id_cols = c(id, pop), names_from = alg, values_from = all_switches) %>%
