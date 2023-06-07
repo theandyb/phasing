@@ -15,6 +15,8 @@ The idea here is to take the phased VCFs from EAGLE, BEAGLE, and SHAPEIT and som
 library(tidyverse)
 id_df <- read_csv("/net/snowwhite/home/beckandy/research/phasing/data/sample_pairs_18apr2023.csv", 
                   col_names = c("POP", "ID1", "ID2"))
+cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+library(ggsci)
 ```
 
 ```{r}
@@ -38,10 +40,10 @@ whats_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/final_switch_
 Having run the voting process on all 400 pseudo-diploids, let's load in the results for all samples.
 
 ```{r}
-get_vote_res <- function(ids = 400){
-  res_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/vote/"
-  prefix <- "error_vote_"
-  suffix <- ".tsv"
+get_vote_res <- function(ids = 400, 
+                         res_dir = "/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/vote/",
+                         prefix = "error_vote_",
+                         suffix = ".tsv"){
   df <- read_tsv(paste0(res_dir, prefix, 1, suffix), show_col_types = FALSE) %>% 
     select(starts_with("all"))
   for(i in 2:ids){
@@ -54,8 +56,11 @@ get_vote_res <- function(ids = 400){
 }
 
 # df <- get_vote_res()
+# df_easy <- get_vote_res(res_dir = "/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/vote/easy/")
 # df$id <- 1:400
+# df_easy$id <- 1:400
 # df$alg <- "vote"
+# df_easy$alg <-"simple_vote"
 ```
 
 Let's also gather these results for the 3 phasing algorithms:
@@ -90,10 +95,11 @@ get_alg_res <- function(alg,
 # # smash everything together
 # df <- bind_rows(df, df_beagle) %>%
 #   bind_rows(df_eagle) %>%
-#   bind_rows(df_shapeit)
-# 
-# # save for later usage
-# write_csv(df, "/net/snowwhite/home/beckandy/research/phasing/data/consensus/whatshap_counts.csv")
+#   bind_rows(df_shapeit) %>%
+#   bind_rows(df_easy)
+
+# save for later usage
+#write_csv(df, "/net/snowwhite/home/beckandy/research/phasing/data/consensus/whatshap_counts.csv")
 ```
 
 ```{r}
@@ -108,12 +114,15 @@ Plots by algorithm
 df %>%
   select(id, pop, alg, all_switches) %>%
   pivot_wider(id_cols = c(id, pop), names_from = alg, values_from = all_switches) %>%
-  ggplot(aes(x = vote_easy, y = vote, colour = pop)) +
+  ggplot(aes(x = simple_vote, y = vote, colour = pop)) +
   geom_point() +
   xlab("EASY") +
   ylab("VOTE") +
   geom_abline(slope = 1, intercept = 0) +
-  ggtitle("Total Errors", "EASY and VOTE")
+  ggtitle("Total Errors", "EASY and VOTE") +
+  scale_color_jco() +
+  theme_classic(base_size = 13) +
+  theme(legend.position = c(0.8, .2))
 
 df %>%
   select(id, pop, alg, all_switches) %>%
@@ -123,7 +132,10 @@ df %>%
   xlab("BEAGLE") +
   ylab("VOTE") +
   geom_abline(slope = 1, intercept = 0) +
-  ggtitle("Total Errors", "BEAGLE and VOTE")
+  ggtitle("Total Errors", "BEAGLE and VOTE") +
+  scale_color_jco() +
+  theme_classic(base_size = 13) +
+  theme(legend.position = c(0.8, .2))
 
 df %>%
   select(id, pop, alg, all_switches) %>%
@@ -133,7 +145,10 @@ df %>%
   xlab("EAGLE") +
   ylab("VOTE") +
   geom_abline(slope = 1, intercept = 0) +
-  ggtitle("Total Errors", "EAGLE and VOTE")
+  ggtitle("Total Errors", "EAGLE and VOTE") +
+  scale_color_jco() +
+  theme_classic(base_size = 13) +
+  theme(legend.position = c(0.8, .2))
 
 df %>%
   select(id, pop, alg, all_switches) %>%
@@ -143,7 +158,10 @@ df %>%
   xlab("SHAPEIT") +
   ylab("VOTE") +
   geom_abline(slope = 1, intercept = 0) +
-  ggtitle("Total Errors", "SHAPEIT and VOTE")
+  ggtitle("Total Errors", "SHAPEIT and VOTE") +
+  scale_color_jco() +
+  theme_classic(base_size = 13) +
+  theme(legend.position = c(0.8, .2))
 ```
 
 Separate flips from switches:
@@ -166,7 +184,10 @@ df %>%
   xlab("BEAGLE") +
   ylab("VOTE") +
   geom_abline(slope = 1, intercept = 0) +
-  ggtitle("Switches", "BEAGLE and VOTE")
+  ggtitle("Switches", "BEAGLE and VOTE") +
+  scale_color_jco() +
+  theme_classic(base_size = 13) +
+  theme(legend.position = c(0.8, .2))
 
 df %>%
   select(id, pop, alg, switches) %>%
@@ -176,7 +197,10 @@ df %>%
   xlab("EAGLE") +
   ylab("VOTE") +
   geom_abline(slope = 1, intercept = 0) +
-  ggtitle("Switches", "EAGLE and VOTE")
+  ggtitle("Switches", "EAGLE and VOTE") +
+  scale_color_jco() +
+  theme_classic(base_size = 13) +
+  theme(legend.position = c(0.8, .2))
 
 df %>%
   select(id, pop, alg, switches) %>%
@@ -186,7 +210,10 @@ df %>%
   xlab("SHAPEIT") +
   ylab("VOTE") +
   geom_abline(slope = 1, intercept = 0) +
-  ggtitle("Switches", "SHAPEIT and VOTE")
+  ggtitle("Switches", "SHAPEIT and VOTE") +
+  scale_color_jco() +
+  theme_classic(base_size = 13) +
+  theme(legend.position = c(0.8, .2))
 ```
 
 ```{r}
@@ -198,7 +225,10 @@ df %>%
   xlab("BEAGLE") +
   ylab("VOTE") +
   geom_abline(slope = 1, intercept = 0) +
-  ggtitle("Flips", "BEAGLE and VOTE")
+  ggtitle("Flips", "BEAGLE and VOTE") +
+  scale_color_jco() +
+  theme_classic(base_size = 13) +
+  theme(legend.position = c(0.8, .2))
 
 df %>%
   select(id, pop, alg, flips) %>%
@@ -208,7 +238,10 @@ df %>%
   xlab("EAGLE") +
   ylab("VOTE") +
   geom_abline(slope = 1, intercept = 0) +
-  ggtitle("Flips", "EAGLE and VOTE")
+  ggtitle("Flips", "EAGLE and VOTE") +
+  scale_color_jco() +
+  theme_classic(base_size = 13) +
+  theme(legend.position = c(0.8, .2))
 
 df %>%
   select(id, pop, alg, flips) %>%
@@ -218,5 +251,8 @@ df %>%
   xlab("SHAPEIT") +
   ylab("VOTE") +
   geom_abline(slope = 1, intercept = 0) +
-  ggtitle("Flips", "SHAPEIT and VOTE")
+  ggtitle("Flips", "SHAPEIT and VOTE") +
+  scale_color_jco() +
+  theme_classic(base_size = 13) +
+  theme(legend.position = c(0.8, .2))
 ```
