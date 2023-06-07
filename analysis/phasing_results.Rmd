@@ -182,7 +182,61 @@ df_wh_eagle <- get_all_whatshap("eagle")
 df_wh_beagle <- get_all_whatshap("beagle")
 df_wh_si <- get_all_whatshap("shapeit")
 ```
-Raw counts:
+
+### Total Errors
+
+```{r}
+df_wh_si %>%
+  select(id, pop, total_errors) %>%
+  rename(shapeit = total_errors) %>%
+  inner_join({df_wh_eagle %>% select(id, pop, total_errors) %>% rename(eagle = total_errors)}, by = c("id", "pop")) %>%
+  ggplot(aes(x = shapeit, y = eagle, colour = pop)) + 
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  ggtitle("Total Errors") +
+  xlab("SHAPEIT5 Errors") +
+  ylab("EAGLE2 Errors") +
+  guides(colour=guide_legend(title="Population")) +
+  scale_color_jco() +
+  theme_bw(base_size = 14) +
+  theme(legend.position = c(0.2, .85))
+```
+
+```{r}
+df_wh_si %>%
+  select(id, pop, total_errors) %>%
+  rename(shapeit = total_errors) %>%
+  inner_join({df_wh_beagle %>% select(id, pop, total_errors) %>% rename(beagle = total_errors)}, by = c("id", "pop")) %>%
+  ggplot(aes(x = shapeit, y = beagle, colour = pop)) + 
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  ggtitle("Total Errors") +
+  xlab("SHAPEIT5 Errors") +
+  ylab("BEAGLE5 Errors") +
+  guides(colour=guide_legend(title="Population")) +
+  scale_color_jco() +
+  theme_bw(base_size = 14) +
+  theme(legend.position = c(0.8, .2))
+```
+
+```{r}
+df_wh_eagle %>%
+  select(id, pop, total_errors) %>%
+  rename(eagle = total_errors) %>%
+  inner_join({df_wh_beagle %>% select(id, pop, total_errors) %>% rename(beagle = total_errors)}, by = c("id", "pop")) %>%
+  ggplot(aes(x = eagle, y = beagle, colour = pop)) + 
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  ggtitle("Total Errors") +
+  xlab("EAGLE2 Errors") +
+  ylab("BEAGLE5 Errors") +
+  guides(colour=guide_legend(title="Population")) +
+  scale_color_jco() +
+  theme_bw(base_size = 16) +
+  theme(legend.position = c(0.8, .2))
+```
+
+### Switches
 
 ```{r}
 df_wh_si %>%
