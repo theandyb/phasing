@@ -305,6 +305,7 @@ df_wh_eagle %>%
   theme(legend.position = c(0.8, .2))
 ```
 
+### Error Rates
 
 Plot error rates against pairs of methods:
 
@@ -422,7 +423,8 @@ df_wh_eagle %>%
   theme(legend.position = c(0.8, .2))
 ```
 
-#### Flip Rate
+### Flip Rate
+
 ```{r}
 df_wh_si %>%
   select(id, pop, flips, n_het) %>%
@@ -488,6 +490,76 @@ df_wh_eagle %>%
   xlim(c(0,0.003)) + ylim(c(0,0.003)) +
   theme(legend.position = c(0.8, .2))
 out_file <- paste0(svg_out_dir, "flip_rate_b_e.svg")
+ggsave(filename = out_file, width = 5.33, height = 4.26, dpi = 300, units = "in")
+```
+
+### Switch Rate
+
+```{r}
+df_wh_si %>%
+  select(id, pop, switches, n_het) %>%
+  mutate(switches = switches / (n_het)) %>%
+  rename(shapeit = switches) %>%
+  inner_join({df_wh_eagle %>% 
+      select(id, pop, switches, n_het) %>% 
+      mutate(switches = switches / (n_het)) %>%
+      rename(eagle = switches)}, by = c("id", "pop")) %>%
+  ggplot(aes(x = shapeit, y = eagle, colour = pop)) + 
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  ggtitle("Switch Rate", "#(Switches) / #(Heterozygous Sites)") +
+  xlab("SHAPEIT5 Switch Rate") +
+  ylab("EAGLE2 Switch Rate") +
+  guides(colour=guide_legend(title="Population")) + 
+  scale_color_jco() +
+  theme_bw(base_size = 16) +
+  xlim(c(0,0.004)) + ylim(c(0,0.004)) +
+  theme(legend.position = c(0.8, .2))
+out_file <- paste0(svg_out_dir, "switch_rate_s_e.svg")
+ggsave(filename = out_file, width = 5.33, height = 4.26, dpi = 300, units = "in")
+
+df_wh_si %>%
+  select(id, pop, switches, n_het) %>%
+  mutate(switches = switches / (n_het)) %>%
+  rename(shapeit = switches) %>%
+  inner_join({df_wh_beagle %>% 
+      select(id, pop, switches, n_het) %>% 
+      mutate(switches = switches / (n_het)) %>%
+      rename(beagle = switches)}, by = c("id", "pop")) %>%
+  ggplot(aes(x = shapeit, y = beagle, colour = pop)) + 
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  ggtitle("Switch Rate", "# Switches / #(Heterozygous Sites)") +
+  xlab("SHAPEIT5 Switch Rate") +
+  ylab("BEAGLE5 Switch Rate") +
+  guides(colour=guide_legend(title="Population")) +
+  scale_color_jco() +
+  theme_bw(base_size = 16) +
+  xlim(c(0,0.004)) + ylim(c(0,0.004)) +
+  theme(legend.position = c(0.8, .2))
+out_file <- paste0(svg_out_dir, "switch_rate_s_b.svg")
+ggsave(filename = out_file, width = 5.33, height = 4.26, dpi = 300, units = "in")
+
+df_wh_eagle %>%
+  select(id, pop, switches, n_het) %>%
+  mutate(switches = switches / (n_het)) %>%
+  rename(eagle = switches) %>%
+  inner_join({df_wh_beagle %>% 
+      select(id, pop, switches, n_het) %>% 
+      mutate(switches = switches / (n_het)) %>%
+      rename(beagle = switches)}, by = c("id", "pop")) %>%
+  ggplot(aes(x = eagle, y = beagle, colour = pop)) + 
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  ggtitle("Switch Rate", "# Switches / #(Heterozygous Sites)") +
+  xlab("EAGLE2 Switch Rate") +
+  ylab("BEAGLE5 Switch Rate") +
+  guides(colour=guide_legend(title="Population")) +
+  scale_color_jco() +
+  theme_bw(base_size = 16) +
+  xlim(c(0,0.004)) + ylim(c(0,0.004)) +
+  theme(legend.position = c(0.8, .2))
+out_file <- paste0(svg_out_dir, "switch_rate_b_e.svg")
 ggsave(filename = out_file, width = 5.33, height = 4.26, dpi = 300, units = "in")
 ```
 
