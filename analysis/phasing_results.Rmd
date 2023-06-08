@@ -15,6 +15,7 @@ library(janitor)
 source("code/common_functions.R")
 
 library(ggsci)
+library(reactable)
 theme_set(theme_bw(base_size = 18))
 
 pal1 <- pal_ucscgb()
@@ -182,6 +183,21 @@ df_wh_eagle <- get_all_whatshap("eagle")
 df_wh_beagle <- get_all_whatshap("beagle")
 df_wh_si <- get_all_whatshap("shapeit")
 ```
+
+### Tables
+
+```{r}
+df_vcftools %>%
+  group_by(pop) %>%
+  summarize(mean_switch_eagle = mean(n_other_eagle),
+            mean_switch_beagle = mean(n_other_beagle),
+            mean_switch_shapeit = mean(n_other_shapeit),
+            mean_flip_eagle = mean(n_flip_eagle),
+            mean_flip_beagle = mean(n_flip_beagle),
+            mean_flip_shapeit = mean(n_flip_shapeit)) %>%
+  reactable()
+```
+
 
 ### Total Errors
 
@@ -630,7 +646,10 @@ library(readr)
 df_freq <- read_tsv("/net/snowwhite/home/beckandy/research/phasing/output/chrX_maf_simple.tsv")
 
 df_freq %>%
-  ggplot(aes(x = maf)) + geom_histogram()
+  ggplot(aes(x = maf)) + geom_density() +
+  ggtitle("MAF Distribution", "Chr X, 1kGP") +
+  xlab("Minor Allele Frequency") +
+  scale_x_log10()
 ```
 
 ## significance of enrichment
