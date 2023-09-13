@@ -15,7 +15,7 @@
 
 <title>10aug22_diploid_results</title>
 
-<script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.22/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -31,7 +31,7 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
-<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
@@ -163,11 +163,15 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark it active
-  menuAnchor.tab('show');
-
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
 
   // Navbar adjustments
   var navHeight = $(".navbar").first().height() + 15;
@@ -196,8 +200,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -205,16 +209,9 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -392,7 +389,7 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2023-06-08
+<strong>Last updated:</strong> 2023-09-13
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -629,13 +626,13 @@ output/chrX_maf_simple.tsv
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongad7afaf">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrong3a7bbdf">
 <span class="glyphicon glyphicon-ok text-success"
-aria-hidden="true"></span> <strong>Repository version:</strong> ad7afaf
+aria-hidden="true"></span> <strong>Repository version:</strong> 3a7bbdf
 </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongad7afaf"
+<div id="strongRepositoryversionstrong3a7bbdf"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -644,7 +641,7 @@ and connecting the code version to the results is critical for
 reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version ad7afaf.
+The results in this page were generated with repository version 3a7bbdf.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -760,6 +757,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+3a7bbdf
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-09-13
+</td>
+<td>
+wflow_publish("analysis/phasing_results.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+c7bb243
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-08
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -993,15 +1024,15 @@ num_sites_dir &lt;- &quot;/net/snowwhite/home/beckandy/research/phasing/output/f
 whatshap_dir &lt;- &quot;/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/whatshap/&quot;
 whatshap_dir2 &lt;- &quot;/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/whatshap/&quot;
 
-pair_info_df &lt;- read_delim(&quot;data/sample_pairs_18apr2023.csv&quot;, col_names = c(&quot;POP&quot;, &quot;ID1&quot;, &quot;ID2&quot;))</code></pre>
-<pre><code>Rows: 400 Columns: 3
+pair_info_df &lt;- read_delim(&quot;data/sample_pairs_9aug2023.csv&quot;, col_names = c(&quot;POP&quot;, &quot;ID1&quot;, &quot;ID2&quot;))</code></pre>
+<pre><code>Rows: 700 Columns: 3
 ── Column specification ────────────────────────────────────────────────────────
 Delimiter: &quot;,&quot;
 chr (3): POP, ID1, ID2
 
 ℹ Use `spec()` to retrieve the full column specification for this data.
 ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<pre class="r"><code>pair_info_df$SP &lt;- c(rep(&quot;EUR&quot;, 200), rep(&quot;AFR&quot;, 200))
+<pre class="r"><code>pair_info_df$SP &lt;- c(rep(&quot;EUR&quot;, 200), rep(&quot;AFR&quot;, 200), rep(&quot;AMR&quot;, 100), rep(&quot;EAS&quot;, 100), rep(&quot;SAS&quot;, 100))
 
 gc_content_1kb &lt;- read_tsv(&quot;data/gc1kb_X_only.bed&quot;)</code></pre>
 <pre><code>Rows: 156041 Columns: 12
@@ -1040,11 +1071,11 @@ background_cpg_het &lt;- 229868 / 1567042</code></pre>
 </div>
 <div id="single-pseudo-diploid-example" class="section level2">
 <h2>Single Pseudo-diploid Example</h2>
-<pre class="r"><code>pair_id &lt;- 123
+<pre class="r"><code>pair_id &lt;- 601
 bin_size = 1000
 switch_err_eagle &lt;- read_csv(paste0(eagle_switch_dir, &quot;switch_&quot;, pair_id, &quot;.csv&quot;)) %&gt;% 
   mutate(bin_id = ceiling(pos_start / bin_size))</code></pre>
-<pre><code>Rows: 311 Columns: 6
+<pre><code>Rows: 551 Columns: 6
 ── Column specification ────────────────────────────────────────────────────────
 Delimiter: &quot;,&quot;
 chr (2): motif_start, end_motif
@@ -1054,7 +1085,7 @@ dbl (4): pos_start, pos_end, cpg_start, cpg_end
 ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <pre class="r"><code>switch_err_shapeit &lt;- read_csv(paste0(shapeit_switch_dir, &quot;switch_&quot;, pair_id, &quot;.csv&quot;)) %&gt;%
   mutate(bin_id = ceiling(pos_start / bin_size))</code></pre>
-<pre><code>Rows: 307 Columns: 6
+<pre><code>Rows: 497 Columns: 6
 ── Column specification ────────────────────────────────────────────────────────
 Delimiter: &quot;,&quot;
 chr (2): motif_start, end_motif
@@ -1064,7 +1095,7 @@ dbl (4): pos_start, pos_end, cpg_start, cpg_end
 ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <pre class="r"><code>switch_err_beagle &lt;- read_csv(paste0(beagle_switch_dir, &quot;switch_&quot;, pair_id, &quot;.csv&quot;)) %&gt;%
   mutate(bin_id = ceiling(pos_start / bin_size))</code></pre>
-<pre><code>Rows: 256 Columns: 6
+<pre><code>Rows: 436 Columns: 6
 ── Column specification ────────────────────────────────────────────────────────
 Delimiter: &quot;,&quot;
 chr (2): motif_start, end_motif
@@ -1146,95 +1177,108 @@ switch_err_beagle %&gt;%
   filter(is_flip == F | start_flip == T) %&gt;% # filter out latter halves of flips
   pull(pos_start) %&gt;%
   diff(lag = 1)</code></pre>
-<pre><code>  [1]   85430  110601  224258   67188    7700  546002 1479433  517890  313371
- [10]   48969   25346  543008  517052  240051  113321   15571  205628   78788
- [19] 1330277    7112   41389    9263   88535  156415  205171   37824  358965
- [28]  217239 2041536  108475  104638   50349   21555  301162  444257   43412
- [37]  762047 2609728 1023187  534179 1959749   69773  147737  248783 1157584
- [46]  159263  105111  515843   93044  105500    8385  381725  263172  129202
- [55] 1723357 1185873  296415  650010 1054899 1210675  214788  282002 2113894
- [64]   15572   52318   42370  161411  501180   59733  294328 1873532  347761
- [73] 1876925  116334 1890676  573301  960314 1846527   37982  974992  203596
- [82]  303587 1306037    8710  314816   54906   11384  730127  463651  234308
- [91]  490877  604332  357538 2006569 1773780  285190  257255 1387516  395241
-[100] 1423222   33955 1524027   51087  182719 4115360   37363 5754824  311427
-[109]  240160  181604   25505 1225972  320017  673732   39736 4968628 3737412
-[118]  860679 1866378   29478 4351687 1571071 1359645  510335  592318 1332610
-[127] 7839185  227853  211261   36335  141114  960995 1975484 2199087   87295
-[136]    5900 1151214 1502394  386412 1329686  325591 1084668  305500  385824
-[145]  762580 1401120 1053562  290379 1188791  335293  990197 1089559  480330
-[154] 2441877  404232  146096  374410  617933   52756  840357 2534965 1752571
-[163]   30827 3531065 1163956  316576 3671675 1727763  902077   38537   29983
-[172]   11472 1080831  583529  136729  262689   94597  122757  259413  669602
-[181] 1504668  558061    4456  839982 2555507 1467417  203952  248622  405983
-[190] 1427605  254711  185421</code></pre>
+<pre><code>  [1]  292841   89354   33476  812659  134796 1169929  469307 1409946   29826
+ [10]    4856 1043626   50179   25865  337371  479149  403948   17520   75610
+ [19]  155161  130677 1795280  380990    8627  139398  276921    5855   15700
+ [28]   36818  109392    7915  243732  244555  146419   27463   38326  502126
+ [37] 1118586  485191  297413  150334  285831  518569  396351  437115  480884
+ [46]     922  787929  526947  315282  194183  800393  126450   61345  872163
+ [55]  356252  396441  168531  168957  264862  102453    4951  260401   92029
+ [64]  246467   43377  258518    9239  273445 1194295  206629    3315   65906
+ [73]   54512   59540   47507  668988 1600038  283300  843195 1593225   51762
+ [82]   73540    9890   15433  102819    6721   16789  540557  117688  187483
+ [91]   19790  123965  320983   49724   21606  429097  845638 2396545 3710199
+[100]  135537   34663   22648  105771   11821  434996  664775  741521 1566303
+[109]  152936  228887    4023  986820  356086  203862  229852  221771  124827
+[118]  759679  102438   23529  148230   35366  362148  323985  127730  149208
+[127] 2149111 1485980  541654  980765 1927130  105881  154589  631788  260349
+[136] 1199169 5591181 2146871  263724  462157  216743  152211   53695  421665
+[145]  436423  258470  137293  614821  230837   68506 2259374  296770   96227
+[154]   28198  157131  513642    7742    6434  384673 1203546   58020 1012052
+[163]  694704  280347  979084  333565 1400576 1248646 1652080 1208814 3534313
+[172]  511178  850603  427532  147612  167805  553257  386279  449682  244775
+[181]  333673  321830   74316  264566  467587 1260935   45001   11562  189306
+[190]  799811  136075  404067   52947  404807  973875 1235427  542498  735982
+[199]  920616  428073   58316   94991  166214  520892 2924319  321030  901545
+[208]  751867  618333 1245251  141760   85925   74272  130183 1495552  714838
+[217] 1958215   17590  337603  124110  150710   96008 1359706  409280 1128584
+[226]   99381   69113  347073   39824  294430   53442  127689  799333  428764
+[235]  136414  282594   38881  256835  932218  267097   67252  332538 3097960
+[244]  991635   85012   79473  377936 1368425 3005884  241643  381400  213991
+[253] 1228727  487776 1365790  178126   39633  428852  350225  170362  362470
+[262]   89309    3790  113369  179080  200964  468168 3570706  223569  196648
+[271]  375616  603395   50824  116469   37109   30231   46493  836426  227742
+[280]   48153   29855   74293   43067   20014  192807  145701  245501  196396
+[289]  169329  200084   72667  557454   75445  161483  828539  140561   38379
+[298]  162724  510716   40480  684434  600899 2550646  709272   11637  908220
+[307]  491604   48267  114812    6228   16856 1755886  579188  456082  440533</code></pre>
 <pre class="r"><code># Overlap of errors
 
 intersect({switch_err_beagle %&gt;% filter(start_flip) %&gt;% pull(pos_start)},
           {switch_err_eagle %&gt;% filter(start_flip) %&gt;% pull(pos_start)}) %&gt;%
   length()</code></pre>
-<pre><code>[1] 41</code></pre>
+<pre><code>[1] 67</code></pre>
 <pre class="r"><code>intersect({switch_err_shapeit %&gt;% filter(start_flip) %&gt;% pull(pos_start)},
           {switch_err_eagle %&gt;% filter(start_flip) %&gt;% pull(pos_start)}) %&gt;%
   length()</code></pre>
-<pre><code>[1] 49</code></pre>
+<pre><code>[1] 81</code></pre>
 <pre class="r"><code>intersect({switch_err_shapeit %&gt;% filter(start_flip) %&gt;% pull(pos_start)},
           {switch_err_beagle %&gt;% filter(start_flip) %&gt;% pull(pos_start)}) %&gt;%
   length()</code></pre>
-<pre><code>[1] 41</code></pre>
+<pre><code>[1] 69</code></pre>
 <pre class="r"><code>intersect(intersect({switch_err_beagle %&gt;% filter(start_flip) %&gt;% pull(pos_start)},
           {switch_err_eagle %&gt;% filter(start_flip) %&gt;% pull(pos_start)}), 
           {switch_err_shapeit %&gt;% filter(start_flip) %&gt;% pull(pos_start)}) %&gt;%
   length()</code></pre>
-<pre><code>[1] 30</code></pre>
+<pre><code>[1] 53</code></pre>
 <pre class="r"><code># Number of flips starting at CpG
 switch_err_beagle %&gt;%
   filter(start_flip == TRUE) %&gt;%
   pull(cpg_start) %&gt;%
   sum()</code></pre>
-<pre><code>[1] 8</code></pre>
+<pre><code>[1] 12</code></pre>
 <pre class="r"><code>switch_err_eagle %&gt;%
   filter(start_flip == TRUE) %&gt;%
   pull(cpg_start) %&gt;%
   sum()</code></pre>
-<pre><code>[1] 13</code></pre>
+<pre><code>[1] 20</code></pre>
 <pre class="r"><code>switch_err_shapeit %&gt;%
   filter(start_flip == TRUE) %&gt;%
   pull(cpg_start) %&gt;%
   sum()</code></pre>
-<pre><code>[1] 12</code></pre>
+<pre><code>[1] 22</code></pre>
 <pre class="r"><code># Number of non-flips starting at CpG
 switch_err_beagle %&gt;%
   filter(is_flip == FALSE) %&gt;%
   pull(cpg_start) %&gt;%
   sum()</code></pre>
-<pre><code>[1] 28</code></pre>
+<pre><code>[1] 32</code></pre>
 <pre class="r"><code>switch_err_eagle %&gt;%
   filter(is_flip == FALSE) %&gt;%
   pull(cpg_start) %&gt;%
   sum()</code></pre>
-<pre><code>[1] 29</code></pre>
+<pre><code>[1] 37</code></pre>
 <pre class="r"><code>switch_err_shapeit %&gt;%
   filter(is_flip == FALSE) %&gt;%
   pull(cpg_start) %&gt;%
   sum()</code></pre>
-<pre><code>[1] 19</code></pre>
+<pre><code>[1] 33</code></pre>
 </div>
 <div id="summary-statistics-on-all-pseudo-diploids"
 class="section level2">
 <h2>Summary statistics on all pseudo-diploids</h2>
 <p>From vcftools:</p>
-<pre class="r"><code>df_vcftools &lt;- lapply(c(1:400), 
+<pre class="r"><code>df_vcftools &lt;- lapply(c(1:700), 
                     function(x){
                       switch_summary(x, eagle_switch_dir, beagle_switch_dir, shapeit_switch_dir, gc_content_1kb)
                       }) %&gt;%
   bind_rows()
 
-df_vcftools$pop &lt;- c(rep(&quot;EUR&quot;, 200), rep(&quot;AFR&quot;, 200))</code></pre>
+df_vcftools$pop &lt;- c(rep(&quot;EUR&quot;, 200), rep(&quot;AFR&quot;, 200), rep(&quot;AMR&quot;, 100), rep(&quot;EAS&quot;, 100), rep(&quot;SAS&quot;, 100))</code></pre>
 <p>From whatshap:</p>
-<pre class="r"><code>df_wh_eagle &lt;- get_all_whatshap(&quot;eagle&quot;)
-df_wh_beagle &lt;- get_all_whatshap(&quot;beagle&quot;)
-df_wh_si &lt;- get_all_whatshap(&quot;shapeit&quot;)</code></pre>
+<pre class="r"><code>df_wh_eagle &lt;- get_all_whatshap(&quot;eagle&quot;, n = 700, pop = c(rep(&quot;EUR&quot;, 200), rep(&quot;AFR&quot;, 200), rep(&quot;AMR&quot;, 100), rep(&quot;EAS&quot;, 100), rep(&quot;SAS&quot;, 100)))
+df_wh_beagle &lt;- get_all_whatshap(&quot;beagle&quot;, n = 700, pop = c(rep(&quot;EUR&quot;, 200), rep(&quot;AFR&quot;, 200), rep(&quot;AMR&quot;, 100), rep(&quot;EAS&quot;, 100), rep(&quot;SAS&quot;, 100)))
+df_wh_si &lt;- get_all_whatshap(&quot;shapeit&quot;, n = 700, pop = c(rep(&quot;EUR&quot;, 200), rep(&quot;AFR&quot;, 200), rep(&quot;AMR&quot;, 100), rep(&quot;EAS&quot;, 100), rep(&quot;SAS&quot;, 100)))</code></pre>
 <div id="tables" class="section level3">
 <h3>Tables</h3>
 <pre class="r"><code>df_vcftools %&gt;%
@@ -1247,7 +1291,7 @@ df_wh_si &lt;- get_all_whatshap(&quot;shapeit&quot;)</code></pre>
             mean_flip_shapeit = mean(n_flip_shapeit)) %&gt;%
   reactable()</code></pre>
 <div class="reactable html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-e7ad701397ebb463ad9a" style="width:auto;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-e7ad701397ebb463ad9a">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"pop":["AFR","EUR"],"mean_switch_eagle":[156.565,134.725],"mean_switch_beagle":[138.9,118.97],"mean_switch_shapeit":[90.63,98.41],"mean_flip_eagle":[120.5875,81.9775],"mean_flip_beagle":[104.21,71.275],"mean_flip_shapeit":[128.76,89.405]},"columns":[{"id":"pop","name":"pop","type":"character"},{"id":"mean_switch_eagle","name":"mean_switch_eagle","type":"numeric"},{"id":"mean_switch_beagle","name":"mean_switch_beagle","type":"numeric"},{"id":"mean_switch_shapeit","name":"mean_switch_shapeit","type":"numeric"},{"id":"mean_flip_eagle","name":"mean_flip_eagle","type":"numeric"},{"id":"mean_flip_beagle","name":"mean_flip_beagle","type":"numeric"},{"id":"mean_flip_shapeit","name":"mean_flip_shapeit","type":"numeric"}],"dataKey":"751f75024d7d3651b2c4e315fe4f4cdb"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-e7ad701397ebb463ad9a">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"pop":["AFR","AMR","EAS","EUR","SAS"],"mean_switch_eagle":[156.565,112.55,211.84,134.725,175.09],"mean_switch_beagle":[137.97,97.66,189.8,119.31,157.66],"mean_switch_shapeit":[90.165,79.11,163.92,98.205,128.43],"mean_flip_eagle":[120.5875,75.01,118.11,81.9775,112.78],"mean_flip_beagle":[104.7375,63.39,99.22,70.345,92.49],"mean_flip_shapeit":[128.81,81.35,122.58,89.43,115.96]},"columns":[{"id":"pop","name":"pop","type":"character"},{"id":"mean_switch_eagle","name":"mean_switch_eagle","type":"numeric"},{"id":"mean_switch_beagle","name":"mean_switch_beagle","type":"numeric"},{"id":"mean_switch_shapeit","name":"mean_switch_shapeit","type":"numeric"},{"id":"mean_flip_eagle","name":"mean_flip_eagle","type":"numeric"},{"id":"mean_flip_beagle","name":"mean_flip_beagle","type":"numeric"},{"id":"mean_flip_shapeit","name":"mean_flip_shapeit","type":"numeric"}],"dataKey":"eced8dd5e151db0a8c4e310a753e0d87"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="total-errors" class="section level3">
 <h3>Total Errors</h3>
@@ -1718,6 +1762,7 @@ df_wh_si %&gt;%
   theme_bw(base_size = 16) +
   xlim(c(0,0.006)) + ylim(c(0,0.006)) +
   theme(legend.position = c(0.8, .2))</code></pre>
+<pre><code>Warning: Removed 61 rows containing missing values (`geom_point()`).</code></pre>
 <p><img src="figure/phasing_results.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-12-1">
@@ -1779,6 +1824,7 @@ Andy Beck
 </div>
 </div>
 <pre class="r"><code>ggsave(filename = out_file, width = 5.33, height = 4.26, dpi = 300, units = &quot;in&quot;)</code></pre>
+<pre><code>Warning: Removed 61 rows containing missing values (`geom_point()`).</code></pre>
 <pre class="r"><code>df_wh_si %&gt;%
   select(id, pop, all_switchflip_rate) %&gt;%
   rename(shapeit = all_switchflip_rate) %&gt;%
@@ -1792,7 +1838,7 @@ Andy Beck
   guides(colour=guide_legend(title=&quot;Population&quot;)) + 
   scale_color_jco() +
   theme_bw(base_size = 16) +
-  xlim(c(0,0.006)) + ylim(c(0,0.006)) +
+  xlim(c(0,0.008)) + ylim(c(0,0.008)) +
   theme(legend.position = c(0.8, .2))</code></pre>
 <p><img src="figure/phasing_results.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
@@ -1880,7 +1926,7 @@ ggsave(filename = out_file, width = 5.33, height = 4.26, dpi = 300, units = &quo
   guides(colour=guide_legend(title=&quot;Population&quot;)) + 
   scale_color_jco() +
   theme_bw(base_size = 16) +
-  xlim(c(0,0.006)) + ylim(c(0,0.006)) +
+  xlim(c(0,0.008)) + ylim(c(0,0.008)) +
   theme(legend.position = c(0.8, .2))</code></pre>
 <p><img src="figure/phasing_results.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
@@ -2470,7 +2516,7 @@ ggsave(filename = out_file, width = 5.33, height = 4.26, dpi = 300, units = &quo
   guides(colour=guide_legend(title=&quot;Population&quot;)) + 
   scale_color_jco() +
   theme_bw(base_size = 16) +
-  xlim(c(0,0.004)) + ylim(c(0,0.004)) +
+  xlim(c(0,0.0052)) + ylim(c(0,0.0052)) +
   theme(legend.position = c(0.8, .2))</code></pre>
 <p><img src="figure/phasing_results.Rmd/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
@@ -2495,6 +2541,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+c7bb243
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-08
+</td>
+</tr>
 <tr>
 <td>
 daf3402
@@ -2541,9 +2598,46 @@ df_wh_si %&gt;%
   guides(colour=guide_legend(title=&quot;Population&quot;)) +
   scale_color_jco() +
   theme_bw(base_size = 16) +
-  xlim(c(0,0.004)) + ylim(c(0,0.004)) +
+  xlim(c(0,0.005)) + ylim(c(0,0.005)) +
   theme(legend.position = c(0.8, .2))</code></pre>
 <p><img src="figure/phasing_results.Rmd/unnamed-chunk-19-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-19-2">
+Past versions of unnamed-chunk-19-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-19-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+c7bb243
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>out_file &lt;- paste0(svg_out_dir, &quot;switch_rate_s_b.svg&quot;)
 ggsave(filename = out_file, width = 5.33, height = 4.26, dpi = 300, units = &quot;in&quot;)
 
@@ -2564,9 +2658,46 @@ df_wh_eagle %&gt;%
   guides(colour=guide_legend(title=&quot;Population&quot;)) +
   scale_color_jco() +
   theme_bw(base_size = 16) +
-  xlim(c(0,0.004)) + ylim(c(0,0.004)) +
+  xlim(c(0,0.0052)) + ylim(c(0,0.0052)) +
   theme(legend.position = c(0.8, .2))</code></pre>
 <p><img src="figure/phasing_results.Rmd/unnamed-chunk-19-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-19-3">
+Past versions of unnamed-chunk-19-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-19-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+c7bb243
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>out_file &lt;- paste0(svg_out_dir, &quot;switch_rate_b_e.svg&quot;)
 ggsave(filename = out_file, width = 5.33, height = 4.26, dpi = 300, units = &quot;in&quot;)</code></pre>
 <div id="tables-for-ashg-2022" class="section level4">
@@ -2598,11 +2729,14 @@ df_wh_beagle %&gt;%
          non_flip_rate = switches / n_het) %&gt;%
   group_by(pop) %&gt;%
   summarize(across(n_het:non_flip_rate, ~ mean(.x, na.rm=T))) </code></pre>
-<pre><code># A tibble: 2 × 8
-  pop       n_het total_errors switches   flips  error_rate   flip_rate
-  &lt;chr&gt;     &lt;dbl&gt;        &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;
-1 AFR   100973.5        347.26   138.89 104.185 0.003442657 0.001032775
-2 EUR    61074.78       261.51   118.97  71.27  0.004280338 0.001166611
+<pre><code># A tibble: 5 × 8
+  pop       n_het total_errors switches  flips  error_rate   flip_rate
+  &lt;chr&gt;     &lt;dbl&gt;        &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;
+1 AFR   100973.5       347.415  137.975 104.72 0.003444051 0.001037995
+2 AMR    66019.64      224.42    97.66   63.38 0.003641076 0.001012852
+3 EAS    54657.33      388.22   189.8    99.21 0.007118240 0.001819143
+4 EUR    61074.78      259.99   119.31   70.34 0.004255379 0.001151600
+5 SAS    64714.16      342.64   157.66   92.49 0.005314334 0.001434319
 # ℹ 1 more variable: non_flip_rate &lt;dbl&gt;</code></pre>
 <pre class="r"><code>df_wh_eagle %&gt;% 
   select(pop, n_het, total_errors, switches, flips) %&gt;%
@@ -2611,11 +2745,14 @@ df_wh_beagle %&gt;%
          non_flip_rate = switches / n_het) %&gt;%
   group_by(pop) %&gt;%
   summarize(across(n_het:non_flip_rate, ~ mean(.x, na.rm=T))) </code></pre>
-<pre><code># A tibble: 2 × 8
+<pre><code># A tibble: 5 × 8
   pop       n_het total_errors switches   flips  error_rate   flip_rate
   &lt;chr&gt;     &lt;dbl&gt;        &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;
 1 AFR   100973.5        397.58   156.58 120.5   0.003941908 0.001194717
-2 EUR    61074.78       298.64   134.73  81.955 0.004888813 0.001340918
+2 AMR    66019.64       262.57   112.55  75.01  0.004225581 0.001191212
+3 EAS    54657.33       448.06   211.84 118.11  0.008211346 0.002162237
+4 EUR    61074.78       298.64   134.73  81.955 0.004888813 0.001340918
+5 SAS    64714.16       400.59   175.09 112.75  0.006203804 0.001744422
 # ℹ 1 more variable: non_flip_rate &lt;dbl&gt;</code></pre>
 <pre class="r"><code>df_wh_si %&gt;% 
   select(pop, n_het, total_errors, switches, flips) %&gt;%
@@ -2624,11 +2761,14 @@ df_wh_beagle %&gt;%
          non_flip_rate = switches / n_het) %&gt;%
   group_by(pop) %&gt;%
   summarize(across(n_het:non_flip_rate, ~ mean(.x, na.rm=T))) </code></pre>
-<pre><code># A tibble: 2 × 8
+<pre><code># A tibble: 5 × 8
   pop       n_het total_errors switches  flips  error_rate   flip_rate
   &lt;chr&gt;     &lt;dbl&gt;        &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;
-1 AFR   100973.5        348.11    90.63 128.74 0.003451253 0.001276007
-2 EUR    61074.78       277.19    98.41  89.39 0.004535996 0.001462967
+1 AFR   100973.5       347.745   90.165 128.79 0.003447194 0.001276390
+2 AMR    66019.64      241.77    79.13   81.32 0.003925011 0.001295576
+3 EAS    54657.33      409.08   163.92  122.58 0.007498544 0.002247042
+4 EUR    61074.78      277.045   98.205  89.42 0.004534060 0.001463592
+5 SAS    64714.16      360.35   128.43  115.96 0.005587618 0.001797687
 # ℹ 1 more variable: non_flip_rate &lt;dbl&gt;</code></pre>
 </div>
 </div>
@@ -2681,6 +2821,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+c7bb243
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-08
+</td>
+</tr>
 <tr>
 <td>
 564c182
@@ -2753,6 +2904,43 @@ df_vcftools %&gt;%
         legend.box.background = element_rect(color=&quot;black&quot;, linewidth=1),
         legend.title=element_blank())</code></pre>
 <p><img src="figure/phasing_results.Rmd/unnamed-chunk-22-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-22-2">
+Past versions of unnamed-chunk-22-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-22-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+c7bb243
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>out_file &lt;- paste0(svg_out_dir, &quot;prop_flips_cpg.svg&quot;)
 ggsave(filename = out_file, width = 8.05, height = 6.44, dpi = 300, units = &quot;in&quot;)</code></pre>
 <pre class="r"><code>df_vcftools %&gt;%
@@ -2798,6 +2986,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+c7bb243
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-08
+</td>
+</tr>
 <tr>
 <td>
 564c182
@@ -2888,6 +3087,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+c7bb243
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-08
+</td>
+</tr>
 <tr>
 <td>
 564c182
@@ -2998,6 +3208,17 @@ Date
 <tbody>
 <tr>
 <td>
+c7bb243
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-08
+</td>
+</tr>
+<tr>
+<td>
 564c182
 </td>
 <td>
@@ -3057,13 +3278,13 @@ Andy Beck
     One Sample t-test
 
 data:  .
-t = -20.098, df = 399, p-value &lt; 2.2e-16
+t = -22.405, df = 699, p-value &lt; 2.2e-16
 alternative hypothesis: true mean is not equal to 0.1445577
 95 percent confidence interval:
- 0.1227340 0.1266231
+ 0.1258883 0.1288967
 sample estimates:
 mean of x 
-0.1246785 </code></pre>
+0.1273925 </code></pre>
 <pre class="r"><code>df_vcftools %&gt;%
   mutate(prop_error_eagle = n_switch_cpg_eagle / n_switch_eagle,
          prop_error_shapeit = n_switch_cpg_shapeit / n_switch_shapeit,
@@ -3074,13 +3295,13 @@ mean of x
     One Sample t-test
 
 data:  .
-t = -22.11, df = 399, p-value &lt; 2.2e-16
+t = -25.224, df = 699, p-value &lt; 2.2e-16
 alternative hypothesis: true mean is not equal to 0.1445577
 95 percent confidence interval:
- 0.1197447 0.1237969
+ 0.1229930 0.1261076
 sample estimates:
 mean of x 
-0.1217708 </code></pre>
+0.1245503 </code></pre>
 <pre class="r"><code>df_vcftools %&gt;%
   mutate(prop_error_eagle = n_switch_cpg_eagle / n_switch_eagle,
          prop_error_shapeit = n_switch_cpg_shapeit / n_switch_shapeit,
@@ -3091,13 +3312,13 @@ mean of x
     One Sample t-test
 
 data:  .
-t = -49.451, df = 399, p-value &lt; 2.2e-16
+t = -53.082, df = 699, p-value &lt; 2.2e-16
 alternative hypothesis: true mean is not equal to 0.1445577
 95 percent confidence interval:
- 0.1003879 0.1037655
+ 0.1052582 0.1080616
 sample estimates:
 mean of x 
-0.1020767 </code></pre>
+0.1066599 </code></pre>
 </div>
 <div id="chi-square-on-all-300-diploids" class="section level2">
 <h2>Chi square on all 300 diploids</h2>
@@ -3136,6 +3357,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+c7bb243
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-08
+</td>
+</tr>
 <tr>
 <td>
 564c182
@@ -3219,6 +3451,17 @@ Date
 <tbody>
 <tr>
 <td>
+c7bb243
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-08
+</td>
+</tr>
+<tr>
+<td>
 564c182
 </td>
 <td>
@@ -3289,6 +3532,17 @@ Date
 <tbody>
 <tr>
 <td>
+c7bb243
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-08
+</td>
+</tr>
+<tr>
+<td>
 564c182
 </td>
 <td>
@@ -3338,6 +3592,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+c7bb243
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-08
+</td>
+</tr>
 <tr>
 <td>
 564c182
@@ -3432,6 +3697,17 @@ Date
 <tbody>
 <tr>
 <td>
+c7bb243
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-08
+</td>
+</tr>
+<tr>
+<td>
 564c182
 </td>
 <td>
@@ -3489,6 +3765,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+c7bb243
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-08
+</td>
+</tr>
 <tr>
 <td>
 564c182
@@ -3553,6 +3840,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+c7bb243
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-08
+</td>
+</tr>
 <tr>
 <td>
 564c182
@@ -3641,7 +3939,7 @@ df_pd_maf &lt;- df_pd_beagle %&gt;%
 df_pd_maf %&gt;%
   ggplot(aes(x = maf, colour = method)) +
   geom_density() +
-  ggtitle(&quot;MAF at switch sites&quot;, &quot;EUR: HG01530, HG01610&quot;) +
+  ggtitle(&quot;MAF at switch sites&quot;, &quot;EUR: X1, X2&quot;) +
   xlab(&quot;MAF&quot;) +
   ylab(&quot;Density&quot;)</code></pre>
 <p><img src="figure/phasing_results.Rmd/unnamed-chunk-31-1.png" width="672" style="display: block; margin: auto;" /></p>
@@ -3667,6 +3965,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+c7bb243
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-08
+</td>
+</tr>
 <tr>
 <td>
 564c182
@@ -3730,7 +4039,7 @@ Andy Beck
   filter(is_flip) %&gt;%
   ggplot(aes(x = maf, colour = method)) +
   geom_density() +
-  ggtitle(&quot;MAF at flip sites&quot;, &quot;EUR: HG01530, HG01610&quot;) +
+  ggtitle(&quot;MAF at flip sites&quot;, &quot;EUR: X1, X2&quot;) +
   xlab(&quot;MAF&quot;) +
   ylab(&quot;Density&quot;)</code></pre>
 <p><img src="figure/phasing_results.Rmd/unnamed-chunk-31-2.png" width="672" style="display: block; margin: auto;" /></p>
@@ -3756,6 +4065,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+c7bb243
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-08
+</td>
+</tr>
 <tr>
 <td>
 564c182
@@ -3841,16 +4161,203 @@ Andy Beck
   print(p2)
 }
 
-get_dens_for_pd(sample(101:300, 1))</code></pre>
-<pre><code>[1] 274</code></pre>
-<p><img src="figure/phasing_results.Rmd/unnamed-chunk-31-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/phasing_results.Rmd/unnamed-chunk-31-4.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>get_dens_for_pd(sample(1:100, 1))</code></pre>
-<pre><code>[1] 20</code></pre>
-<p><img src="figure/phasing_results.Rmd/unnamed-chunk-31-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/phasing_results.Rmd/unnamed-chunk-31-6.png" width="672" style="display: block; margin: auto;" /></p>
+get_dens_for_pd(sample(401:700, 1))</code></pre>
+<pre><code>[1] 676</code></pre>
+<p><img src="figure/phasing_results.Rmd/unnamed-chunk-31-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-31-3">
+Past versions of unnamed-chunk-31-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-31-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+c7bb243
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/phasing_results.Rmd/unnamed-chunk-31-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-31-4">
+Past versions of unnamed-chunk-31-4.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-31-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+c7bb243
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>get_dens_for_pd(sample(1:200, 1))</code></pre>
+<pre><code>[1] 152</code></pre>
+<p><img src="figure/phasing_results.Rmd/unnamed-chunk-31-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-31-5">
+Past versions of unnamed-chunk-31-5.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-31-5" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+c7bb243
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/phasing_results.Rmd/unnamed-chunk-31-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-31-6">
+Past versions of unnamed-chunk-31-6.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-31-6" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+c7bb243
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>df_freq %&gt;%
   ggplot(aes(x = maf)) +
   geom_boxplot()</code></pre>
 <p><img src="figure/phasing_results.Rmd/unnamed-chunk-31-7.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-31-7">
+Past versions of unnamed-chunk-31-7.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-31-7" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+c7bb243
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="distribution-of-errors-across-mb-windows"
 class="section level2">
@@ -3966,7 +4473,10 @@ df_pd_eagle %&gt;%
 }
 
 eur_cnt_1mb &lt;- counts_per_bin(1:200 ,bin_w = 1e6)
-afr_cnt_1mb &lt;- counts_per_bin(201:400, bin_w = 1e6)</code></pre>
+afr_cnt_1mb &lt;- counts_per_bin(201:400, bin_w = 1e6)
+amr_cnt_1mb &lt;- counts_per_bin(401:500, bin_w = 1e6)
+eas_cnt_1mb &lt;- counts_per_bin(501:600, bin_w = 1e6)
+sas_cnt_1mb &lt;- counts_per_bin(601:700, bin_w = 1e6)</code></pre>
 <pre class="r"><code>afr_cnt_1mb %&gt;%
   ggplot(aes(x = bin, y = n, colour = method)) +
   geom_line() +
@@ -3997,6 +4507,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+c7bb243
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-08
+</td>
+</tr>
 <tr>
 <td>
 a9663e8
@@ -4031,6 +4552,67 @@ Andy Beck
   ylab(&quot;Switches&quot;) +
   scale_color_manual(values = cbPalette)</code></pre>
 <p><img src="figure/phasing_results.Rmd/unnamed-chunk-33-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-33-2">
+Past versions of unnamed-chunk-33-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-33-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+c7bb243
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>amr_cnt_1mb %&gt;%
+  ggplot(aes(x = bin, y = n, colour = method)) +
+  geom_line() +
+  ggtitle(&quot;Total switches per MB Bin: AMR PDs&quot;) +
+  xlab(&quot;MB Bin&quot;) +
+  ylab(&quot;Switches&quot;) +
+  scale_color_manual(values = cbPalette)</code></pre>
+<p><img src="figure/phasing_results.Rmd/unnamed-chunk-33-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>eas_cnt_1mb %&gt;%
+  ggplot(aes(x = bin, y = n, colour = method)) +
+  geom_line() +
+  ggtitle(&quot;Total switches per MB Bin: EAS PDs&quot;) +
+  xlab(&quot;MB Bin&quot;) +
+  ylab(&quot;Switches&quot;) +
+  scale_color_manual(values = cbPalette)</code></pre>
+<p><img src="figure/phasing_results.Rmd/unnamed-chunk-33-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>sas_cnt_1mb %&gt;%
+  ggplot(aes(x = bin, y = n, colour = method)) +
+  geom_line() +
+  ggtitle(&quot;Total switches per MB Bin: SAS PDs&quot;) +
+  xlab(&quot;MB Bin&quot;) +
+  ylab(&quot;Switches&quot;) +
+  scale_color_manual(values = cbPalette)</code></pre>
+<p><img src="figure/phasing_results.Rmd/unnamed-chunk-33-5.png" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -4040,13 +4622,13 @@ Session information
 </p>
 <div id="workflowr-sessioninfo" class="collapse">
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 4.3.0 (2023-04-21)
+<pre><code>R version 4.3.1 (2023-06-16)
 Platform: x86_64-pc-linux-gnu (64-bit)
-Running under: Ubuntu 18.04.6 LTS
+Running under: Ubuntu 20.04.6 LTS
 
 Matrix products: default
-BLAS:   /usr/lib/x86_64-linux-gnu/openblas/libblas.so.3 
-LAPACK: /usr/lib/x86_64-linux-gnu/libopenblasp-r0.2.20.so;  LAPACK version 3.7.1
+BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
+LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/liblapack.so.3;  LAPACK version 3.9.0
 
 locale:
  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
@@ -4069,23 +4651,24 @@ other attached packages:
 [13] ggplot2_3.4.2   tidyverse_2.0.0 workflowr_1.7.0
 
 loaded via a namespace (and not attached):
- [1] gtable_0.3.0      xfun_0.39         bslib_0.3.1       htmlwidgets_1.6.2
+ [1] gtable_0.3.3      xfun_0.39         bslib_0.5.0       htmlwidgets_1.6.2
  [5] processx_3.8.1    callr_3.7.3       tzdb_0.4.0        crosstalk_1.2.0  
- [9] vctrs_0.6.2       tools_4.3.0       ps_1.7.0          generics_0.1.3   
-[13] parallel_4.3.0    fansi_1.0.4       highr_0.9         pkgconfig_2.0.3  
-[17] lifecycle_1.0.3   farver_2.1.0      compiler_4.3.0    git2r_0.32.0     
+ [9] vctrs_0.6.2       tools_4.3.1       ps_1.7.5          generics_0.1.3   
+[13] parallel_4.3.1    fansi_1.0.4       highr_0.10        pkgconfig_2.0.3  
+[17] lifecycle_1.0.3   farver_2.1.1      compiler_4.3.1    git2r_0.32.0     
 [21] textshaping_0.3.6 munsell_0.5.0     getPass_0.2-2     snakecase_0.11.0 
-[25] httpuv_1.6.11     htmltools_0.5.5   sass_0.4.1        yaml_2.3.7       
-[29] later_1.3.0       pillar_1.9.0      crayon_1.5.2      jquerylib_0.1.4  
-[33] whisker_0.4       ellipsis_0.3.2    tidyselect_1.2.0  digest_0.6.31    
-[37] stringi_1.7.12    labeling_0.4.2    rprojroot_2.0.3   fastmap_1.1.0    
-[41] grid_4.3.0        colorspace_2.0-3  cli_3.6.1         magrittr_2.0.3   
-[45] utf8_1.2.2        reactR_0.4.4      withr_2.5.0       scales_1.2.0     
-[49] promises_1.2.0.1  bit64_4.0.5       timechange_0.2.0  rmarkdown_2.14   
-[53] httr_1.4.6        bit_4.0.4         ragg_1.2.5        hms_1.1.3        
-[57] evaluate_0.15     knitr_1.42        rlang_1.1.1       Rcpp_1.0.10      
-[61] glue_1.6.2        svglite_2.1.1     rstudioapi_0.14   vroom_1.6.3      
-[65] jsonlite_1.8.4    R6_2.5.1          systemfonts_1.0.4 fs_1.6.2         </code></pre>
+[25] httpuv_1.6.11     htmltools_0.5.5   sass_0.4.6        yaml_2.3.7       
+[29] later_1.3.1       pillar_1.9.0      crayon_1.5.2      jquerylib_0.1.4  
+[33] whisker_0.4.1     ellipsis_0.3.2    cachem_1.0.8      tidyselect_1.2.0 
+[37] digest_0.6.31     stringi_1.7.12    labeling_0.4.2    rprojroot_2.0.3  
+[41] fastmap_1.1.1     grid_4.3.1        archive_1.1.5     colorspace_2.1-0 
+[45] cli_3.6.1         magrittr_2.0.3    utf8_1.2.3        reactR_0.4.4     
+[49] withr_2.5.0       scales_1.2.1      promises_1.2.0.1  bit64_4.0.5      
+[53] timechange_0.2.0  rmarkdown_2.22    httr_1.4.6        bit_4.0.5        
+[57] ragg_1.2.5        hms_1.1.3         evaluate_0.21     knitr_1.42       
+[61] rlang_1.1.1       Rcpp_1.0.10       glue_1.6.2        svglite_2.1.1    
+[65] rstudioapi_0.14   vroom_1.6.3       jsonlite_1.8.4    R6_2.5.1         
+[69] systemfonts_1.0.4 fs_1.6.2         </code></pre>
 </div>
 </div>
 
