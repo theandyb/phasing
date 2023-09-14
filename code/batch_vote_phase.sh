@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-#SBATCH --job-name=easy
+#SBATCH --job-name=vote
 #SBATCH --ntasks=1
 #SBATCH --time=01:15:00
 #SBATCH --cpus-per-task=1
@@ -8,16 +8,16 @@
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=beckandy@umich.edu
 #SBATCH --array=1-400
-#SBATCH -e /net/snowwhite/home/beckandy/research/phasing/data/consensus/slurm/pair.%A_%a.err
-#SBATCH --output=/net/snowwhite/home/beckandy/research/phasing/data/consensus/slurm/pair.%A.%a.out
+#SBATCH -e /net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/slurm/vote.%A_%a.err
+#SBATCH --output=/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/slurm/vote.%A.%a.out
 
-in_dir="/net/snowwhite/home/beckandy/research/phasing/output/filter_switch_errors/vcf"
-out_dir="/net/snowwhite/home/beckandy/research/phasing/data/consensus/easy"
+in_dir="/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/vcf"
+out_dir="/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/vote/easy"
 
 # Index input bcf
-#bcftools index $in_dir/shapeit/pair_${SLURM_ARRAY_TASK_ID}.bcf
-#bcftools index $in_dir/beagle/pair_${SLURM_ARRAY_TASK_ID}.bcf
-#bcftools index $in_dir/eagle/pair_${SLURM_ARRAY_TASK_ID}.bcf
+# bcftools index $in_dir/shapeit/pair_${SLURM_ARRAY_TASK_ID}.bcf
+# bcftools index $in_dir/beagle/pair_${SLURM_ARRAY_TASK_ID}.bcf
+# bcftools index $in_dir/eagle/pair_${SLURM_ARRAY_TASK_ID}.bcf
 
 # Get intersection of sites in the 3 VCFs
 bcftools isec -n=3 -c all $in_dir/shapeit/pair_${SLURM_ARRAY_TASK_ID}.bcf $in_dir/beagle/pair_${SLURM_ARRAY_TASK_ID}.bcf $in_dir/eagle/pair_${SLURM_ARRAY_TASK_ID}.bcf >\
@@ -33,7 +33,7 @@ Rscript /net/snowwhite/home/beckandy/research/phasing/code/vote_phase_easy.R ${S
 
 #whatshap
 gunzip $out_dir/vote_${SLURM_ARRAY_TASK_ID}.vcf.gz
-bcftools view -Ov /net/snowwhite/home/beckandy/research/phasing/output/filter_switch_errors/vcf/pair_${SLURM_ARRAY_TASK_ID}_true.bcf >\
+bcftools view -Ov $in_dir/pair_${SLURM_ARRAY_TASK_ID}_true.bcf >\
   $out_dir/true_${SLURM_ARRAY_TASK_ID}.vcf
 
 whatshap compare --names truth,vote --tsv-pairwise $out_dir/error_vote_${SLURM_ARRAY_TASK_ID}.tsv $out_dir/true_${SLURM_ARRAY_TASK_ID}.vcf $out_dir/vote_${SLURM_ARRAY_TASK_ID}.vcf
@@ -46,7 +46,3 @@ rm $out_dir/common_pos_${SLURM_ARRAY_TASK_ID}.txt
 
 bcftools view -Ob $out_dir/vote_${SLURM_ARRAY_TASK_ID}.vcf > $out_dir/vote_${SLURM_ARRAY_TASK_ID}.bcf
 rm $out_dir/vote_${SLURM_ARRAY_TASK_ID}.vcf
-
-# rm $in_dir/shapeit/pair_${SLURM_ARRAY_TASK_ID}.bcf.csi
-# rm $in_dir/beagle/pair_${SLURM_ARRAY_TASK_ID}.bcf.csi
-# rm $in_dir/eagle/pair_${SLURM_ARRAY_TASK_ID}.bcf.csi

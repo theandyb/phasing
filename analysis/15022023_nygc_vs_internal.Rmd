@@ -260,3 +260,45 @@ df_wh_beagle_new %>%
   ggtitle("Switch / Number of Heterozygous Sites: BEAGLE") +
   geom_abline(slope = 1, intercept = 0)  
 ```
+
+## Allele Frequency Information
+
+```{r}
+df_int_freq <- read_tsv("/net/snowwhite/home/beckandy/research/phasing/data/ref/final_freq.frq")
+df_nygc_freq <- read_tsv("/net/snowwhite/home/beckandy/research/phasing/data/1kgp/final_freq.frq")
+
+df_int_freq <- df_int_freq %>%
+  separate(A1, into = c("A1", "F1"), sep = ":") %>%
+  separate(A2, into = c("A2", "F2"), sep = ":")
+
+df_nygc_freq <- df_nygc_freq %>%
+  separate(A1, into = c("A1", "F1"), sep = ":") %>%
+  separate(A2, into = c("A2", "F2"), sep = ":")
+
+df_int_freq <- df_int_freq %>%
+  rowwise() %>%
+  mutate(maf = min(F1, F2))
+
+df_nygc_freq <- df_nygc_freq %>%
+  rowwise() %>%
+  mutate(maf = min(F1, F2))
+
+df_freq <- inner_join({df_int_freq %>% select(POS, maf) %>% rename(internal = maf)},
+                      {df_nygc_freq %>% select(POS, maf) %>% rename(nygc = maf)},
+                      by = "POS")
+
+df_freq <- df_freq %>%
+  rowwise() %>%
+  mutate(internal = as.numeric(internal),
+         nygc = as.numeric(nygc))
+
+df_freq %>%
+  ungroup() %>%
+  head()
+
+df_freq %>% pull(nygc) %>% hist()  
+
+plot(df_freq$internal, df_freq$nygc)
+```
+
+

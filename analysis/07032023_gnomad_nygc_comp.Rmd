@@ -28,7 +28,7 @@ library(tidyverse)
 library(janitor)
 source('code/common_functions.R')
 
-pair_info_df <- read_delim("data/sample_pairs_16aug2022.csv", col_names = c("POP", "ID1", "ID2"))
+pair_info_df <- read_delim("data/sample_pairs_gnomad.csv", col_names = c("POP", "ID1", "ID2"))
 pair_info_df$SP <- c(rep("EUR", 200), rep("AFR", 200))
 
 gc_content_1kb <- read_tsv("data/gc1kb_X_only.bed")
@@ -138,6 +138,37 @@ df_wh_si_gnomad %>%
   geom_abline(slope = 1, intercept = 0)
 ```
 
+```{r}
+df_wh_si_gnomad %>%
+  select(id, pop, switches) %>%
+  rename(gnomAD = switches) %>%
+  inner_join({df_wh_si_int %>%
+      select(id, pop, switches) %>%
+      rename(TOPMed = switches)}) %>%
+ ggplot(aes(x = TOPMed, y = gnomAD, colour = pop)) +
+  geom_point() +
+  xlab("Switches: Internal") +
+  ylab("Switches: gnomAD") +
+  ggtitle("Switches: SHAPEIT") +
+  geom_abline(slope = 1, intercept = 0)
+
+df_wh_si_gnomad %>%
+  mutate(p_flip = switches / n_het) %>%
+  select(id, pop, p_flip) %>%
+  rename(gnomAD = p_flip) %>%
+  inner_join({df_wh_si_int %>%
+      mutate(p_flip = switches / n_het) %>%
+      select(id, pop, p_flip) %>%
+      rename(TOPMed = p_flip)}) %>%
+ ggplot(aes(x = TOPMed, y = gnomAD, colour = pop)) +
+  geom_point() +
+  xlab("Switch rate: Internal") +
+  ylab("Switch rate: gnomAD") +
+  ggtitle("Switches / Number of Heterozygous Sites: SHAPEIT") +
+  geom_abline(slope = 1, intercept = 0)
+```
+
+
 #### gnomAD and NYGC
 
 ```{r}
@@ -170,6 +201,36 @@ df_wh_si_gnomad %>%
   geom_abline(slope = 1, intercept = 0)  
 ```
 
+```{r}
+df_wh_si_gnomad %>%
+  select(id, pop, switches) %>%
+  rename(gnomAD = switches) %>%
+  inner_join({df_wh_si_nygc %>%
+      select(id, pop, switches) %>%
+      rename(NYGC = switches)}) %>%
+ ggplot(aes(x = NYGC, y = gnomAD, colour = pop)) +
+  geom_point() +
+  xlab("Switches: NYGC") +
+  ylab("Switches: gnomAD") +
+  ggtitle("Switches: SHAPEIT") +
+  geom_abline(slope = 1, intercept = 0)
+
+df_wh_si_gnomad %>%
+  mutate(p_flip = switches / n_het) %>%
+  select(id, pop, p_flip) %>%
+  rename(gnomAD = p_flip) %>%
+  inner_join({df_wh_si_nygc %>%
+      mutate(p_flip = switches / n_het) %>%
+      select(id, pop, p_flip) %>%
+      rename(NYGC = p_flip)}) %>%
+ ggplot(aes(x = NYGC, y = gnomAD, colour = pop)) +
+  geom_point() +
+  xlab("Switch rate: NYGC") +
+  ylab("Switch rate: gnomAD") +
+  ggtitle("Switches / Number of Heterozygous Sites: SHAPEIT") +
+  geom_abline(slope = 1, intercept = 0)  
+```
+
 #### TOPMed and NYGC
 
 ```{r}
@@ -199,6 +260,36 @@ df_wh_si_int %>%
   xlab("Flip rate: NYGC") +
   ylab("Flip rate: TOPMed") +
   ggtitle("Flips / Number of Heterozygous Sites: SHAPEIT") +
+  geom_abline(slope = 1, intercept = 0)  
+```
+
+```{r}
+df_wh_si_int %>%
+  select(id, pop, switches) %>%
+  rename(TOPMed = switches) %>%
+  inner_join({df_wh_si_nygc %>%
+      select(id, pop, switches) %>%
+      rename(NYGC = switches)}) %>%
+ ggplot(aes(x = NYGC, y = TOPMed, colour = pop)) +
+  geom_point() +
+  xlab("Switches: NYGC") +
+  ylab("Switches: TOPMed") +
+  ggtitle("Switches: SHAPEIT") +
+  geom_abline(slope = 1, intercept = 0)
+
+df_wh_si_int %>%
+  mutate(p_flip = switches / n_het) %>%
+  select(id, pop, p_flip) %>%
+  rename(TOPMed = p_flip) %>%
+  inner_join({df_wh_si_nygc %>%
+      mutate(p_flip = switches / n_het) %>%
+      select(id, pop, p_flip) %>%
+      rename(NYGC = p_flip)}) %>%
+ ggplot(aes(x = NYGC, y = TOPMed, colour = pop)) +
+  geom_point() +
+  xlab("Switch rate: NYGC") +
+  ylab("Switch rate: TOPMed") +
+  ggtitle("Switches / Number of Heterozygous Sites: SHAPEIT") +
   geom_abline(slope = 1, intercept = 0)  
 ```
 
@@ -236,6 +327,36 @@ df_wh_eagle_gnomad %>%
   geom_abline(slope = 1, intercept = 0)
 ```
 
+```{r}
+df_wh_eagle_gnomad %>%
+  select(id, pop, switches) %>%
+  rename(gnomAD = switches) %>%
+  inner_join({df_wh_eagle_int %>%
+      select(id, pop, switches) %>%
+      rename(TOPMed = switches)}) %>%
+ ggplot(aes(x = TOPMed, y = gnomAD, colour = pop)) +
+  geom_point() +
+  xlab("Switches: Internal") +
+  ylab("Switches: gnomAD") +
+  ggtitle("Switches: EAGLE") +
+  geom_abline(slope = 1, intercept = 0)
+
+df_wh_eagle_gnomad %>%
+  mutate(p_flip = switches / n_het) %>%
+  select(id, pop, p_flip) %>%
+  rename(gnomAD = p_flip) %>%
+  inner_join({df_wh_eagle_int %>%
+      mutate(p_flip = switches / n_het) %>%
+      select(id, pop, p_flip) %>%
+      rename(TOPMed = p_flip)}) %>%
+ ggplot(aes(x = TOPMed, y = gnomAD, colour = pop)) +
+  geom_point() +
+  xlab("Switch rate: Internal") +
+  ylab("Switch rate: gnomAD") +
+  ggtitle("Switches / Number of Heterozygous Sites: EAGLE") +
+  geom_abline(slope = 1, intercept = 0)
+```
+
 #### gnomAD and NYGC
 
 ```{r}
@@ -265,6 +386,36 @@ df_wh_eagle_gnomad %>%
   xlab("Flip rate: NYGC") +
   ylab("Flip rate: gnomAD") +
   ggtitle("Flips / Number of Heterozygous Sites: EAGLE") +
+  geom_abline(slope = 1, intercept = 0)  
+```
+
+```{r}
+df_wh_eagle_gnomad %>%
+  select(id, pop, switches) %>%
+  rename(gnomAD = switches) %>%
+  inner_join({df_wh_eagle_nygc %>%
+      select(id, pop, switches) %>%
+      rename(NYGC = switches)}) %>%
+ ggplot(aes(x = NYGC, y = gnomAD, colour = pop)) +
+  geom_point() +
+  xlab("Switches: NYGC") +
+  ylab("Switches: gnomAD") +
+  ggtitle("Switches: EAGLE") +
+  geom_abline(slope = 1, intercept = 0)
+
+df_wh_eagle_gnomad %>%
+  mutate(p_flip = switches / n_het) %>%
+  select(id, pop, p_flip) %>%
+  rename(gnomAD = p_flip) %>%
+  inner_join({df_wh_eagle_nygc %>%
+      mutate(p_flip = switches / n_het) %>%
+      select(id, pop, p_flip) %>%
+      rename(NYGC = p_flip)}) %>%
+ ggplot(aes(x = NYGC, y = gnomAD, colour = pop)) +
+  geom_point() +
+  xlab("Switch rate: NYGC") +
+  ylab("Switch rate: gnomAD") +
+  ggtitle("Switches / Number of Heterozygous Sites: EAGLE") +
   geom_abline(slope = 1, intercept = 0)  
 ```
 
@@ -299,6 +450,37 @@ df_wh_eagle_int %>%
   ggtitle("Flips / Number of Heterozygous Sites: EAGLE") +
   geom_abline(slope = 1, intercept = 0)  
 ```
+
+```{r}
+df_wh_eagle_int %>%
+  select(id, pop, switches) %>%
+  rename(TOPMed = switches) %>%
+  inner_join({df_wh_eagle_nygc %>%
+      select(id, pop, switches) %>%
+      rename(NYGC = switches)}) %>%
+ ggplot(aes(x = NYGC, y = TOPMed, colour = pop)) +
+  geom_point() +
+  xlab("Switches: NYGC") +
+  ylab("Switches: TOPMed") +
+  ggtitle("Switches: EAGLE") +
+  geom_abline(slope = 1, intercept = 0)
+
+df_wh_eagle_int %>%
+  mutate(p_flip = switches / n_het) %>%
+  select(id, pop, p_flip) %>%
+  rename(TOPMed = p_flip) %>%
+  inner_join({df_wh_eagle_nygc %>%
+      mutate(p_flip = switches / n_het) %>%
+      select(id, pop, p_flip) %>%
+      rename(NYGC = p_flip)}) %>%
+ ggplot(aes(x = NYGC, y = TOPMed, colour = pop)) +
+  geom_point() +
+  xlab("Switch rate: NYGC") +
+  ylab("Switch rate: TOPMed") +
+  ggtitle("Switches / Number of Heterozygous Sites: EAGLE") +
+  geom_abline(slope = 1, intercept = 0)  
+```
+
 ### BEAGLE
 
 #### gnomAD and TOPMed
@@ -333,6 +515,36 @@ df_wh_beagle_gnomad %>%
   geom_abline(slope = 1, intercept = 0)
 ```
 
+```{r}
+df_wh_beagle_gnomad %>%
+  select(id, pop, switches) %>%
+  rename(gnomAD = switches) %>%
+  inner_join({df_wh_beagle_int %>%
+      select(id, pop, switches) %>%
+      rename(TOPMed = switches)}) %>%
+ ggplot(aes(x = TOPMed, y = gnomAD, colour = pop)) +
+  geom_point() +
+  xlab("Switches: Internal") +
+  ylab("Switches: gnomAD") +
+  ggtitle("Switches: BEAGLE") +
+  geom_abline(slope = 1, intercept = 0)
+
+df_wh_beagle_gnomad %>%
+  mutate(p_flip = switches / n_het) %>%
+  select(id, pop, p_flip) %>%
+  rename(gnomAD = p_flip) %>%
+  inner_join({df_wh_beagle_int %>%
+      mutate(p_flip = switches / n_het) %>%
+      select(id, pop, p_flip) %>%
+      rename(TOPMed = p_flip)}) %>%
+ ggplot(aes(x = TOPMed, y = gnomAD, colour = pop)) +
+  geom_point() +
+  xlab("Switch rate: Internal") +
+  ylab("Switch rate: gnomAD") +
+  ggtitle("Switches / Number of Heterozygous Sites: BEAGLE") +
+  geom_abline(slope = 1, intercept = 0)
+```
+
 #### gnomAD and NYGC
 
 ```{r}
@@ -365,6 +577,36 @@ df_wh_beagle_gnomad %>%
   geom_abline(slope = 1, intercept = 0)  
 ```
 
+```{r}
+df_wh_beagle_gnomad %>%
+  select(id, pop, switches) %>%
+  rename(gnomAD = switches) %>%
+  inner_join({df_wh_beagle_nygc %>%
+      select(id, pop, switches) %>%
+      rename(NYGC = switches)}) %>%
+ ggplot(aes(x = NYGC, y = gnomAD, colour = pop)) +
+  geom_point() +
+  xlab("Switches: NYGC") +
+  ylab("Switches: gnomAD") +
+  ggtitle("Switches: BEAGLE") +
+  geom_abline(slope = 1, intercept = 0)
+
+df_wh_beagle_gnomad %>%
+  mutate(p_flip = switches / n_het) %>%
+  select(id, pop, p_flip) %>%
+  rename(gnomAD = p_flip) %>%
+  inner_join({df_wh_beagle_nygc %>%
+      mutate(p_flip = switches / n_het) %>%
+      select(id, pop, p_flip) %>%
+      rename(NYGC = p_flip)}) %>%
+ ggplot(aes(x = NYGC, y = gnomAD, colour = pop)) +
+  geom_point() +
+  xlab("Switch rate: NYGC") +
+  ylab("Switch rate: gnomAD") +
+  ggtitle("Switches / Number of Heterozygous Sites: BEAGLE") +
+  geom_abline(slope = 1, intercept = 0)  
+```
+
 #### TOPMed and NYGC
 
 ```{r}
@@ -394,5 +636,35 @@ df_wh_beagle_int %>%
   xlab("Flip rate: NYGC") +
   ylab("Flip rate: TOPMed") +
   ggtitle("Flips / Number of Heterozygous Sites: BEAGLE") +
+  geom_abline(slope = 1, intercept = 0)  
+```
+
+```{r}
+df_wh_beagle_int %>%
+  select(id, pop, switches) %>%
+  rename(TOPMed = switches) %>%
+  inner_join({df_wh_beagle_nygc %>%
+      select(id, pop, switches) %>%
+      rename(NYGC = switches)}) %>%
+ ggplot(aes(x = NYGC, y = TOPMed, colour = pop)) +
+  geom_point() +
+  xlab("Switches: NYGC") +
+  ylab("Switches: TOPMed") +
+  ggtitle("Switches: BEAGLE") +
+  geom_abline(slope = 1, intercept = 0)
+
+df_wh_beagle_int %>%
+  mutate(p_flip = switches / n_het) %>%
+  select(id, pop, p_flip) %>%
+  rename(TOPMed = p_flip) %>%
+  inner_join({df_wh_beagle_nygc %>%
+      mutate(p_flip = switches / n_het) %>%
+      select(id, pop, p_flip) %>%
+      rename(NYGC = p_flip)}) %>%
+ ggplot(aes(x = NYGC, y = TOPMed, colour = pop)) +
+  geom_point() +
+  xlab("Switch rate: NYGC") +
+  ylab("Switch rate: TOPMed") +
+  ggtitle("Switches / Number of Heterozygous Sites: BEAGLE") +
   geom_abline(slope = 1, intercept = 0)  
 ```

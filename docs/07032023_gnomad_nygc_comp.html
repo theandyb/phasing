@@ -389,9 +389,9 @@ aria-hidden="true"></span> </a>
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 5
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 1
+aria-hidden="true"></span> 2
 </p>
 <p>
 <strong>Knit directory:</strong> <code>phasing/</code> <span
@@ -414,18 +414,21 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
-<span class="glyphicon glyphicon-ok text-success"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
-</a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
+changes </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguptodate"
+<div id="strongRMarkdownfilestronguncommittedchanges"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great! Since the R Markdown file has been committed to the Git
-repository, you know the exact version of the code that produced these
-results.</p>
+<p>The R Markdown file has unstaged changes. To know which version of
+the R Markdown file created these results, you’ll want to first commit
+it to the Git repo. If you’re still working on the analysis, you can
+ignore this warning. When you’re finished, you can run
+<code>wflow_publish</code> to commit the R Markdown file and build the
+HTML.</p>
 </div>
 </div>
 </div>
@@ -582,13 +585,13 @@ output/gnomad/whatshap
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrong691e58e">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongddb1daa">
 <span class="glyphicon glyphicon-ok text-success"
-aria-hidden="true"></span> <strong>Repository version:</strong> 691e58e
+aria-hidden="true"></span> <strong>Repository version:</strong> ddb1daa
 </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrong691e58e"
+<div id="strongRepositoryversionstrongddb1daa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -597,7 +600,7 @@ and connecting the code version to the results is critical for
 reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version 691e58e.
+The results in this page were generated with repository version ddb1daa.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -637,6 +640,7 @@ Untracked files:
     Untracked:  code/batch_diploid_v2_gnomad.sh
 
 Unstaged changes:
+    Modified:   analysis/07032023_gnomad_nygc_comp.Rmd
     Modified:   analysis/15022023_nygc_vs_internal.Rmd
     Modified:   code/batch_annotate_het.sh
     Modified:   code/batch_annotate_switch.sh
@@ -689,6 +693,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+ddb1daa
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-03-07
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -852,6 +873,43 @@ df_wh_si_gnomad &lt;- get_all_whatshap(&quot;shapeit&quot;, whatshap_dir_gnomad)
   geom_abline(slope = 1, intercept = 0)</code></pre>
 <pre><code>Joining, by = c(&quot;id&quot;, &quot;pop&quot;)</code></pre>
 <p><img src="figure/07032023_gnomad_nygc_comp.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-1">
+Past versions of unnamed-chunk-4-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-4-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+ddb1daa
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-03-07
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>df_wh_si_gnomad %&gt;%
   mutate(p_flip = flips / n_het) %&gt;%
   select(id, pop, p_flip) %&gt;%
@@ -868,6 +926,147 @@ df_wh_si_gnomad &lt;- get_all_whatshap(&quot;shapeit&quot;, whatshap_dir_gnomad)
   geom_abline(slope = 1, intercept = 0)</code></pre>
 <pre><code>Joining, by = c(&quot;id&quot;, &quot;pop&quot;)</code></pre>
 <p><img src="figure/07032023_gnomad_nygc_comp.Rmd/unnamed-chunk-4-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-2">
+Past versions of unnamed-chunk-4-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-4-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+ddb1daa
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-03-07
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>df_wh_si_gnomad %&gt;%
+  select(id, pop, switches) %&gt;%
+  rename(gnomAD = switches) %&gt;%
+  inner_join({df_wh_si_int %&gt;%
+      select(id, pop, switches) %&gt;%
+      rename(TOPMed = switches)}) %&gt;%
+ ggplot(aes(x = TOPMed, y = gnomAD, colour = pop)) +
+  geom_point() +
+  xlab(&quot;Switches: Internal&quot;) +
+  ylab(&quot;Switches: gnomAD&quot;) +
+  ggtitle(&quot;Switches: SHAPEIT&quot;) +
+  geom_abline(slope = 1, intercept = 0)</code></pre>
+<pre><code>Joining, by = c(&quot;id&quot;, &quot;pop&quot;)</code></pre>
+<p><img src="figure/07032023_gnomad_nygc_comp.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
+Past versions of unnamed-chunk-5-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+ddb1daa
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-03-07
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>df_wh_si_gnomad %&gt;%
+  mutate(p_flip = switches / n_het) %&gt;%
+  select(id, pop, p_flip) %&gt;%
+  rename(gnomAD = p_flip) %&gt;%
+  inner_join({df_wh_si_int %&gt;%
+      mutate(p_flip = switches / n_het) %&gt;%
+      select(id, pop, p_flip) %&gt;%
+      rename(TOPMed = p_flip)}) %&gt;%
+ ggplot(aes(x = TOPMed, y = gnomAD, colour = pop)) +
+  geom_point() +
+  xlab(&quot;Switch rate: Internal&quot;) +
+  ylab(&quot;Switch rate: gnomAD&quot;) +
+  ggtitle(&quot;Switches / Number of Heterozygous Sites: SHAPEIT&quot;) +
+  geom_abline(slope = 1, intercept = 0)</code></pre>
+<pre><code>Joining, by = c(&quot;id&quot;, &quot;pop&quot;)</code></pre>
+<p><img src="figure/07032023_gnomad_nygc_comp.Rmd/unnamed-chunk-5-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-2">
+Past versions of unnamed-chunk-5-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+ddb1daa
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-03-07
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="gnomad-and-nygc" class="section level4">
 <h4>gnomAD and NYGC</h4>
@@ -884,7 +1083,44 @@ df_wh_si_gnomad &lt;- get_all_whatshap(&quot;shapeit&quot;, whatshap_dir_gnomad)
   ggtitle(&quot;Flips: SHAPEIT&quot;) +
   geom_abline(slope = 1, intercept = 0)</code></pre>
 <pre><code>Joining, by = c(&quot;id&quot;, &quot;pop&quot;)</code></pre>
-<p><img src="figure/07032023_gnomad_nygc_comp.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/07032023_gnomad_nygc_comp.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-1">
+Past versions of unnamed-chunk-6-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+ddb1daa
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-03-07
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>df_wh_si_gnomad %&gt;%
   mutate(p_flip = flips / n_het) %&gt;%
   select(id, pop, p_flip) %&gt;%
@@ -900,7 +1136,148 @@ df_wh_si_gnomad &lt;- get_all_whatshap(&quot;shapeit&quot;, whatshap_dir_gnomad)
   ggtitle(&quot;Flips / Number of Heterozygous Sites: SHAPEIT&quot;) +
   geom_abline(slope = 1, intercept = 0)  </code></pre>
 <pre><code>Joining, by = c(&quot;id&quot;, &quot;pop&quot;)</code></pre>
-<p><img src="figure/07032023_gnomad_nygc_comp.Rmd/unnamed-chunk-5-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/07032023_gnomad_nygc_comp.Rmd/unnamed-chunk-6-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-2">
+Past versions of unnamed-chunk-6-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+ddb1daa
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-03-07
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>df_wh_si_gnomad %&gt;%
+  select(id, pop, switches) %&gt;%
+  rename(gnomAD = switches) %&gt;%
+  inner_join({df_wh_si_nygc %&gt;%
+      select(id, pop, switches) %&gt;%
+      rename(NYGC = switches)}) %&gt;%
+ ggplot(aes(x = NYGC, y = gnomAD, colour = pop)) +
+  geom_point() +
+  xlab(&quot;Switches: NYGC&quot;) +
+  ylab(&quot;Switches: gnomAD&quot;) +
+  ggtitle(&quot;Switches: SHAPEIT&quot;) +
+  geom_abline(slope = 1, intercept = 0)</code></pre>
+<pre><code>Joining, by = c(&quot;id&quot;, &quot;pop&quot;)</code></pre>
+<p><img src="figure/07032023_gnomad_nygc_comp.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-1">
+Past versions of unnamed-chunk-7-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+ddb1daa
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-03-07
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>df_wh_si_gnomad %&gt;%
+  mutate(p_flip = switches / n_het) %&gt;%
+  select(id, pop, p_flip) %&gt;%
+  rename(gnomAD = p_flip) %&gt;%
+  inner_join({df_wh_si_nygc %&gt;%
+      mutate(p_flip = switches / n_het) %&gt;%
+      select(id, pop, p_flip) %&gt;%
+      rename(NYGC = p_flip)}) %&gt;%
+ ggplot(aes(x = NYGC, y = gnomAD, colour = pop)) +
+  geom_point() +
+  xlab(&quot;Switch rate: NYGC&quot;) +
+  ylab(&quot;Switch rate: gnomAD&quot;) +
+  ggtitle(&quot;Switches / Number of Heterozygous Sites: SHAPEIT&quot;) +
+  geom_abline(slope = 1, intercept = 0)  </code></pre>
+<pre><code>Joining, by = c(&quot;id&quot;, &quot;pop&quot;)</code></pre>
+<p><img src="figure/07032023_gnomad_nygc_comp.Rmd/unnamed-chunk-7-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-2">
+Past versions of unnamed-chunk-7-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+ddb1daa
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-03-07
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="topmed-and-nygc" class="section level4">
 <h4>TOPMed and NYGC</h4>
@@ -917,7 +1294,44 @@ df_wh_si_gnomad &lt;- get_all_whatshap(&quot;shapeit&quot;, whatshap_dir_gnomad)
   ggtitle(&quot;Flips: SHAPEIT&quot;) +
   geom_abline(slope = 1, intercept = 0)</code></pre>
 <pre><code>Joining, by = c(&quot;id&quot;, &quot;pop&quot;)</code></pre>
-<p><img src="figure/07032023_gnomad_nygc_comp.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/07032023_gnomad_nygc_comp.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-1">
+Past versions of unnamed-chunk-8-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+ddb1daa
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-03-07
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>df_wh_si_int %&gt;%
   mutate(p_flip = flips / n_het) %&gt;%
   select(id, pop, p_flip) %&gt;%
@@ -933,7 +1347,148 @@ df_wh_si_gnomad &lt;- get_all_whatshap(&quot;shapeit&quot;, whatshap_dir_gnomad)
   ggtitle(&quot;Flips / Number of Heterozygous Sites: SHAPEIT&quot;) +
   geom_abline(slope = 1, intercept = 0)  </code></pre>
 <pre><code>Joining, by = c(&quot;id&quot;, &quot;pop&quot;)</code></pre>
-<p><img src="figure/07032023_gnomad_nygc_comp.Rmd/unnamed-chunk-6-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/07032023_gnomad_nygc_comp.Rmd/unnamed-chunk-8-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-2">
+Past versions of unnamed-chunk-8-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+ddb1daa
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-03-07
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>df_wh_si_int %&gt;%
+  select(id, pop, switches) %&gt;%
+  rename(TOPMed = switches) %&gt;%
+  inner_join({df_wh_si_nygc %&gt;%
+      select(id, pop, switches) %&gt;%
+      rename(NYGC = switches)}) %&gt;%
+ ggplot(aes(x = NYGC, y = TOPMed, colour = pop)) +
+  geom_point() +
+  xlab(&quot;Switches: NYGC&quot;) +
+  ylab(&quot;Switches: TOPMed&quot;) +
+  ggtitle(&quot;Switches: SHAPEIT&quot;) +
+  geom_abline(slope = 1, intercept = 0)</code></pre>
+<pre><code>Joining, by = c(&quot;id&quot;, &quot;pop&quot;)</code></pre>
+<p><img src="figure/07032023_gnomad_nygc_comp.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-1">
+Past versions of unnamed-chunk-9-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+ddb1daa
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-03-07
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>df_wh_si_int %&gt;%
+  mutate(p_flip = switches / n_het) %&gt;%
+  select(id, pop, p_flip) %&gt;%
+  rename(TOPMed = p_flip) %&gt;%
+  inner_join({df_wh_si_nygc %&gt;%
+      mutate(p_flip = switches / n_het) %&gt;%
+      select(id, pop, p_flip) %&gt;%
+      rename(NYGC = p_flip)}) %&gt;%
+ ggplot(aes(x = NYGC, y = TOPMed, colour = pop)) +
+  geom_point() +
+  xlab(&quot;Switch rate: NYGC&quot;) +
+  ylab(&quot;Switch rate: TOPMed&quot;) +
+  ggtitle(&quot;Switches / Number of Heterozygous Sites: SHAPEIT&quot;) +
+  geom_abline(slope = 1, intercept = 0)  </code></pre>
+<pre><code>Joining, by = c(&quot;id&quot;, &quot;pop&quot;)</code></pre>
+<p><img src="figure/07032023_gnomad_nygc_comp.Rmd/unnamed-chunk-9-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-2">
+Past versions of unnamed-chunk-9-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+ddb1daa
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-03-07
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div id="eagle" class="section level3">
@@ -953,7 +1508,44 @@ df_wh_si_gnomad &lt;- get_all_whatshap(&quot;shapeit&quot;, whatshap_dir_gnomad)
   ggtitle(&quot;Flips: EAGLE&quot;) +
   geom_abline(slope = 1, intercept = 0)</code></pre>
 <pre><code>Joining, by = c(&quot;id&quot;, &quot;pop&quot;)</code></pre>
-<p><img src="figure/07032023_gnomad_nygc_comp.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/07032023_gnomad_nygc_comp.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-1">
+Past versions of unnamed-chunk-10-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-10-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+ddb1daa
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-03-07
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>df_wh_eagle_gnomad %&gt;%
   mutate(p_flip = flips / n_het) %&gt;%
   select(id, pop, p_flip) %&gt;%
@@ -969,7 +1561,148 @@ df_wh_si_gnomad &lt;- get_all_whatshap(&quot;shapeit&quot;, whatshap_dir_gnomad)
   ggtitle(&quot;Flips / Number of Heterozygous Sites: EAGLE&quot;) +
   geom_abline(slope = 1, intercept = 0)</code></pre>
 <pre><code>Joining, by = c(&quot;id&quot;, &quot;pop&quot;)</code></pre>
-<p><img src="figure/07032023_gnomad_nygc_comp.Rmd/unnamed-chunk-7-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/07032023_gnomad_nygc_comp.Rmd/unnamed-chunk-10-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-2">
+Past versions of unnamed-chunk-10-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-10-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+ddb1daa
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-03-07
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>df_wh_eagle_gnomad %&gt;%
+  select(id, pop, switches) %&gt;%
+  rename(gnomAD = switches) %&gt;%
+  inner_join({df_wh_eagle_int %&gt;%
+      select(id, pop, switches) %&gt;%
+      rename(TOPMed = switches)}) %&gt;%
+ ggplot(aes(x = TOPMed, y = gnomAD, colour = pop)) +
+  geom_point() +
+  xlab(&quot;Switches: Internal&quot;) +
+  ylab(&quot;Switches: gnomAD&quot;) +
+  ggtitle(&quot;Switches: EAGLE&quot;) +
+  geom_abline(slope = 1, intercept = 0)</code></pre>
+<pre><code>Joining, by = c(&quot;id&quot;, &quot;pop&quot;)</code></pre>
+<p><img src="figure/07032023_gnomad_nygc_comp.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-11-1">
+Past versions of unnamed-chunk-11-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-11-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+ddb1daa
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-03-07
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>df_wh_eagle_gnomad %&gt;%
+  mutate(p_flip = switches / n_het) %&gt;%
+  select(id, pop, p_flip) %&gt;%
+  rename(gnomAD = p_flip) %&gt;%
+  inner_join({df_wh_eagle_int %&gt;%
+      mutate(p_flip = switches / n_het) %&gt;%
+      select(id, pop, p_flip) %&gt;%
+      rename(TOPMed = p_flip)}) %&gt;%
+ ggplot(aes(x = TOPMed, y = gnomAD, colour = pop)) +
+  geom_point() +
+  xlab(&quot;Switch rate: Internal&quot;) +
+  ylab(&quot;Switch rate: gnomAD&quot;) +
+  ggtitle(&quot;Switches / Number of Heterozygous Sites: EAGLE&quot;) +
+  geom_abline(slope = 1, intercept = 0)</code></pre>
+<pre><code>Joining, by = c(&quot;id&quot;, &quot;pop&quot;)</code></pre>
+<p><img src="figure/07032023_gnomad_nygc_comp.Rmd/unnamed-chunk-11-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-11-2">
+Past versions of unnamed-chunk-11-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-11-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+ddb1daa
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-03-07
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="gnomad-and-nygc-1" class="section level4">
 <h4>gnomAD and NYGC</h4>
@@ -986,7 +1719,44 @@ df_wh_si_gnomad &lt;- get_all_whatshap(&quot;shapeit&quot;, whatshap_dir_gnomad)
   ggtitle(&quot;Flips: EAGLE&quot;) +
   geom_abline(slope = 1, intercept = 0)</code></pre>
 <pre><code>Joining, by = c(&quot;id&quot;, &quot;pop&quot;)</code></pre>
-<p><img src="figure/07032023_gnomad_nygc_comp.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/07032023_gnomad_nygc_comp.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-12-1">
+Past versions of unnamed-chunk-12-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-12-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+ddb1daa
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-03-07
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>df_wh_eagle_gnomad %&gt;%
   mutate(p_flip = flips / n_het) %&gt;%
   select(id, pop, p_flip) %&gt;%
@@ -1002,7 +1772,74 @@ df_wh_si_gnomad &lt;- get_all_whatshap(&quot;shapeit&quot;, whatshap_dir_gnomad)
   ggtitle(&quot;Flips / Number of Heterozygous Sites: EAGLE&quot;) +
   geom_abline(slope = 1, intercept = 0)  </code></pre>
 <pre><code>Joining, by = c(&quot;id&quot;, &quot;pop&quot;)</code></pre>
-<p><img src="figure/07032023_gnomad_nygc_comp.Rmd/unnamed-chunk-8-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/07032023_gnomad_nygc_comp.Rmd/unnamed-chunk-12-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-12-2">
+Past versions of unnamed-chunk-12-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-12-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+ddb1daa
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-03-07
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>df_wh_eagle_gnomad %&gt;%
+  select(id, pop, switches) %&gt;%
+  rename(gnomAD = switches) %&gt;%
+  inner_join({df_wh_eagle_nygc %&gt;%
+      select(id, pop, switches) %&gt;%
+      rename(NYGC = switches)}) %&gt;%
+ ggplot(aes(x = NYGC, y = gnomAD, colour = pop)) +
+  geom_point() +
+  xlab(&quot;Switches: NYGC&quot;) +
+  ylab(&quot;Switches: gnomAD&quot;) +
+  ggtitle(&quot;Switches: EAGLE&quot;) +
+  geom_abline(slope = 1, intercept = 0)</code></pre>
+<pre><code>Joining, by = c(&quot;id&quot;, &quot;pop&quot;)</code></pre>
+<p><img src="figure/07032023_gnomad_nygc_comp.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>df_wh_eagle_gnomad %&gt;%
+  mutate(p_flip = switches / n_het) %&gt;%
+  select(id, pop, p_flip) %&gt;%
+  rename(gnomAD = p_flip) %&gt;%
+  inner_join({df_wh_eagle_nygc %&gt;%
+      mutate(p_flip = switches / n_het) %&gt;%
+      select(id, pop, p_flip) %&gt;%
+      rename(NYGC = p_flip)}) %&gt;%
+ ggplot(aes(x = NYGC, y = gnomAD, colour = pop)) +
+  geom_point() +
+  xlab(&quot;Switch rate: NYGC&quot;) +
+  ylab(&quot;Switch rate: gnomAD&quot;) +
+  ggtitle(&quot;Switches / Number of Heterozygous Sites: EAGLE&quot;) +
+  geom_abline(slope = 1, intercept = 0)  </code></pre>
+<pre><code>Joining, by = c(&quot;id&quot;, &quot;pop&quot;)</code></pre>
+<p><img src="figure/07032023_gnomad_nygc_comp.Rmd/unnamed-chunk-13-2.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="topmed-and-nygc-1" class="section level4">
 <h4>TOPMed and NYGC</h4>
@@ -1019,7 +1856,7 @@ df_wh_si_gnomad &lt;- get_all_whatshap(&quot;shapeit&quot;, whatshap_dir_gnomad)
   ggtitle(&quot;Flips: EAGLE&quot;) +
   geom_abline(slope = 1, intercept = 0)</code></pre>
 <pre><code>Joining, by = c(&quot;id&quot;, &quot;pop&quot;)</code></pre>
-<p><img src="figure/07032023_gnomad_nygc_comp.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/07032023_gnomad_nygc_comp.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>df_wh_eagle_int %&gt;%
   mutate(p_flip = flips / n_het) %&gt;%
   select(id, pop, p_flip) %&gt;%
@@ -1035,9 +1872,41 @@ df_wh_si_gnomad &lt;- get_all_whatshap(&quot;shapeit&quot;, whatshap_dir_gnomad)
   ggtitle(&quot;Flips / Number of Heterozygous Sites: EAGLE&quot;) +
   geom_abline(slope = 1, intercept = 0)  </code></pre>
 <pre><code>Joining, by = c(&quot;id&quot;, &quot;pop&quot;)</code></pre>
-<p><img src="figure/07032023_gnomad_nygc_comp.Rmd/unnamed-chunk-9-2.png" width="672" style="display: block; margin: auto;" />
-### BEAGLE</p>
+<p><img src="figure/07032023_gnomad_nygc_comp.Rmd/unnamed-chunk-14-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>df_wh_eagle_int %&gt;%
+  select(id, pop, switches) %&gt;%
+  rename(TOPMed = switches) %&gt;%
+  inner_join({df_wh_eagle_nygc %&gt;%
+      select(id, pop, switches) %&gt;%
+      rename(NYGC = switches)}) %&gt;%
+ ggplot(aes(x = NYGC, y = TOPMed, colour = pop)) +
+  geom_point() +
+  xlab(&quot;Switches: NYGC&quot;) +
+  ylab(&quot;Switches: TOPMed&quot;) +
+  ggtitle(&quot;Switches: EAGLE&quot;) +
+  geom_abline(slope = 1, intercept = 0)</code></pre>
+<pre><code>Joining, by = c(&quot;id&quot;, &quot;pop&quot;)</code></pre>
+<p><img src="figure/07032023_gnomad_nygc_comp.Rmd/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>df_wh_eagle_int %&gt;%
+  mutate(p_flip = switches / n_het) %&gt;%
+  select(id, pop, p_flip) %&gt;%
+  rename(TOPMed = p_flip) %&gt;%
+  inner_join({df_wh_eagle_nygc %&gt;%
+      mutate(p_flip = switches / n_het) %&gt;%
+      select(id, pop, p_flip) %&gt;%
+      rename(NYGC = p_flip)}) %&gt;%
+ ggplot(aes(x = NYGC, y = TOPMed, colour = pop)) +
+  geom_point() +
+  xlab(&quot;Switch rate: NYGC&quot;) +
+  ylab(&quot;Switch rate: TOPMed&quot;) +
+  ggtitle(&quot;Switches / Number of Heterozygous Sites: EAGLE&quot;) +
+  geom_abline(slope = 1, intercept = 0)  </code></pre>
+<pre><code>Joining, by = c(&quot;id&quot;, &quot;pop&quot;)</code></pre>
+<p><img src="figure/07032023_gnomad_nygc_comp.Rmd/unnamed-chunk-15-2.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
+</div>
+<div id="beagle" class="section level3">
+<h3>BEAGLE</h3>
 <div id="gnomad-and-topmed-2" class="section level4">
 <h4>gnomAD and TOPMed</h4>
 <pre class="r"><code>df_wh_beagle_gnomad %&gt;%
@@ -1053,7 +1922,7 @@ df_wh_si_gnomad &lt;- get_all_whatshap(&quot;shapeit&quot;, whatshap_dir_gnomad)
   ggtitle(&quot;Flips: BEAGLE&quot;) +
   geom_abline(slope = 1, intercept = 0)</code></pre>
 <pre><code>Joining, by = c(&quot;id&quot;, &quot;pop&quot;)</code></pre>
-<p><img src="figure/07032023_gnomad_nygc_comp.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/07032023_gnomad_nygc_comp.Rmd/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>df_wh_beagle_gnomad %&gt;%
   mutate(p_flip = flips / n_het) %&gt;%
   select(id, pop, p_flip) %&gt;%
@@ -1069,7 +1938,37 @@ df_wh_si_gnomad &lt;- get_all_whatshap(&quot;shapeit&quot;, whatshap_dir_gnomad)
   ggtitle(&quot;Flips / Number of Heterozygous Sites: BEAGLE&quot;) +
   geom_abline(slope = 1, intercept = 0)</code></pre>
 <pre><code>Joining, by = c(&quot;id&quot;, &quot;pop&quot;)</code></pre>
-<p><img src="figure/07032023_gnomad_nygc_comp.Rmd/unnamed-chunk-10-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/07032023_gnomad_nygc_comp.Rmd/unnamed-chunk-16-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>df_wh_beagle_gnomad %&gt;%
+  select(id, pop, switches) %&gt;%
+  rename(gnomAD = switches) %&gt;%
+  inner_join({df_wh_beagle_int %&gt;%
+      select(id, pop, switches) %&gt;%
+      rename(TOPMed = switches)}) %&gt;%
+ ggplot(aes(x = TOPMed, y = gnomAD, colour = pop)) +
+  geom_point() +
+  xlab(&quot;Switches: Internal&quot;) +
+  ylab(&quot;Switches: gnomAD&quot;) +
+  ggtitle(&quot;Switches: BEAGLE&quot;) +
+  geom_abline(slope = 1, intercept = 0)</code></pre>
+<pre><code>Joining, by = c(&quot;id&quot;, &quot;pop&quot;)</code></pre>
+<p><img src="figure/07032023_gnomad_nygc_comp.Rmd/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>df_wh_beagle_gnomad %&gt;%
+  mutate(p_flip = switches / n_het) %&gt;%
+  select(id, pop, p_flip) %&gt;%
+  rename(gnomAD = p_flip) %&gt;%
+  inner_join({df_wh_beagle_int %&gt;%
+      mutate(p_flip = switches / n_het) %&gt;%
+      select(id, pop, p_flip) %&gt;%
+      rename(TOPMed = p_flip)}) %&gt;%
+ ggplot(aes(x = TOPMed, y = gnomAD, colour = pop)) +
+  geom_point() +
+  xlab(&quot;Switch rate: Internal&quot;) +
+  ylab(&quot;Switch rate: gnomAD&quot;) +
+  ggtitle(&quot;Switches / Number of Heterozygous Sites: BEAGLE&quot;) +
+  geom_abline(slope = 1, intercept = 0)</code></pre>
+<pre><code>Joining, by = c(&quot;id&quot;, &quot;pop&quot;)</code></pre>
+<p><img src="figure/07032023_gnomad_nygc_comp.Rmd/unnamed-chunk-17-2.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="gnomad-and-nygc-2" class="section level4">
 <h4>gnomAD and NYGC</h4>
@@ -1086,7 +1985,7 @@ df_wh_si_gnomad &lt;- get_all_whatshap(&quot;shapeit&quot;, whatshap_dir_gnomad)
   ggtitle(&quot;Flips: BEAGLE&quot;) +
   geom_abline(slope = 1, intercept = 0)</code></pre>
 <pre><code>Joining, by = c(&quot;id&quot;, &quot;pop&quot;)</code></pre>
-<p><img src="figure/07032023_gnomad_nygc_comp.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/07032023_gnomad_nygc_comp.Rmd/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>df_wh_beagle_gnomad %&gt;%
   mutate(p_flip = flips / n_het) %&gt;%
   select(id, pop, p_flip) %&gt;%
@@ -1102,7 +2001,37 @@ df_wh_si_gnomad &lt;- get_all_whatshap(&quot;shapeit&quot;, whatshap_dir_gnomad)
   ggtitle(&quot;Flips / Number of Heterozygous Sites: BEAGLE&quot;) +
   geom_abline(slope = 1, intercept = 0)  </code></pre>
 <pre><code>Joining, by = c(&quot;id&quot;, &quot;pop&quot;)</code></pre>
-<p><img src="figure/07032023_gnomad_nygc_comp.Rmd/unnamed-chunk-11-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/07032023_gnomad_nygc_comp.Rmd/unnamed-chunk-18-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>df_wh_beagle_gnomad %&gt;%
+  select(id, pop, switches) %&gt;%
+  rename(gnomAD = switches) %&gt;%
+  inner_join({df_wh_beagle_nygc %&gt;%
+      select(id, pop, switches) %&gt;%
+      rename(NYGC = switches)}) %&gt;%
+ ggplot(aes(x = NYGC, y = gnomAD, colour = pop)) +
+  geom_point() +
+  xlab(&quot;Switches: NYGC&quot;) +
+  ylab(&quot;Switches: gnomAD&quot;) +
+  ggtitle(&quot;Switches: BEAGLE&quot;) +
+  geom_abline(slope = 1, intercept = 0)</code></pre>
+<pre><code>Joining, by = c(&quot;id&quot;, &quot;pop&quot;)</code></pre>
+<p><img src="figure/07032023_gnomad_nygc_comp.Rmd/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>df_wh_beagle_gnomad %&gt;%
+  mutate(p_flip = switches / n_het) %&gt;%
+  select(id, pop, p_flip) %&gt;%
+  rename(gnomAD = p_flip) %&gt;%
+  inner_join({df_wh_beagle_nygc %&gt;%
+      mutate(p_flip = switches / n_het) %&gt;%
+      select(id, pop, p_flip) %&gt;%
+      rename(NYGC = p_flip)}) %&gt;%
+ ggplot(aes(x = NYGC, y = gnomAD, colour = pop)) +
+  geom_point() +
+  xlab(&quot;Switch rate: NYGC&quot;) +
+  ylab(&quot;Switch rate: gnomAD&quot;) +
+  ggtitle(&quot;Switches / Number of Heterozygous Sites: BEAGLE&quot;) +
+  geom_abline(slope = 1, intercept = 0)  </code></pre>
+<pre><code>Joining, by = c(&quot;id&quot;, &quot;pop&quot;)</code></pre>
+<p><img src="figure/07032023_gnomad_nygc_comp.Rmd/unnamed-chunk-19-2.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="topmed-and-nygc-2" class="section level4">
 <h4>TOPMed and NYGC</h4>
@@ -1119,7 +2048,7 @@ df_wh_si_gnomad &lt;- get_all_whatshap(&quot;shapeit&quot;, whatshap_dir_gnomad)
   ggtitle(&quot;Flips: BEAGLE&quot;) +
   geom_abline(slope = 1, intercept = 0)</code></pre>
 <pre><code>Joining, by = c(&quot;id&quot;, &quot;pop&quot;)</code></pre>
-<p><img src="figure/07032023_gnomad_nygc_comp.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/07032023_gnomad_nygc_comp.Rmd/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>df_wh_beagle_int %&gt;%
   mutate(p_flip = flips / n_het) %&gt;%
   select(id, pop, p_flip) %&gt;%
@@ -1135,7 +2064,37 @@ df_wh_si_gnomad &lt;- get_all_whatshap(&quot;shapeit&quot;, whatshap_dir_gnomad)
   ggtitle(&quot;Flips / Number of Heterozygous Sites: BEAGLE&quot;) +
   geom_abline(slope = 1, intercept = 0)  </code></pre>
 <pre><code>Joining, by = c(&quot;id&quot;, &quot;pop&quot;)</code></pre>
-<p><img src="figure/07032023_gnomad_nygc_comp.Rmd/unnamed-chunk-12-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/07032023_gnomad_nygc_comp.Rmd/unnamed-chunk-20-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>df_wh_beagle_int %&gt;%
+  select(id, pop, switches) %&gt;%
+  rename(TOPMed = switches) %&gt;%
+  inner_join({df_wh_beagle_nygc %&gt;%
+      select(id, pop, switches) %&gt;%
+      rename(NYGC = switches)}) %&gt;%
+ ggplot(aes(x = NYGC, y = TOPMed, colour = pop)) +
+  geom_point() +
+  xlab(&quot;Switches: NYGC&quot;) +
+  ylab(&quot;Switches: TOPMed&quot;) +
+  ggtitle(&quot;Switches: BEAGLE&quot;) +
+  geom_abline(slope = 1, intercept = 0)</code></pre>
+<pre><code>Joining, by = c(&quot;id&quot;, &quot;pop&quot;)</code></pre>
+<p><img src="figure/07032023_gnomad_nygc_comp.Rmd/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>df_wh_beagle_int %&gt;%
+  mutate(p_flip = switches / n_het) %&gt;%
+  select(id, pop, p_flip) %&gt;%
+  rename(TOPMed = p_flip) %&gt;%
+  inner_join({df_wh_beagle_nygc %&gt;%
+      mutate(p_flip = switches / n_het) %&gt;%
+      select(id, pop, p_flip) %&gt;%
+      rename(NYGC = p_flip)}) %&gt;%
+ ggplot(aes(x = NYGC, y = TOPMed, colour = pop)) +
+  geom_point() +
+  xlab(&quot;Switch rate: NYGC&quot;) +
+  ylab(&quot;Switch rate: TOPMed&quot;) +
+  ggtitle(&quot;Switches / Number of Heterozygous Sites: BEAGLE&quot;) +
+  geom_abline(slope = 1, intercept = 0)  </code></pre>
+<pre><code>Joining, by = c(&quot;id&quot;, &quot;pop&quot;)</code></pre>
+<p><img src="figure/07032023_gnomad_nygc_comp.Rmd/unnamed-chunk-21-2.png" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">

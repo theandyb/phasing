@@ -5,7 +5,7 @@ args <- commandArgs(trailingOnly = T)
 id <- args[1]
 output_file <- args[2]
 
-vcf_dir <- "/net/snowwhite/home/beckandy/research/phasing/data/consensus/"
+vcf_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/vote/"
 subj_name <- paste0("FAKE", id)
 
 # read in phased files

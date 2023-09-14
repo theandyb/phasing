@@ -4,12 +4,15 @@
 
 # Example: 50 samples
 # Generate list of files for merging
-for i in `seq 311 315`; do
+start=396
+end=400
+
+for i in {$start..$end}; do
 echo "pair_${i}_test.bcf" >> file_list.txt
 done
 
 # Merge VCFs using bcftools
-bcftools merge -0 -Oz --file-list file_list.txt > topmed_input/pair311_315.vcf.gz
+bcftools merge -0 --file-list file_list.txt | bcftools annotate -Oz -x "FILTER,INFO" > topmed_input/pair${start}_${end}.vcf.gz
 rm file_list.txt
 
 for i in `seq 63 79`; do

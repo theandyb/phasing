@@ -1,18 +1,21 @@
 #!/bin/bash
 #
-#SBATCH --job-name=psdip
+#SBATCH --job-name=pdPhase
 #SBATCH --ntasks=1
-#SBATCH --time=04:00:00
+#SBATCH --time=06:00:00
 #SBATCH --cpus-per-task=4
 #SBATCH --mem-per-cpu=5GB
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=beckandy@umich.edu
-#SBATCH --array=1-400
-#SBATCH -e /net/snowwhite/home/beckandy/research/phasing/output/filter_switch_errors/slurm/pair.%A_%a.err
-#SBATCH --output=/net/snowwhite/home/beckandy/research/phasing/output/filter_switch_errors/slurm/pair.%A.%a.out
+#SBATCH --array=201-400
+#SBATCH --constraint=avx2
+#SBATCH -e /net/snowwhite/home/beckandy/research/phasing/output/afr_eur_ref/slurm/pair.%A_%a.err
+#SBATCH --output=/net/snowwhite/home/beckandy/research/phasing/output/afr_eur_ref/slurm/pair.%A.%a.out
 
-VCF="/net/snowwhite/home/beckandy/research/phasing/data/ref/chrX_nonPAR_pilot_red.bcf"
-out_dir="/net/snowwhite/home/beckandy/research/phasing/output/filter_switch_errors"
+VCF="/net/snowwhite/home/beckandy/research/phasing/data/1kgp/1kGP_nonPAR_mask_noSing.bcf"
+REF="/net/snowwhite/home/beckandy/research/phasing/data/1kgp/1kGP_nonPAR_mask_noSing_eur.vcf.gz"
+shapeit_dir="/net/snowwhite/home/beckandy/software/shapeit5/shapeit5"
+out_dir="/net/snowwhite/home/beckandy/research/phasing/output/afr_eur_ref"
 # Read line from sample_pairs.csv
 line=$(awk -v id=${SLURM_ARRAY_TASK_ID} 'NR==id{ print; exit }' /net/snowwhite/home/beckandy/research/phasing/data/sample_pairs_16aug2022.csv)
 arrSub=(${line//,/ })
@@ -22,12 +25,12 @@ sub_b=${arrSub[2]}
 echo "Our subjects are $sub_a and $sub_b"
 
 # Get list of sites for our two subjects
-bcftools view -v snps -c 2 -Ou $VCF | \
+bcftools view -v snps -Ou $VCF | \
   bcftools view -s $sub_a,$sub_b -c1 -Ou |\
-  bcftools query -e 'GT="1|0" | GT="0|1"' -f '%CHROM\t%POS\n' | tr -s ' ' > $out_dir/site_list/sites_${SLURM_ARRAY_TASK_ID}.tsv
+  bcftools query  -f '%CHROM\t%POS\n' | tr -s ' ' > $out_dir/site_list/sites_${SLURM_ARRAY_TASK_ID}.tsv
 echo -e "Site list generated"
 
-# Filter VCF to our subjects and their list of sites
+#Filter VCF to our subjects and their list of sites, removing positions with not alt in either as well
 bcftools view -v snps -s $sub_a,$sub_b -Ou $VCF |\
 	bcftools view -T $out_dir/site_list/sites_${SLURM_ARRAY_TASK_ID}.tsv |\
 	bcftools view -c 1 -Oz > /tmp/andy_input_${SLURM_ARRAY_TASK_ID}.vcf.gz
@@ -44,28 +47,10 @@ rm /tmp/andy_input_${SLURM_ARRAY_TASK_ID}_test.vcf.gz
 mv /tmp/andy_input_${SLURM_ARRAY_TASK_ID}_test2.vcf.gz /tmp/andy_input_${SLURM_ARRAY_TASK_ID}_test.vcf.gz
 bcftools index /tmp/andy_input_${SLURM_ARRAY_TASK_ID}_test.vcf.gz
 
-# Save number of heterozygotes
-n_hets=$(bcftools query -f '[%GT\t]\n' /tmp/andy_input_${SLURM_ARRAY_TASK_ID}_test.vcf.gz | awk '{if($1 == "1/0" || $1 == "0/1")count++}END{print(count)}')
-echo -e "${SLURM_ARRAY_TASK_ID}\t$n_hets" > $out_dir/vcf_n_sites/pair_${SLURM_ARRAY_TASK_ID}_hets.txt
-echo -e "${SLURM_ARRAY_TASK_ID}\t$n_hets"
-
-# Get list of heterozygouse sites
-bcftools query -f '%CHROM\t%POS\t[%GT\t]\n' /tmp/andy_input_${SLURM_ARRAY_TASK_ID}_test.vcf.gz |\
-awk '{if($3 == "1/0" || $3 == "0/1")print($0)}' > $out_dir/het_loc/pair_${SLURM_ARRAY_TASK_ID}_het_loc.txt
-
-# Reference VCF
-bcftools view -c 2 -Ou $VCF | \
-  bcftools view -s^$sub_a,$sub_b -Ou | \
-  bcftools norm --no-version -Ou -m -any | \
-  bcftools norm --no-version -Ob -d none -f /net/snowwhite/home/beckandy/reference/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna > /tmp/andy_ref_${SLURM_ARRAY_TASK_ID}.bcf
-bcftools index /tmp/andy_ref_${SLURM_ARRAY_TASK_ID}.bcf
-
-n_ref=$(bcftools query -f '%POS\n' /tmp/andy_ref_${SLURM_ARRAY_TASK_ID}.bcf | wc -l)
-echo -e "${SLURM_ARRAY_TASK_ID}\t$n_ref" > $out_dir/vcf_n_sites/pair_${SLURM_ARRAY_TASK_ID}_ref.txt
 
 ### PHASING
 eagle --vcfTarget /tmp/andy_input_${SLURM_ARRAY_TASK_ID}_test.vcf.gz \
-  --vcfRef /tmp/andy_ref_${SLURM_ARRAY_TASK_ID}.bcf \
+  --vcfRef $REF \
   --geneticMapFile=/net/snowwhite/home/beckandy/software/Eagle_v2.4.1/tables/genetic_map_hg38_withX.txt.gz \
   --vcfOutFormat v \
   --chrom chrX \
@@ -74,29 +59,30 @@ eagle --vcfTarget /tmp/andy_input_${SLURM_ARRAY_TASK_ID}_test.vcf.gz \
 
 echo "EAGLE done"
 
-/net/snowwhite/home/beckandy/software/bad_shapeit/shapeit4-4.2.2/bin/shapeit4.2 \
+$shapeit_dir/phase_common/bin/phase_common \
   --input /tmp/andy_input_${SLURM_ARRAY_TASK_ID}_test.vcf.gz \
   --map /net/snowwhite/home/beckandy/research/phasing/data/shapeit/chrX.b38.gmap.gz \
-  --reference /tmp/andy_ref_${SLURM_ARRAY_TASK_ID}.bcf \
+  --reference $REF \
   --region chrX \
   --thread 4 \
-  --output /tmp/andy_shapeit_${SLURM_ARRAY_TASK_ID}.vcf.gz
+  --output /tmp/andy_shapeit_${SLURM_ARRAY_TASK_ID}.bcf
 
 echo "SHAPEIT done"
 
 # BEAGLE
 
-bcftools view /tmp/andy_ref_${SLURM_ARRAY_TASK_ID}.bcf -Ov > /tmp/andy_ref_${SLURM_ARRAY_TASK_ID}.vcf
-
-java -Xmx4g -jar /net/snowwhite/home/beckandy/bin/beagle.05May22.33a.jar \
+java -Xmx40g -jar /net/snowwhite/home/beckandy/bin/beagle.05May22.33a.jar \
   gt=/tmp/andy_input_${SLURM_ARRAY_TASK_ID}_test.vcf.gz \
-  ref=/tmp/andy_ref_${SLURM_ARRAY_TASK_ID}.vcf \
+  ref=$REF \
   map=/net/snowwhite/home/beckandy/research/phasing/data/ref/plink.chrX.map \
-  nthreads=4 \
+  nthreads=10 \
   impute=false \
   out=/tmp/andy_beagle_${SLURM_ARRAY_TASK_ID}
 
 # Generate switch error files
+
+bcftools view -Oz /tmp/andy_shapeit_${SLURM_ARRAY_TASK_ID}.bcf > /tmp/andy_shapeit_${SLURM_ARRAY_TASK_ID}.vcf.gz
+rm /tmp/andy_shapeit_${SLURM_ARRAY_TASK_ID}.bcf*
 
 vcftools --vcf /tmp/andy_eagle_${SLURM_ARRAY_TASK_ID}.vcf \
   --gzdiff /tmp/andy_input_${SLURM_ARRAY_TASK_ID}_truth.vcf.gz \
@@ -140,18 +126,6 @@ whatshap compare --names truth,shapeit --tsv-pairwise $out_dir/whatshap/shapeit/
 gunzip /tmp/andy_beagle_${SLURM_ARRAY_TASK_ID}.vcf.gz
 whatshap compare --names truth,beagle --tsv-pairwise $out_dir/whatshap/beagle/eval_${SLURM_ARRAY_TASK_ID}.tsv /tmp/andy_input_${SLURM_ARRAY_TASK_ID}_truth.vcf  /tmp/andy_beagle_${SLURM_ARRAY_TASK_ID}.vcf
 
-# stash truth vcf
-bcftools view -Ob /tmp/andy_input_${SLURM_ARRAY_TASK_ID}_truth.vcf > $out_dir/vcf/pair_${SLURM_ARRAY_TASK_ID}_true.bcf
-
-# stash test vcf
-bcftools view -Ob /tmp/andy_input_${SLURM_ARRAY_TASK_ID}_test.vcf.gz > $out_dir/vcf/pair_${SLURM_ARRAY_TASK_ID}_test.bcf
-
-# stash phasing results
-bcftools view -Ob /tmp/andy_eagle_${SLURM_ARRAY_TASK_ID}.vcf > $out_dir/vcf/eagle/pair_${SLURM_ARRAY_TASK_ID}.bcf
-bcftools view -Ob /tmp/andy_shapeit_${SLURM_ARRAY_TASK_ID}.vcf > $out_dir/vcf/shapeit/pair_${SLURM_ARRAY_TASK_ID}.bcf
-
-sed -i '5s/^/##contig=<ID=chrX>\n/' /tmp/andy_beagle_${SLURM_ARRAY_TASK_ID}.vcf
-bcftools view -Ob /tmp/andy_beagle_${SLURM_ARRAY_TASK_ID}.vcf > $out_dir/vcf/beagle/pair_${SLURM_ARRAY_TASK_ID}.bcf
 
 # clean up tmp files
 rm /tmp/andy_beagle_${SLURM_ARRAY_TASK_ID}.log
@@ -159,8 +133,6 @@ rm /tmp/andy_beagle_${SLURM_ARRAY_TASK_ID}.vcf
 rm /tmp/andy_eagle_${SLURM_ARRAY_TASK_ID}.vcf
 rm /tmp/andy_input_${SLURM_ARRAY_TASK_ID}_test*
 rm /tmp/andy_input_${SLURM_ARRAY_TASK_ID}_truth.vcf
-rm /tmp/andy_input_${SLURM_ARRAY_TASK_ID}.vcf.gz
-rm /tmp/andy_ref_${SLURM_ARRAY_TASK_ID}.bcf*
-rm /tmp/andy_ref_${SLURM_ARRAY_TASK_ID}.vcf*
+rm /tmp/andy_input_${SLURM_ARRAY_TASK_ID}.vcf.gzl
 rm /tmp/andy_shapeit_${SLURM_ARRAY_TASK_ID}.vcf
 rm /tmp/andy_sites_${SLURM_ARRAY_TASK_ID}.bed

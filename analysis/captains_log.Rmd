@@ -398,3 +398,14 @@ done
     * BEAGLE -> Do we see better results when we don't use the genetic map?
     
 `batch_parameter_test.sh` generates the results
+
+## MARCH 2023
+
+* Compare results using 1KGP datasets from
+    * Internal (called against TOPMed)
+    * gnomAD
+    * NYGC (the 1KGP release)
+
+## APRIL 2023
+
+* Installed SHAPEIT 5 -> re-run pipeline, using samples from all AFR, EUR individuals (i.e. not just the subset available in gnomAD)

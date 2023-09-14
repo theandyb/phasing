@@ -1,0 +1,92 @@
+---
+title: "gnomAD Data"
+author: "Andy Beck"
+date: "2023-02-21"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+```{r}
+library(tidyverse)
+```
+
+## Introduction
+
+The purpose of this document is to catalog data preparation and analysis using the gnomAD v3 release of individual-level genotype data for the 
+1KGP + HDP data sets. 
+
+
+## Sample Metadata
+
+Downloaded from [gnomAD's download page](https://gnomad.broadinstitute.org/downloads#v3). Tab-delimited files with multiple variables in several columns which we'll need to parse (yay)
+
+```{r}
+df_meta <- read_tsv("data/gnomAD/gnomad.genomes.v3.1.2.hgdp_1kg_subset_sample_meta.tsv")
+
+df_meta %>%
+  select(s, hgdp_tgp_meta ) %>%
+  head()
+```
+
+It looks as though the information we want initially is buried in the `hgdp_tgp_meta` column. Let's see if we can wrangle this into separate columns:
+
+```{r}
+# Remove quotes and curly brackets
+df_meta <- df_meta %>%
+  mutate(info = str_remove_all(hgdp_tgp_meta, "[{}\"]"))
+
+# get first four columns of this column
+df_study_info <- df_meta %>%
+  rowwise() %>%
+  mutate(project = str_split(info, ",")[[1]][1],
+         study_region = str_split(info, ",")[[1]][2],
+         population = str_split(info, ",")[[1]][3],
+         genetic_region = str_split(info, ",")[[1]][4]) %>%
+  mutate(project = str_split(project, ":")[[1]][2],
+         study_region = str_split(study_region, ":")[[1]][2],
+         population = str_split(population, ":")[[1]][2],
+         genetic_region = str_split(genetic_region, ":")[[1]][2]) %>%
+  select(s, project, study_region, population, genetic_region)
+
+df_meta <-  df_meta %>%
+  rowwise() %>%
+  mutate(project = str_split(info, ",")[[1]][1],
+         study_region = str_split(info, ",")[[1]][2],
+         population = str_split(info, ",")[[1]][3],
+         genetic_region = str_split(info, ",")[[1]][4]) %>%
+  mutate(project = str_split(project, ":")[[1]][2],
+         study_region = str_split(study_region, ":")[[1]][2],
+         population = str_split(population, ":")[[1]][2],
+         genetic_region = str_split(genetic_region, ":")[[1]][2])
+```
+
+Let's see how many samples were included in gnomAD release:
+
+```{r}
+df_meta %>%
+  filter(gnomad_release == TRUE) %>%
+  pull(project) %>%
+  table()
+```
+
+Next, out of the 2500 released 1KGP samples, how many are in our list of unrelated samples?
+
+```{r}
+unrel_id <- read_tsv("data/1kgp/unrelated_subj.tsv") %>% pull(SAMPLE_NAME)
+
+keep_id <- intersect({df_meta %>% filter(gnomad_release == TRUE) %>% pull(s)}, unrel_id)
+```
+
+Write the names of the 1KGP samples into a file:
+
+```{r}
+# df_meta %>%
+#   filter(gnomad_release == TRUE) %>%
+#   filter(project == "1000 Genomes") %>%
+#   select(s) %>%
+#   write_csv("/net/snowwhite/home/beckandy/research/phasing/data/gnomAD/1kgp_samples.txt", col_names = FALSE, quote = "none")
+
+data.frame(id = keep_id) %>% write_csv("/net/snowwhite/home/beckandy/research/phasing/data/gnomAD/1kgp_samples.txt", col_names = FALSE, quote = "none")
+```
+
