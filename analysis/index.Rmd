@@ -12,6 +12,4 @@ Welcome to my research website.
 
 [CAPTAIN'S LOG](captains_log.html)
 
-Some initial data analysis can be found [here](data_exploration.html)
-
-Details on creating fake VCFs can be found in [this document](build_a_vcf.html)
+Some initial data analysis can be found [here](phasing_results.html)
