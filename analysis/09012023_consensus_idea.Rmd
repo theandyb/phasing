@@ -13,7 +13,7 @@ The idea here is to take the phased VCFs from EAGLE, BEAGLE, and SHAPEIT and som
 
 ```{r}
 library(tidyverse)
-id_df <- read_csv("/net/snowwhite/home/beckandy/research/phasing/data/sample_pairs_18apr2023.csv", 
+id_df <- read_csv("/net/snowwhite/home/beckandy/research/phasing/data/sample_pairs_9aug2023.csv", 
                   col_names = c("POP", "ID1", "ID2"))
 cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
 library(ggsci)
@@ -37,10 +37,10 @@ whats_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/final_switch_
 
 # Result Analysis
 
-Having run the voting process on all 400 pseudo-diploids, let's load in the results for all samples.
+Having run the voting process on all 700 pseudo-diploids, let's load in the results for all samples.
 
 ```{r}
-get_vote_res <- function(ids = 400, 
+get_vote_res <- function(ids = 700, 
                          res_dir = "/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/vote/",
                          prefix = "error_vote_",
                          suffix = ".tsv"){
@@ -57,8 +57,8 @@ get_vote_res <- function(ids = 400,
 
 # df <- get_vote_res()
 # df_easy <- get_vote_res(res_dir = "/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/vote/easy/")
-# df$id <- 1:400
-# df_easy$id <- 1:400
+# df$id <- 1:700
+# df_easy$id <- 1:700
 # df$alg <- "vote"
 # df_easy$alg <-"simple_vote"
 ```
@@ -68,7 +68,7 @@ Let's also gather these results for the 3 phasing algorithms:
 ```{r}
 get_alg_res <- function(alg, 
                         data_dir = "/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/whatshap/",
-                        ids = 400){
+                        ids = 700){
   base_dir <- paste0(data_dir, alg, "/")
   df <- read_tsv(paste0(base_dir, "eval_", 1,".tsv"), show_col_types = FALSE) %>%
     select(starts_with("all"))
@@ -84,28 +84,31 @@ get_alg_res <- function(alg,
 # df_eagle <- get_alg_res("eagle")
 # df_shapeit <- get_alg_res("shapeit")
 # 
-# df_beagle$id <- 1:400
-# df_eagle$id <- 1:400
-# df_shapeit$id <- 1:400
+# df_beagle$id <- 1:700
+# df_eagle$id <- 1:700
+# df_shapeit$id <- 1:700
 # 
 # df_beagle$alg <- "beagle"
 # df_eagle$alg <- "eagle"
 # df_shapeit$alg <- "shapeit"
-# 
-# # smash everything together
+
+# smash everything together
 # df <- bind_rows(df, df_beagle) %>%
 #   bind_rows(df_eagle) %>%
 #   bind_rows(df_shapeit) %>%
 #   bind_rows(df_easy)
 
 # save for later usage
-#write_csv(df, "/net/snowwhite/home/beckandy/research/phasing/data/consensus/whatshap_counts.csv")
+# write_csv(df, "/net/snowwhite/home/beckandy/research/phasing/data/consensus/whatshap_counts.csv")
 ```
 
 ```{r}
 df <- read_csv("/net/snowwhite/home/beckandy/research/phasing/data/consensus/whatshap_counts.csv")
 
-df$pop <- c(rep(rep(c("EUR", "AFR"), each = 200), times = 5))
+df$pop <- c(
+  rep(
+    c(rep(c("EUR", "AFR"), each = 200), rep(c("AMR", "EAS", "SAS"), each = 100))
+    , times = 5))
 ```
 
 Plots by algorithm
