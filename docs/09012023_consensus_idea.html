@@ -15,7 +15,7 @@
 
 <title>09012023_consensus_idea</title>
 
-<script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.22/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -31,12 +31,14 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
-<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.0/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.0/css/v4-shims.min.css" rel="stylesheet" />
 
 <link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
 <!-- Add a small amount of space between sections. -->
@@ -156,11 +158,15 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark it active
-  menuAnchor.tab('show');
-
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
 
   // Navbar adjustments
   var navHeight = $(".navbar").first().height() + 15;
@@ -189,8 +195,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -198,16 +204,9 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -344,7 +343,13 @@ div.tocify {
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/theandyb/phasing">
+    <span class="fab fa-github"></span>
+     
+    Source code
+  </a>
+</li>
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -385,7 +390,7 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2023-06-06
+<strong>Last updated:</strong> 2023-09-18
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -528,10 +533,10 @@ relative
 <tbody>
 <tr>
 <td style="text-align:left;">
-/net/snowwhite/home/beckandy/research/phasing/data/sample_pairs_18apr2023.csv
+/net/snowwhite/home/beckandy/research/phasing/data/sample_pairs_9aug2023.csv
 </td>
 <td style="text-align:left;">
-data/sample_pairs_18apr2023.csv
+data/sample_pairs_9aug2023.csv
 </td>
 </tr>
 <tr>
@@ -574,13 +579,15 @@ data/consensus/whatshap_counts.csv
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongc6008a6">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomtheandybphasingtree589f923ccc9e9bdb30789398812959a7f9e12754targetblank589f923a">
 <span class="glyphicon glyphicon-ok text-success"
-aria-hidden="true"></span> <strong>Repository version:</strong> c6008a6
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/theandyb/phasing/tree/589f923ccc9e9bdb30789398812959a7f9e12754" target="_blank">589f923</a>
 </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongc6008a6"
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomtheandybphasingtree589f923ccc9e9bdb30789398812959a7f9e12754targetblank589f923a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -589,7 +596,8 @@ and connecting the code version to the results is critical for
 reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version c6008a6.
+The results in this page were generated with repository version
+<a href="https://github.com/theandyb/phasing/tree/589f923ccc9e9bdb30789398812959a7f9e12754" target="_blank">589f923</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -628,37 +636,8 @@ Ignored files:
     Ignored:    plink.log
     Ignored:    sandbox/
 
-Untracked files:
-    Untracked:  analysis/20230221_gnomAD.Rmd
-    Untracked:  analysis/NYGC_phasing_results_exploration.Rmd
-    Untracked:  code/batch_diploid_v3.sh
-    Untracked:  code/batch_diploid_v3_afr.sh
-    Untracked:  code/batch_diploid_v3_male.sh
-    Untracked:  code/batch_diploid_v3_singletons.sh
-    Untracked:  code/batch_diploid_v3_topmed.sh
-    Untracked:  code/core
-    Untracked:  code/old/
-
 Unstaged changes:
-    Modified:   README.md
-    Modified:   Rplots.pdf
-    Modified:   analysis/07032023_gnomad_nygc_comp.Rmd
-    Modified:   analysis/15022023_nygc_vs_internal.Rmd
-    Modified:   analysis/captains_log.Rmd
-    Modified:   code/batch_annotate_het.sh
-    Modified:   code/batch_annotate_switch.sh
-    Deleted:    code/batch_diploid_admix.sh
-    Deleted:    code/batch_diploid_analysis.sh
-    Deleted:    code/batch_diploid_v2.sh
-    Deleted:    code/batch_diploid_v2_1kgp.sh
-    Deleted:    code/batch_diploid_v2_filter.sh
-    Deleted:    code/batch_parameter_test.sh
     Modified:   code/batch_vote_phase.sh
-    Modified:   code/common_functions.R
-    Modified:   code/sample_X_pairs.R
-    Modified:   code/topmed_comparison_prep.sh
-    Modified:   code/vote_phase.R
-    Modified:   code/vote_phase_easy.R
 
 </code></pre>
 <p>
@@ -710,13 +689,13 @@ Message
 Rmd
 </td>
 <td>
-c6008a6
+<a href="https://github.com/theandyb/phasing/blob/589f923ccc9e9bdb30789398812959a7f9e12754/analysis/09012023_consensus_idea.Rmd" target="_blank">589f923</a>
 </td>
 <td>
 Andy Beck
 </td>
 <td>
-2023-06-06
+2023-09-18
 </td>
 <td>
 wflow_publish("analysis/09012023_consensus_idea.Rmd")
@@ -727,7 +706,7 @@ wflow_publish("analysis/09012023_consensus_idea.Rmd")
 html
 </td>
 <td>
-d225c8e
+<a href="https://rawcdn.githack.com/theandyb/phasing/c67fabb9e2d9d4664cca0da625710c24d62ce02e/docs/09012023_consensus_idea.html" target="_blank">c67fabb</a>
 </td>
 <td>
 Andy Beck
@@ -744,7 +723,41 @@ Build site.
 Rmd
 </td>
 <td>
-120e783
+<a href="https://github.com/theandyb/phasing/blob/c6008a635bd4d27c9707e6ef99a9ec2beed2e4ca/analysis/09012023_consensus_idea.Rmd" target="_blank">c6008a6</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-06
+</td>
+<td>
+wflow_publish("analysis/09012023_consensus_idea.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/theandyb/phasing/d225c8eba16c19d629a73181a81a27f1dc8f8069/docs/09012023_consensus_idea.html" target="_blank">d225c8e</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-06
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/120e783945b45e96f7240da71ae942b7a98369ae/analysis/09012023_consensus_idea.Rmd" target="_blank">120e783</a>
 </td>
 <td>
 Andy Beck
@@ -761,7 +774,7 @@ wflow_publish("analysis/09012023_consensus_idea.Rmd")
 Rmd
 </td>
 <td>
-e239a47
+<a href="https://github.com/theandyb/phasing/blob/e239a478a3e38767c6be48c225be9977e624f665/analysis/09012023_consensus_idea.Rmd" target="_blank">e239a47</a>
 </td>
 <td>
 Andy Beck
@@ -796,9 +809,9 @@ of haploids.</p>
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()
 ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
-<pre class="r"><code>id_df &lt;- read_csv(&quot;/net/snowwhite/home/beckandy/research/phasing/data/sample_pairs_18apr2023.csv&quot;, 
+<pre class="r"><code>id_df &lt;- read_csv(&quot;/net/snowwhite/home/beckandy/research/phasing/data/sample_pairs_9aug2023.csv&quot;, 
                   col_names = c(&quot;POP&quot;, &quot;ID1&quot;, &quot;ID2&quot;))</code></pre>
-<pre><code>Rows: 400 Columns: 3
+<pre><code>Rows: 700 Columns: 3
 ── Column specification ────────────────────────────────────────────────────────
 Delimiter: &quot;,&quot;
 chr (3): POP, ID1, ID2
@@ -823,9 +836,9 @@ library(ggsci)</code></pre>
 </div>
 <div id="result-analysis" class="section level1">
 <h1>Result Analysis</h1>
-<p>Having run the voting process on all 400 pseudo-diploids, let’s load
+<p>Having run the voting process on all 700 pseudo-diploids, let’s load
 in the results for all samples.</p>
-<pre class="r"><code>get_vote_res &lt;- function(ids = 400, 
+<pre class="r"><code>get_vote_res &lt;- function(ids = 700, 
                          res_dir = &quot;/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/vote/&quot;,
                          prefix = &quot;error_vote_&quot;,
                          suffix = &quot;.tsv&quot;){
@@ -842,14 +855,14 @@ in the results for all samples.</p>
 
 # df &lt;- get_vote_res()
 # df_easy &lt;- get_vote_res(res_dir = &quot;/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/vote/easy/&quot;)
-# df$id &lt;- 1:400
-# df_easy$id &lt;- 1:400
+# df$id &lt;- 1:700
+# df_easy$id &lt;- 1:700
 # df$alg &lt;- &quot;vote&quot;
 # df_easy$alg &lt;-&quot;simple_vote&quot;</code></pre>
 <p>Let’s also gather these results for the 3 phasing algorithms:</p>
 <pre class="r"><code>get_alg_res &lt;- function(alg, 
                         data_dir = &quot;/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/whatshap/&quot;,
-                        ids = 400){
+                        ids = 700){
   base_dir &lt;- paste0(data_dir, alg, &quot;/&quot;)
   df &lt;- read_tsv(paste0(base_dir, &quot;eval_&quot;, 1,&quot;.tsv&quot;), show_col_types = FALSE) %&gt;%
     select(starts_with(&quot;all&quot;))
@@ -865,24 +878,24 @@ in the results for all samples.</p>
 # df_eagle &lt;- get_alg_res(&quot;eagle&quot;)
 # df_shapeit &lt;- get_alg_res(&quot;shapeit&quot;)
 # 
-# df_beagle$id &lt;- 1:400
-# df_eagle$id &lt;- 1:400
-# df_shapeit$id &lt;- 1:400
+# df_beagle$id &lt;- 1:700
+# df_eagle$id &lt;- 1:700
+# df_shapeit$id &lt;- 1:700
 # 
 # df_beagle$alg &lt;- &quot;beagle&quot;
 # df_eagle$alg &lt;- &quot;eagle&quot;
 # df_shapeit$alg &lt;- &quot;shapeit&quot;
-# 
-# # smash everything together
+
+# smash everything together
 # df &lt;- bind_rows(df, df_beagle) %&gt;%
 #   bind_rows(df_eagle) %&gt;%
 #   bind_rows(df_shapeit) %&gt;%
 #   bind_rows(df_easy)
 
 # save for later usage
-#write_csv(df, &quot;/net/snowwhite/home/beckandy/research/phasing/data/consensus/whatshap_counts.csv&quot;)</code></pre>
+# write_csv(df, &quot;/net/snowwhite/home/beckandy/research/phasing/data/consensus/whatshap_counts.csv&quot;)</code></pre>
 <pre class="r"><code>df &lt;- read_csv(&quot;/net/snowwhite/home/beckandy/research/phasing/data/consensus/whatshap_counts.csv&quot;)</code></pre>
-<pre><code>Rows: 2000 Columns: 7
+<pre><code>Rows: 3500 Columns: 7
 ── Column specification ────────────────────────────────────────────────────────
 Delimiter: &quot;,&quot;
 chr (2): all_switchflips, alg
@@ -890,7 +903,10 @@ dbl (5): all_assessed_pairs, all_switches, all_switch_rate, all_switchflip_r...
 
 ℹ Use `spec()` to retrieve the full column specification for this data.
 ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<pre class="r"><code>df$pop &lt;- c(rep(rep(c(&quot;EUR&quot;, &quot;AFR&quot;), each = 200), times = 5))</code></pre>
+<pre class="r"><code>df$pop &lt;- c(
+  rep(
+    c(rep(c(&quot;EUR&quot;, &quot;AFR&quot;), each = 200), rep(c(&quot;AMR&quot;, &quot;EAS&quot;, &quot;SAS&quot;), each = 100))
+    , times = 5))</code></pre>
 <p>Plots by algorithm</p>
 <pre class="r"><code>df %&gt;%
   select(id, pop, alg, all_switches) %&gt;%
@@ -929,7 +945,18 @@ Date
 <tbody>
 <tr>
 <td>
-d225c8e
+<a href="https://github.com/theandyb/phasing/blob/c67fabb9e2d9d4664cca0da625710c24d62ce02e/docs/figure/09012023_consensus_idea.Rmd/unnamed-chunk-6-1.png" target="_blank">c67fabb</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-06
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/d225c8eba16c19d629a73181a81a27f1dc8f8069/docs/figure/09012023_consensus_idea.Rmd/unnamed-chunk-6-1.png" target="_blank">d225c8e</a>
 </td>
 <td>
 Andy Beck
@@ -979,7 +1006,18 @@ Date
 <tbody>
 <tr>
 <td>
-d225c8e
+<a href="https://github.com/theandyb/phasing/blob/c67fabb9e2d9d4664cca0da625710c24d62ce02e/docs/figure/09012023_consensus_idea.Rmd/unnamed-chunk-6-2.png" target="_blank">c67fabb</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-06
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/d225c8eba16c19d629a73181a81a27f1dc8f8069/docs/figure/09012023_consensus_idea.Rmd/unnamed-chunk-6-2.png" target="_blank">d225c8e</a>
 </td>
 <td>
 Andy Beck
@@ -1029,7 +1067,18 @@ Date
 <tbody>
 <tr>
 <td>
-d225c8e
+<a href="https://github.com/theandyb/phasing/blob/c67fabb9e2d9d4664cca0da625710c24d62ce02e/docs/figure/09012023_consensus_idea.Rmd/unnamed-chunk-6-3.png" target="_blank">c67fabb</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-06
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/d225c8eba16c19d629a73181a81a27f1dc8f8069/docs/figure/09012023_consensus_idea.Rmd/unnamed-chunk-6-3.png" target="_blank">d225c8e</a>
 </td>
 <td>
 Andy Beck
@@ -1079,7 +1128,18 @@ Date
 <tbody>
 <tr>
 <td>
-d225c8e
+<a href="https://github.com/theandyb/phasing/blob/c67fabb9e2d9d4664cca0da625710c24d62ce02e/docs/figure/09012023_consensus_idea.Rmd/unnamed-chunk-6-4.png" target="_blank">c67fabb</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-06
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/d225c8eba16c19d629a73181a81a27f1dc8f8069/docs/figure/09012023_consensus_idea.Rmd/unnamed-chunk-6-4.png" target="_blank">d225c8e</a>
 </td>
 <td>
 Andy Beck
@@ -1135,7 +1195,18 @@ Date
 <tbody>
 <tr>
 <td>
-d225c8e
+<a href="https://github.com/theandyb/phasing/blob/c67fabb9e2d9d4664cca0da625710c24d62ce02e/docs/figure/09012023_consensus_idea.Rmd/unnamed-chunk-8-1.png" target="_blank">c67fabb</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-06
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/d225c8eba16c19d629a73181a81a27f1dc8f8069/docs/figure/09012023_consensus_idea.Rmd/unnamed-chunk-8-1.png" target="_blank">d225c8e</a>
 </td>
 <td>
 Andy Beck
@@ -1185,7 +1256,18 @@ Date
 <tbody>
 <tr>
 <td>
-d225c8e
+<a href="https://github.com/theandyb/phasing/blob/c67fabb9e2d9d4664cca0da625710c24d62ce02e/docs/figure/09012023_consensus_idea.Rmd/unnamed-chunk-8-2.png" target="_blank">c67fabb</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-06
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/d225c8eba16c19d629a73181a81a27f1dc8f8069/docs/figure/09012023_consensus_idea.Rmd/unnamed-chunk-8-2.png" target="_blank">d225c8e</a>
 </td>
 <td>
 Andy Beck
@@ -1235,7 +1317,18 @@ Date
 <tbody>
 <tr>
 <td>
-d225c8e
+<a href="https://github.com/theandyb/phasing/blob/c67fabb9e2d9d4664cca0da625710c24d62ce02e/docs/figure/09012023_consensus_idea.Rmd/unnamed-chunk-8-3.png" target="_blank">c67fabb</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-06
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/d225c8eba16c19d629a73181a81a27f1dc8f8069/docs/figure/09012023_consensus_idea.Rmd/unnamed-chunk-8-3.png" target="_blank">d225c8e</a>
 </td>
 <td>
 Andy Beck
@@ -1285,7 +1378,18 @@ Date
 <tbody>
 <tr>
 <td>
-d225c8e
+<a href="https://github.com/theandyb/phasing/blob/c67fabb9e2d9d4664cca0da625710c24d62ce02e/docs/figure/09012023_consensus_idea.Rmd/unnamed-chunk-9-1.png" target="_blank">c67fabb</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-06
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/d225c8eba16c19d629a73181a81a27f1dc8f8069/docs/figure/09012023_consensus_idea.Rmd/unnamed-chunk-9-1.png" target="_blank">d225c8e</a>
 </td>
 <td>
 Andy Beck
@@ -1335,7 +1439,18 @@ Date
 <tbody>
 <tr>
 <td>
-d225c8e
+<a href="https://github.com/theandyb/phasing/blob/c67fabb9e2d9d4664cca0da625710c24d62ce02e/docs/figure/09012023_consensus_idea.Rmd/unnamed-chunk-9-2.png" target="_blank">c67fabb</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-06
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/d225c8eba16c19d629a73181a81a27f1dc8f8069/docs/figure/09012023_consensus_idea.Rmd/unnamed-chunk-9-2.png" target="_blank">d225c8e</a>
 </td>
 <td>
 Andy Beck
@@ -1385,7 +1500,18 @@ Date
 <tbody>
 <tr>
 <td>
-d225c8e
+<a href="https://github.com/theandyb/phasing/blob/c67fabb9e2d9d4664cca0da625710c24d62ce02e/docs/figure/09012023_consensus_idea.Rmd/unnamed-chunk-9-3.png" target="_blank">c67fabb</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-06
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/d225c8eba16c19d629a73181a81a27f1dc8f8069/docs/figure/09012023_consensus_idea.Rmd/unnamed-chunk-9-3.png" target="_blank">d225c8e</a>
 </td>
 <td>
 Andy Beck
@@ -1407,13 +1533,13 @@ Session information
 </p>
 <div id="workflowr-sessioninfo" class="collapse">
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 4.3.0 (2023-04-21)
+<pre><code>R version 4.3.1 (2023-06-16)
 Platform: x86_64-pc-linux-gnu (64-bit)
-Running under: Ubuntu 18.04.6 LTS
+Running under: Ubuntu 20.04.6 LTS
 
 Matrix products: default
-BLAS:   /usr/lib/x86_64-linux-gnu/openblas/libblas.so.3 
-LAPACK: /usr/lib/x86_64-linux-gnu/libopenblasp-r0.2.20.so;  LAPACK version 3.7.1
+BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
+LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/liblapack.so.3;  LAPACK version 3.9.0
 
 locale:
  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
@@ -1435,21 +1561,22 @@ other attached packages:
  [9] tibble_3.2.1    ggplot2_3.4.2   tidyverse_2.0.0 workflowr_1.7.0
 
 loaded via a namespace (and not attached):
- [1] sass_0.4.1       utf8_1.2.2       generics_0.1.3   stringi_1.7.12  
+ [1] sass_0.4.6       utf8_1.2.3       generics_0.1.3   stringi_1.7.12  
  [5] hms_1.1.3        digest_0.6.31    magrittr_2.0.3   timechange_0.2.0
- [9] evaluate_0.15    grid_4.3.0       fastmap_1.1.0    rprojroot_2.0.3 
-[13] jsonlite_1.8.4   processx_3.8.1   whisker_0.4      ps_1.7.0        
-[17] promises_1.2.0.1 httr_1.4.6       fansi_1.0.4      scales_1.2.0    
+ [9] evaluate_0.21    grid_4.3.1       fastmap_1.1.1    rprojroot_2.0.3 
+[13] jsonlite_1.8.4   processx_3.8.1   whisker_0.4.1    ps_1.7.5        
+[17] promises_1.2.0.1 httr_1.4.6       fansi_1.0.4      scales_1.2.1    
 [21] jquerylib_0.1.4  cli_3.6.1        crayon_1.5.2     rlang_1.1.1     
-[25] bit64_4.0.5      munsell_0.5.0    withr_2.5.0      yaml_2.3.7      
-[29] parallel_4.3.0   tools_4.3.0      tzdb_0.4.0       colorspace_2.0-3
-[33] httpuv_1.6.11    vctrs_0.6.2      R6_2.5.1         lifecycle_1.0.3 
-[37] git2r_0.32.0     bit_4.0.4        fs_1.6.2         vroom_1.6.3     
-[41] pkgconfig_2.0.3  callr_3.7.3      pillar_1.9.0     bslib_0.3.1     
-[45] later_1.3.0      gtable_0.3.0     glue_1.6.2       Rcpp_1.0.10     
-[49] xfun_0.39        tidyselect_1.2.0 highr_0.9        rstudioapi_0.14 
-[53] knitr_1.42       farver_2.1.0     htmltools_0.5.5  labeling_0.4.2  
-[57] rmarkdown_2.14   compiler_4.3.0   getPass_0.2-2   </code></pre>
+[25] bit64_4.0.5      munsell_0.5.0    withr_2.5.0      cachem_1.0.8    
+[29] yaml_2.3.7       parallel_4.3.1   tools_4.3.1      tzdb_0.4.0      
+[33] colorspace_2.1-0 httpuv_1.6.11    vctrs_0.6.2      R6_2.5.1        
+[37] lifecycle_1.0.3  git2r_0.32.0     bit_4.0.5        fs_1.6.2        
+[41] vroom_1.6.3      archive_1.1.5    pkgconfig_2.0.3  callr_3.7.3     
+[45] pillar_1.9.0     bslib_0.5.0      later_1.3.1      gtable_0.3.3    
+[49] glue_1.6.2       Rcpp_1.0.10      xfun_0.39        tidyselect_1.2.0
+[53] highr_0.10       rstudioapi_0.14  knitr_1.42       farver_2.1.1    
+[57] htmltools_0.5.5  labeling_0.4.2   rmarkdown_2.22   compiler_4.3.1  
+[61] getPass_0.2-2   </code></pre>
 </div>
 </div>
 
