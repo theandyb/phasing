@@ -13,3 +13,5 @@ Welcome to my research website.
 [CAPTAIN'S LOG](captains_log.html)
 
 Some initial data analysis can be found [here](phasing_results.html)
+
+[Voting approach results](09012023_consensus_idea.html)
