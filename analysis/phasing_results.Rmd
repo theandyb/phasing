@@ -22,17 +22,18 @@ pal1 <- pal_ucscgb()
 
 svg_out_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/figures/paper_svg/"
 
-eagle_switch_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/switch_errors/eagle/annotated/"
+eagle_switch_dir <-   "/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/switch_errors/eagle/annotated/"
 shapeit_switch_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/switch_errors/shapeit/annotated/"
-beagle_switch_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/switch_errors/beagle/annotated/"
-num_sites_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/vcf_n_sites/"
-whatshap_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/whatshap/"
-whatshap_dir2 <- "/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/whatshap/"
+beagle_switch_dir <-  "/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/switch_errors/beagle/annotated/"
+num_sites_dir <-      "/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/vcf_n_sites/"
+whatshap_dir <-       "/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/whatshap/"
+whatshap_dir2 <-      "/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/whatshap/"
+het_loc_dir <-        "/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/het_loc/"
 
 pair_info_df <- read_delim("data/sample_pairs_9aug2023.csv", col_names = c("POP", "ID1", "ID2"))
 pair_info_df$SP <- c(rep("EUR", 200), rep("AFR", 200), rep("AMR", 100), rep("EAS", 100), rep("SAS", 100))
 
-gc_content_1kb <- read_tsv("data/gc1kb_X_only.bed")
+gc_content_1kb <- read_tsv("data/ref/gc1kb_X_only.bed")
 colnames(gc_content_1kb) <- c("CHR", "START", "END", "AT", "GC", "A", "C", "G", "T", "TOTAL", "OTHER", "LENGTH")
 gc_content_1kb  <- gc_content_1kb %>%
   mutate(bin_id = (START / 1000) + 1)
@@ -48,8 +49,15 @@ background_cpg_het <- 229868 / 1567042
 ## Single Pseudo-diploid Example
 
 ```{r}
-pair_id <- 601
+pair_id <- 1
 bin_size = 1000
+
+het_df <- read_tsv(paste0(paste0(het_loc_dir, "pair_", pair_id, "_het_loc.txt")),
+                   col_names = c("chr", "pos_start", "gt"), show_col_types = FALSE) %>%
+  select(chr, pos_start) %>%
+  mutate(pos_end = lead(pos_start)) %>%
+  drop_na()
+
 switch_err_eagle <- read_csv(paste0(eagle_switch_dir, "switch_", pair_id, ".csv")) %>% 
   mutate(bin_id = ceiling(pos_start / bin_size))
 switch_err_shapeit <- read_csv(paste0(shapeit_switch_dir, "switch_", pair_id, ".csv")) %>%
@@ -72,6 +80,7 @@ whatshap_shapeit <- read_tsv(paste0(whatshap_dir2, "/shapeit/eval_", pair_id, ".
          flips = as.numeric(str_split(all_switchflips, "/")[[1]][2])) %>%
   rename(n_het = all_assessed_pairs, total_errors = all_switches, error_rate = all_switch_rate) %>%
   select(-all_switchflips)
+
 whatshap_beagle <- read_tsv(paste0(whatshap_dir, "/beagle/eval_", pair_id, ".tsv")) %>% 
   clean_names() %>%
   select(all_assessed_pairs, all_switches, all_switch_rate, all_switchflips, all_switchflip_rate) %>%
@@ -103,12 +112,55 @@ switch_err_beagle <- switch_err_beagle %>%
 switch_err_shapeit <- switch_err_shapeit %>%
   left_join({gc_content_1kb %>% select(bin_id, GC)}, by = "bin_id")
 
+# Append switch/flip status to het_df
+
+## BEAGLE
+
+het_df <- het_df %>%
+  mutate(beagle_switch = pos_start %in% {
+    switch_err_beagle %>%
+      filter(!is_flip) %>%
+      pull(pos_start)},
+    beagle_flip = pos_start %in% {
+      switch_err_beagle %>%
+        filter(start_flip) %>%
+        pull(pos_start)
+    })
+
+## EAGLE
+het_df <- het_df %>%
+  mutate(eagle_switch = pos_start %in% {
+    switch_err_eagle %>%
+      filter(!is_flip) %>%
+      pull(pos_start)},
+    eagle_flip = pos_start %in% {
+      switch_err_eagle %>%
+        filter(start_flip) %>%
+        pull(pos_start)
+    })
+
+## SHAPEIT
+het_df <- het_df %>%
+  mutate(shapeit_switch = pos_start %in% {
+    switch_err_shapeit %>%
+      filter(!is_flip) %>%
+      pull(pos_start)},
+    shapeit_flip = pos_start %in% {
+      switch_err_shapeit %>%
+        filter(start_flip) %>%
+        pull(pos_start)
+    })
+
+# Add index to het_df
+het_df$id <- 1:length(het_df$chr)
+
 # Compute distance between distinct errors
 
 switch_err_beagle %>%
   filter(is_flip == F | start_flip == T) %>% # filter out latter halves of flips
   pull(pos_start) %>%
   diff(lag = 1)
+
 # Overlap of errors
 
 intersect({switch_err_beagle %>% filter(start_flip) %>% pull(pos_start)},
@@ -159,6 +211,15 @@ switch_err_shapeit %>%
   filter(is_flip == FALSE) %>%
   pull(cpg_start) %>%
   sum()
+
+# Number of heterozyogus locations between errors
+het_df %>%
+  filter(shapeit_switch) %>%
+  mutate(next_id = lead(id)) %>%
+  mutate(hets_btw = next_id - id - 1) %>%
+  pull(hets_btw) %>%
+  median()
+
 ```
 
 
@@ -169,7 +230,7 @@ From vcftools:
 ```{r}
 df_vcftools <- lapply(c(1:700), 
                     function(x){
-                      switch_summary(x, eagle_switch_dir, beagle_switch_dir, shapeit_switch_dir, gc_content_1kb)
+                      switch_summary(x, eagle_switch_dir, beagle_switch_dir, shapeit_switch_dir, gc_content_1kb, het_loc_dir)
                       }) %>%
   bind_rows()
 
@@ -186,6 +247,8 @@ df_wh_si <- get_all_whatshap("shapeit", n = 700, pop = c(rep("EUR", 200), rep("A
 
 ### Tables
 
+#### Mean number of switches and flips
+
 ```{r}
 df_vcftools %>%
   group_by(pop) %>%
@@ -195,6 +258,36 @@ df_vcftools %>%
             mean_flip_eagle = mean(n_flip_eagle),
             mean_flip_beagle = mean(n_flip_beagle),
             mean_flip_shapeit = mean(n_flip_shapeit)) %>%
+  reactable()
+```
+
+#### Mean median numnber of heterozygous sites between errors
+
+```{r}
+df_vcftools %>%
+  group_by(pop) %>%
+  summarize(mean_het_switch_beagle = mean(med_hets_switch_beagle),
+            mean_het_switch_eagle = mean(med_hets_switch_eagle),
+            mean_het_switch_shapeit = mean(med_hets_switch_shapeit)) %>%
+  reactable()
+```
+
+```{r}
+df_vcftools %>%
+  group_by(pop) %>%
+  summarize(mean_het_flip_beagle = mean(med_hets_flip_beagle),
+            mean_het_flip_eagle = mean(med_hets_flip_eagle),
+            mean_het_flip_shapeit = mean(med_hets_flip_shapeit)) %>%
+  reactable()
+```
+
+Note here that the populations will also differ in regards to the mean number of heterozygous sites in each pseudo-diploid:
+
+```{r}
+df_vcftools %>%
+  group_by(pop) %>%
+  summarize(mean_n_het = mean(n_hets),
+            sd_n_het = sd(n_hets)) %>%
   reactable()
 ```
 
