@@ -217,8 +217,25 @@ het_df %>%
   filter(shapeit_switch) %>%
   mutate(next_id = lead(id)) %>%
   mutate(hets_btw = next_id - id - 1) %>%
+  drop_na() %>%
   pull(hets_btw) %>%
-  median()
+  summary()
+
+het_df %>%
+  filter(shapeit_switch) %>%
+  mutate(next_id = lead(id)) %>%
+  mutate(hets_btw = next_id - id - 1) %>%
+  drop_na() %>%
+  ggplot(aes(x = hets_btw)) +
+  geom_density()
+
+het_df %>%
+  filter(shapeit_switch) %>%
+  mutate(next_id = lead(id)) %>%
+  mutate(hets_btw = next_id - id - 1) %>%
+  drop_na() %>%
+  ggplot(aes(x = pos_start, y = hets_btw)) +
+  geom_point()
 
 ```
 
@@ -656,7 +673,107 @@ out_file <- paste0(svg_out_dir, "switch_rate_b_e.svg")
 ggsave(filename = out_file, width = 5.33, height = 4.26, dpi = 300, units = "in")
 ```
 
-#### Tables for ASHG 2022
+### Hets between switches
+
+#### Shapeit vs BEAGLE
+```{r}
+df_vcftools %>% 
+  ggplot(aes(x = med_hets_switch_shapeit, y = med_hets_switch_beagle, color = pop)) +
+  geom_point() +
+  scale_color_jco() +
+  xlab("SHAPEIT") +
+  ylab("BEAGLE") +
+  ggtitle("Median Heterozygous Sites \nBetween Switches") +
+  geom_abline(slope = 1, intercept = 0) +
+  theme_bw(base_size = 12) +
+  theme(legend.position = c(0.85, .25)) +
+  guides(colour=guide_legend(title="Population"))
+```
+
+```{r}
+df_vcftools %>% 
+  mutate(sr_shapeit = med_hets_switch_shapeit / n_hets,
+         sr_beagle = med_hets_switch_beagle / n_hets) %>%
+  filter(pop %in% c("AFR", "EUR")) %>%
+  ggplot(aes(x = sr_shapeit, y = sr_beagle, color = pop)) +
+  geom_point() +
+  scale_color_jco() +
+  xlab("SHAPEIT") +
+  ylab("BEAGLE") +
+  ggtitle("Median Heterozygous Sites \nBetween Switches") +
+  geom_abline(slope = 1, intercept = 0) +
+  theme_bw(base_size = 12) +
+  theme(legend.position = c(0.85, .25)) +
+  guides(colour=guide_legend(title="Population"))
+```
+
+#### Shapeit vs EAGLE
+
+```{r}
+df_vcftools %>% 
+  ggplot(aes(x = med_hets_switch_shapeit, y = med_hets_switch_eagle, color = pop)) +
+  geom_point() +
+  scale_color_jco() +
+  xlab("SHAPEIT") +
+  ylab("EAGLE") +
+  ggtitle("Median Heterozygous Sites \nBetween Switches") +
+  geom_abline(slope = 1, intercept = 0) +
+  theme_bw(base_size = 12) +
+  theme(legend.position = c(0.85, .25)) +
+  guides(colour=guide_legend(title="Population"))
+```
+
+```{r}
+df_vcftools %>% 
+  mutate(sr_shapeit = med_hets_switch_shapeit / n_hets,
+         sr_eagle = med_hets_switch_eagle / n_hets) %>%
+  filter(pop %in% c("AFR", "EUR")) %>%
+  ggplot(aes(x = sr_shapeit, y = sr_eagle, color = pop)) +
+  geom_point() +
+  scale_color_jco() +
+  xlab("SHAPEIT") +
+  ylab("EAGLE") +
+  ggtitle("Median Heterozygous Sites \nBetween Switches") +
+  geom_abline(slope = 1, intercept = 0) +
+  theme_bw(base_size = 12) +
+  theme(legend.position = c(0.85, .25)) +
+  guides(colour=guide_legend(title="Population"))
+```
+
+#### BEAGLE vs EAGLE
+
+```{r}
+df_vcftools %>% 
+  ggplot(aes(x = med_hets_switch_beagle, y = med_hets_switch_eagle, color = pop)) +
+  geom_point() +
+  scale_color_jco() +
+  xlab("BEAGLE") +
+  ylab("EAGLE") +
+  ggtitle("Median Heterozygous Sites \nBetween Switches") +
+  geom_abline(slope = 1, intercept = 0) +
+  theme_bw(base_size = 12) +
+  theme(legend.position = c(0.88, .75)) +
+  guides(colour=guide_legend(title="Population"))
+```
+
+```{r}
+df_vcftools %>% 
+  mutate(sr_beagle = med_hets_switch_beagle / n_hets,
+         sr_eagle = med_hets_switch_eagle / n_hets) %>%
+  filter(pop %in% c("AFR", "EUR")) %>%
+  ggplot(aes(x = sr_beagle, y = sr_eagle, color = pop)) +
+  geom_point() +
+  scale_color_jco() +
+  xlab("BEAGLE") +
+  ylab("EAGLE") +
+  ggtitle("Median Heterozygous Sites \nBetween Switches") +
+  geom_abline(slope = 1, intercept = 0) +
+  theme_bw(base_size = 12) +
+  guides(colour=guide_legend(title="Population"))
+```
+
+
+### Tables for ASHG 2022
 
 ```{r}
 library(corrr)
