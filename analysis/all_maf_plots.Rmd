@@ -1,0 +1,95 @@
+---
+title: "all_maf_plots"
+author: "Andy Beck"
+date: "2024-02-05"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+```{r}
+library(tidyverse)
+source("code/common_functions.R")
+eagle_switch_dir <-   "/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/switch_errors/eagle/annotated/"
+shapeit_switch_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/switch_errors/shapeit/annotated/"
+beagle_switch_dir <-  "/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/switch_errors/beagle/annotated/"
+num_sites_dir <-      "/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/vcf_n_sites/"
+whatshap_dir <-       "/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/whatshap/"
+het_loc_dir <-        "/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/het_loc/"
+df_freq <- read_tsv("/net/snowwhite/home/beckandy/research/phasing/output/chrX_maf_simple.tsv")
+pair_info_df <- read_delim("data/sample_pairs_9aug2023.csv", col_names = c("POP", "ID1", "ID2"))
+pair_info_df$SP <- c(rep("EUR", 200), rep("AFR", 200), rep("AMR", 100), rep("EAS", 100), rep("SAS", 100))
+
+get_dens_for_pd <- function(pair_id, 
+                            eagle_switch_dir,
+                            shapeit_switch_dir,
+                            beagle_switch_dir,
+                            df_freq,
+                            pair_info_df){
+  print(pair_id)
+  df_pd_eagle <-  read_csv(paste0(eagle_switch_dir, "switch_", pair_id, ".csv"), show_col_types = FALSE) 
+  df_pd_shapeit <- read_csv(paste0(shapeit_switch_dir, "switch_", pair_id, ".csv"), show_col_types = FALSE) 
+  df_pd_beagle <- read_csv(paste0(beagle_switch_dir, "switch_", pair_id, ".csv"), show_col_types = FALSE) 
+  
+  flip_pos_eagle <- get_flip_pos(df_pd_eagle)
+  flip_pos_beagle <- get_flip_pos(df_pd_beagle)
+  flip_pos_shapeit <- get_flip_pos(df_pd_shapeit)
+  
+  # Assign switches flip status
+  df_pd_eagle$is_flip <- df_pd_eagle$pos_end %in% flip_pos_eagle
+  df_pd_beagle$is_flip <- df_pd_beagle$pos_end %in% flip_pos_beagle
+  df_pd_shapeit$is_flip <- df_pd_shapeit$pos_end %in% flip_pos_shapeit
+  
+  df_pd_eagle$part_of_flip <- ifelse(df_pd_eagle$is_flip, TRUE, df_pd_eagle$pos_start %in% flip_pos_eagle)
+  df_pd_beagle$part_of_flip <- ifelse(df_pd_beagle$is_flip, TRUE, df_pd_beagle$pos_start %in% flip_pos_beagle)
+  df_pd_shapeit$part_of_flip <- ifelse(df_pd_shapeit$is_flip, TRUE, df_pd_shapeit$pos_start %in% flip_pos_shapeit)
+  
+  # match start pos to maf
+  df_pd_beagle <- df_pd_beagle %>%
+    inner_join({df_freq %>% select(POS, maf)}, by=c("pos_start" = "POS"))
+  
+  df_pd_eagle <- df_pd_eagle %>%
+    inner_join({df_freq %>% select(POS, maf)}, by=c("pos_start" = "POS"))
+  
+  df_pd_shapeit <- df_pd_shapeit %>%
+    inner_join({df_freq %>% select(POS, maf)}, by=c("pos_start" = "POS"))
+  
+  df_pd_maf <- df_pd_beagle %>%
+    select(maf, is_flip) %>%
+    mutate(method = "beagle") %>%
+    bind_rows({df_pd_eagle %>% select(maf, is_flip) %>% mutate(method = "eagle")}) %>%
+     bind_rows({df_pd_shapeit %>% select(maf, is_flip) %>% mutate(method = "shapeit")})
+  
+  med_maf <- median(df_pd_maf$maf, na.rm = T)
+  med_maf_flip <- df_pd_maf %>%
+    filter(is_flip) %>%
+    pull(maf) %>%
+    median(na.rm=T)
+  
+  p1 <- df_pd_maf %>%
+    ggplot(aes(x = maf, colour = method)) +
+    geom_density() +
+    ggtitle("MAF at switch sites", paste0(pair_info_df$SP[pair_id],": ",pair_info_df$ID1[pair_id]," ", pair_info_df$ID2[pair_id], "; Median MAF: ", med_maf )) +
+    xlab("MAF") +
+    ylab("Density")
+  print(p1)
+  
+  p2 <- df_pd_maf %>%
+    filter(is_flip) %>%
+    ggplot(aes(x = maf, colour = method)) +
+    geom_density() +
+    ggtitle("MAF at flip sites", paste0(pair_info_df$SP[pair_id],": ",pair_info_df$ID1[pair_id]," ", pair_info_df$ID2[pair_id], "; Median MAF: ", med_maf_flip)) +
+    xlab("MAF") +
+    ylab("Density")
+  print(p2)
+}
+```
+
+```{r}
+for(i in 1:700){
+  get_dens_for_pd(i, eagle_switch_dir, shapeit_switch_dir ,beagle_switch_dir, df_freq, pair_info_df)
+}
+```
+
+
+
