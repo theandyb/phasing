@@ -262,6 +262,21 @@ df_wh_beagle <- get_all_whatshap("beagle", n = 700, pop = c(rep("EUR", 200), rep
 df_wh_si <- get_all_whatshap("shapeit", n = 700, pop = c(rep("EUR", 200), rep("AFR", 200), rep("AMR", 100), rep("EAS", 100), rep("SAS", 100)))
 ```
 
+Also load the distances between first and last heterozygote in each pseudo-diploid:
+
+```{r}
+par_size <- (2781479 - 10001) + (156030895 - 155701383)
+pd_size <- read_tsv("/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/het_loc/phased_size.txt",
+                    col_names = c("id", "size"), show_col_types = FALSE) %>%
+  mutate(size_mb = (size - par_size) / 1e6)
+
+df_wh_eagle$size_mb <- pd_size$size_mb
+df_wh_beagle$size_mb <- pd_size$size_mb
+df_wh_si$size_mb <- pd_size$size_mb
+df_vcftools$size_mb <- pd_size$size_mb
+```
+
+
 ### Tables
 
 #### Mean number of switches and flips
@@ -278,7 +293,21 @@ df_vcftools %>%
   reactable()
 ```
 
-#### Mean median numnber of heterozygous sites between errors
+#### Mean number of switches and flips per MB
+
+```{r}
+df_vcftools %>%
+  group_by(pop) %>%
+  summarize(mean_switch_eagle = mean(n_other_eagle / size_mb),
+            mean_switch_beagle = mean(n_other_beagle / size_mb),
+            mean_switch_shapeit = mean(n_other_shapeit / size_mb),
+            mean_flip_eagle = mean(n_flip_eagle / size_mb),
+            mean_flip_beagle = mean(n_flip_beagle / size_mb),
+            mean_flip_shapeit = mean(n_flip_shapeit / size_mb)) %>%
+  reactable()
+```
+
+#### Mean median number of heterozygous sites between errors
 
 ```{r}
 df_vcftools %>%
@@ -305,6 +334,26 @@ df_vcftools %>%
   group_by(pop) %>%
   summarize(mean_n_het = mean(n_hets),
             sd_n_het = sd(n_hets)) %>%
+  reactable()
+```
+
+#### Mean mean number of heterozygous sites between errors
+
+```{r}
+df_vcftools %>%
+  group_by(pop) %>%
+  summarize(mean_het_switch_beagle = mean(mean_hets_switch_beagle),
+            mean_het_switch_eagle = mean(mean_hets_switch_eagle),
+            mean_het_switch_shapeit = mean(mean_hets_switch_shapeit)) %>%
+  reactable()
+```
+
+```{r}
+df_vcftools %>%
+  group_by(pop) %>%
+  summarize(mean_het_flip_beagle = mean(mean_hets_flip_beagle),
+            mean_het_flip_eagle = mean(mean_hets_flip_eagle),
+            mean_het_flip_shapeit = mean(mean_hets_flip_shapeit)) %>%
   reactable()
 ```
 
@@ -1095,6 +1144,10 @@ df_pd_maf <- df_pd_beagle %>%
   mutate(method = "beagle") %>%
   bind_rows({df_pd_eagle %>% select(maf, is_flip) %>% mutate(method = "eagle")}) %>%
    bind_rows({df_pd_shapeit %>% select(maf, is_flip) %>% mutate(method = "shapeit")})
+
+tapply(df_pd_maf[df_pd_maf$is_flip,]$maf, df_pd_maf[df_pd_maf$is_flip,]$method, summary)
+
+tapply(df_pd_maf[!df_pd_maf$is_flip,]$maf, df_pd_maf[!df_pd_maf$is_flip,]$method, summary)
 
 df_pd_maf %>%
   ggplot(aes(x = maf, colour = method)) +
