@@ -15,3 +15,5 @@ Welcome to my research website.
 Some initial data analysis can be found [here](phasing_results.html)
 
 [Voting approach results](09012023_consensus_idea.html)
+
+[All MAF Plots](all_maf_plots.html)
