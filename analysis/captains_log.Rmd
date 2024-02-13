@@ -251,7 +251,7 @@ Phased perfectly
 # create conda env
 conda create --name whatshap
 # activate environment
-conda activate whatshao
+conda activate whatshap
 # install whatshap
 conda install whatshap nomkl
 ```
@@ -272,22 +272,22 @@ conda install whatshap nomkl
 curl -s http://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/hg38.chrom.sizes | \
   grep -Ev "_|Y|M" > data/hg38.chrom.sizes
     
-bedtools makewindows -g data/hg38.chrom.sizes -w 1000000 | sort -k 1,1V -k2,2n > data/genome.1000kb.sorted.bed
+bedtools makewindows -g data/ref/hg38.chrom.sizes -w 1000000 | sort -k 1,1V -k2,2n > data/ref/genome.1000kb.sorted.bed
 
-bedtools makewindows -g data/hg38.chrom.sizes -w 5000000 | sort -k 1,1V -k2,2n > data/genome.5000kb.sorted.bed
+bedtools makewindows -g data/ref/hg38.chrom.sizes -w 5000000 | sort -k 1,1V -k2,2n > data/ref/genome.5000kb.sorted.bed
 
-bedtools makewindows -g data/hg38.chrom.sizes -w 100000 | sort -k 1,1V -k2,2n > data/genome.100kb.sorted.bed
+bedtools makewindows -g data/ref/hg38.chrom.sizes -w 100000 | sort -k 1,1V -k2,2n > data/ref/genome.100kb.sorted.bed
 
-bedtools makewindows -g data/hg38.chrom.sizes -w 10000 | sort -k 1,1V -k2,2n > data/genome.10kb.sorted.bed
+bedtools makewindows -g data/ref/hg38.chrom.sizes -w 10000 | sort -k 1,1V -k2,2n > data/ref/genome.10kb.sorted.bed
 
-bedtools makewindows -g data/hg38.chrom.sizes -w 1000 | sort -k 1,1V -k2,2n > data/genome.1kb.sorted.bed
+bedtools makewindows -g data/ref/hg38.chrom.sizes -w 1000 | sort -k 1,1V -k2,2n > data/ref/genome.1kb.sorted.bed
 
 # GC content
-bedtools nuc -fi /net/snowwhite/home/beckandy/research/1000G_LSCI/reference_data/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna -bed data/genome.1kb.sorted.bed | grep -E '#|chrX' > data/gc1kb_X_only.bed
+bedtools nuc -fi data/ref/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna -bed data/ref/genome.1kb.sorted.bed | grep -E '#|chrX' > data/ref/gc1kb_X_only.bed
 
-bedtools nuc -fi /net/snowwhite/home/beckandy/research/1000G_LSCI/reference_data/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna -bed data/genome.10kb.sorted.bed > data/gc10kb.bed
+bedtools nuc -fi data/ref/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna -bed data/ref/genome.10kb.sorted.bed > data/ref/gc10kb.bed
 
-bedtools nuc -fi /net/snowwhite/home/beckandy/research/1000G_LSCI/reference_data/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna -bed data/genome.100kb.sorted.bed > data/gc100kb.bed
+bedtools nuc -fi data/ref/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna -bed data/ref/genome.100kb.sorted.bed > data/ref/gc100kb.bed
 ```
 
 ## 19 April 2022
@@ -304,18 +304,22 @@ Re-did the step from March for creating the masked VCF, BUT we've decided to use
 
 ### Masked reference genome
 
+From the data/ref directory:
+
+```
+wget https://hgdownload.cse.ucsc.edu/goldenpath/hg38/bigZips/hg38.chrom.sizes
+grep 'chrX' hg38.chrom.sizes > hg38.chrX.sizes
+
+wget ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/001/405/GCA_000001405.15_GRCh38/seqs_for_alignment_pipelines.ucsc_ids/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz
+gunzip GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz
+fastaindex -f GCA_000001405.15_GRCh38_no_alt_analysis_set.fna -i GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.in
+fastafetch -f GCA_000001405.15_GRCh38_no_alt_analysis_set.fna -i GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.in -q "chrX" > chrX.fasta
+```
+
 First we need to get the complement of the pilot mask:
 
 ```
-bedtools complement -i data/mask/mask_pilot_chrX.bed -g data/ref/hg38.chromX.sizes | bedtools sort > data/mask/mask_pilot_fasta.bed
-```
-
-Then subset fasta to X:
-
-```
-fastaindex -f ../1000G_LSCI/reference_data/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna -i ../1000G_LSCI/reference_data/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.in
-
-fastafetch -f ../1000G_LSCI/reference_data/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna -i ../1000G_LSCI/reference_data/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.in -q "chrX" > data/ref/chrX.fasta
+bedtools complement -i data/mask/mask_pilot_chrX.bed -g data/ref/hg38.chrX.sizes | bedtools sort > data/mask/mask_pilot_fasta.bed
 ```
 
 Then we apply the mask to the fasta:
@@ -324,15 +328,15 @@ bedtools maskfasta -fi data/ref/chrX.fasta -bed data/mask/mask_pilot_fasta.bed -
 samtools faidx data/ref/chrX_mask.fasta
 ```
 
-Re-make window files using reduced hg38.chromX.sizes file:
+Re-make window files using reduced hg38.chrX.sizes file:
 
 ```
-grep 'chrX' data/ref/hg38.chrom.sizes > data/ref/hg38.chromX.sizes
-bedtools makewindows -g data/ref/hg38.chromX.sizes -w 100000 | sort -k 1,1V -k2,2n > data/ref/genome.100kb.sorted.bed
+grep 'chrX' data/ref/hg38.chrom.sizes > data/ref/hg38.chrX.sizes
+bedtools makewindows -g data/ref/hg38.chrX.sizes -w 100000 | sort -k 1,1V -k2,2n > data/ref/genome.100kb.sorted.bed
 
-bedtools makewindows -g data/ref/hg38.chromX.sizes -w 10000 | sort -k 1,1V -k2,2n > data/ref/genome.10kb.sorted.bed
+bedtools makewindows -g data/ref/hg38.chrX.sizes -w 10000 | sort -k 1,1V -k2,2n > data/ref/genome.10kb.sorted.bed
 
-bedtools makewindows -g data/ref/hg38.chromX.sizes -w 1000 | sort -k 1,1V -k2,2n > data/ref/genome.1kb.sorted.bed
+bedtools makewindows -g data/ref/hg38.chrX.sizes -w 1000 | sort -k 1,1V -k2,2n > data/ref/genome.1kb.sorted.bed
 ```
 
 And finally get GC content in windows:
@@ -409,3 +413,74 @@ done
 ## APRIL 2023
 
 * Installed SHAPEIT 5 -> re-run pipeline, using samples from all AFR, EUR individuals (i.e. not just the subset available in gnomAD)
+
+## August 2023
+
+### Getting reference data
+
+Now our goal is to try and regress phasing errors on various measures along the genome.
+
+#### Reference Genome
+
+```
+gunzip -c GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz > GCA_000001405.15_GRCh38_no_alt_analysis_set.fna
+samtools faidx GCA_000001405.15_GRCh38_no_alt_analysis_set.fna chrX > chrX_ref.fna
+samtools faidx chrX_ref.fna
+wget https://hgdownload.cse.ucsc.edu/goldenpath/hg38/bigZips/hg38.chrom.sizes
+bedtools complement -i ref/20160622.chrX.pilot_mask.bed -g ref/hg38.chrom.sizes | grep 'chrX' > inverse_pilot.bed
+bedtools maskfasta -fi chrX_ref.fna -bed inverse_pilot.bed -fo chrX_ref_pilot.fna
+```
+
+#### GC content
+
+We can vary the size of the windows here. Initially we'll look at GC content in 10kb windows.
+
+```
+bedtools nuc -fi chrX_ref_pilot.fna -bed ref/genome.10kb.sorted.bed > chrX_gc_10kb.bed
+```
+
+#### Recombination Rates
+
+We'll first take a look at data from https://doi.org/10.1126/science.aau1043
+
+See `README.md` in the `data/recomb` folder for details on how this data was processed.
+
+## October 2023
+
+Let's ensure that our construction of the masked vcf file is correct.
+
+### Step 1: Remove PAR and apply mask
+
+run from the `data/1kgp` directory
+
+```
+bcftools view -Ov --types snps -S unrel_ids.txt 1kGP_high_coverage_Illumina.chrX.filtered.SNV_INDEL_SV_phased_panel.v2.vcf.gz |\
+bcftools view -Ov -t ^chrX:10001-2781479 |\
+bcftools view -Ov -t ^chrX:155701382-156030895 |\
+bedtools intersect -a - -b 20160622.chrX.pilot_mask.bed -wa -header |\
+bcftools view -Ob > 1kGP_nonPAR_mask.bcf
+```
+
+### Step 2: Remove singletons
+
+```
+bcftools view -Ov 1kGP_nonPAR_mask.bcf | vcftools --singletons --vcf -
+awk '{if($1 == "chrX")print($1"\t"$2)}' out.singletons > exclude.txt
+bcftools view -Ob -T ^exclude.txt 1kGP_nonPAR_mask.bcf > 1kGP_nonPAR_mask_noSing.bcf
+```
+
+## Getting PD sizes
+
+computing the distance between last and first heterozygote in each pseudo-diploid
+
+```
+for i in `seq 1 700`; do
+begin=$(head -1 "pair_${i}_het_loc.txt" | awk '{print($2)}')
+end=$(tail -1 "pair_${n}_het_loc.txt" | awk '{print($2)}')
+(( dist = end - begin ))
+echo "${i}\t${dist}" >> phased_size.txt
+done
+```
+
+
+
