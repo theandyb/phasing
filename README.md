@@ -12,6 +12,8 @@ Our pre-processing consists of:
 2. applying the 1kGP pilot accessibility mask
 3. Removing PAR
 
+In the following, we assume that the commands are being run from the data/1kgp directory. These locations are referenced in downstream analyses.
+
 Remove non-SNPs, remove PAR, apply mask:
 
 ```
@@ -40,3 +42,9 @@ vcftools --vcf - --freq --out 1kGP_nonPAR_mask_noSing
 ## Sample Pairs for Pseudodiploid Construction
 
 The file `sample_X_pairs.R` in the code directory randomly samples pairs of males from the same sub-population. This was modified slightly on 9 Aug 2023 to ensure that each sampled pair was unique. Also, the AMR, EAS, and SAS populations were added (100 pseudodiploids for each population).
+
+## Pseudodiploid Construction
+
+The batch script `batch_diploid_v3.sh` is a SLURM script which runs the same process on all sampled pairs of male X chromosomes. The process is as follows:
+
+1. 
