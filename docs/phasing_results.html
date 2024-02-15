@@ -397,7 +397,7 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2024-02-13
+<strong>Last updated:</strong> 2024-02-14
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -650,15 +650,15 @@ output/chrX_maf_simple.tsv
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomtheandybphasingtree804cb9a7046335fd49eb4d82c011c28084f1f701targetblank804cb9aa">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomtheandybphasingtreef16e50d81c3983ae7a5b6f7cfbb68e223b524f76targetblankf16e50da">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/theandyb/phasing/tree/804cb9a7046335fd49eb4d82c011c28084f1f701" target="_blank">804cb9a</a>
+<a href="https://github.com/theandyb/phasing/tree/f16e50d81c3983ae7a5b6f7cfbb68e223b524f76" target="_blank">f16e50d</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomtheandybphasingtree804cb9a7046335fd49eb4d82c011c28084f1f701targetblank804cb9aa"
+id="strongRepositoryversionstrongahrefhttpsgithubcomtheandybphasingtreef16e50d81c3983ae7a5b6f7cfbb68e223b524f76targetblankf16e50da"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -668,7 +668,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/theandyb/phasing/tree/804cb9a7046335fd49eb4d82c011c28084f1f701" target="_blank">804cb9a</a>.
+<a href="https://github.com/theandyb/phasing/tree/f16e50d81c3983ae7a5b6f7cfbb68e223b524f76" target="_blank">f16e50d</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -685,6 +685,7 @@ were generated:
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    analysis/figure/
     Ignored:    data/1kgp/
     Ignored:    data/consensus/
     Ignored:    data/gnomAD/
@@ -713,13 +714,11 @@ Untracked files:
 
 Unstaged changes:
     Modified:   README.md
-    Modified:   analysis/all_maf_plots.Rmd
-    Modified:   analysis/captains_log.Rmd
     Modified:   code/batch_annotate_het.sh
     Modified:   code/batch_annotate_switch.sh
     Modified:   code/batch_diploid_v3.sh
     Modified:   code/batch_vote_phase.sh
-    Modified:   code/common_functions.R
+    Deleted:    code/core
 
 </code></pre>
 <p>
@@ -765,6 +764,41 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/f16e50d81c3983ae7a5b6f7cfbb68e223b524f76/analysis/phasing_results.Rmd" target="_blank">f16e50d</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-14
+</td>
+<td>
+wflow_publish(c("code/common_functions.R",
+"analysis/phasing_results.Rmd",
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/theandyb/phasing/3fe89750818b03dc973a4a5e1f059b65cafefd6f/docs/phasing_results.html" target="_blank">3fe8975</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-13
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1628,12 +1662,12 @@ class="section level4">
   geom_point() +
   geom_abline(slope = 1, intercept = 0) +
   ggtitle(&quot;Total Errors&quot;) +
-  xlab(&quot;SHAPEIT5 Errors&quot;) +
-  ylab(&quot;EAGLE2 Errors&quot;) +
+  xlab(&quot;SHAPEIT Errors&quot;) +
+  ylab(&quot;Eagle Errors&quot;) +
   guides(colour=guide_legend(title=&quot;Population&quot;)) +
-  scale_color_jco() +
+  scale_color_manual(values = cbPalette) +
   theme_bw(base_size = 14) +
-  theme(legend.position = c(0.2, .85))</code></pre>
+  theme(legend.position = c(0.15, .7))</code></pre>
 <p><img src="figure/phasing_results.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-13-1">
@@ -1657,6 +1691,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/3fe89750818b03dc973a4a5e1f059b65cafefd6f/docs/figure/phasing_results.Rmd/unnamed-chunk-13-1.png" target="_blank">3fe8975</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/theandyb/phasing/blob/4fcb226cc86c3137ca2568efc8ab33a80a19581d/docs/figure/phasing_results.Rmd/unnamed-chunk-13-1.png" target="_blank">4fcb226</a>
@@ -1735,10 +1780,10 @@ Andy Beck
   geom_point() +
   geom_abline(slope = 1, intercept = 0) +
   ggtitle(&quot;Total Errors&quot;) +
-  xlab(&quot;SHAPEIT5 Errors&quot;) +
-  ylab(&quot;BEAGLE5 Errors&quot;) +
+  xlab(&quot;SHAPEIT Errors&quot;) +
+  ylab(&quot;Beagle Errors&quot;) +
   guides(colour=guide_legend(title=&quot;Population&quot;)) +
-  scale_color_jco() +
+  scale_color_manual(values = cbPalette) +
   theme_bw(base_size = 14) +
   theme(legend.position = c(0.8, .2))</code></pre>
 <p><img src="figure/phasing_results.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
@@ -1764,6 +1809,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/3fe89750818b03dc973a4a5e1f059b65cafefd6f/docs/figure/phasing_results.Rmd/unnamed-chunk-14-1.png" target="_blank">3fe8975</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/theandyb/phasing/blob/4fcb226cc86c3137ca2568efc8ab33a80a19581d/docs/figure/phasing_results.Rmd/unnamed-chunk-14-1.png" target="_blank">4fcb226</a>
@@ -1842,10 +1898,10 @@ Andy Beck
   geom_point() +
   geom_abline(slope = 1, intercept = 0) +
   ggtitle(&quot;Total Errors&quot;) +
-  xlab(&quot;EAGLE2 Errors&quot;) +
-  ylab(&quot;BEAGLE5 Errors&quot;) +
+  xlab(&quot;Eagle Errors&quot;) +
+  ylab(&quot;Beagle Errors&quot;) +
   guides(colour=guide_legend(title=&quot;Population&quot;)) +
-  scale_color_jco() +
+  scale_color_manual(values = cbPalette) +
   theme_bw(base_size = 16) +
   theme(legend.position = c(0.8, .2))</code></pre>
 <p><img src="figure/phasing_results.Rmd/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
@@ -1871,6 +1927,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/3fe89750818b03dc973a4a5e1f059b65cafefd6f/docs/figure/phasing_results.Rmd/unnamed-chunk-15-1.png" target="_blank">3fe8975</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/theandyb/phasing/blob/4fcb226cc86c3137ca2568efc8ab33a80a19581d/docs/figure/phasing_results.Rmd/unnamed-chunk-15-1.png" target="_blank">4fcb226</a>
@@ -1941,23 +2008,25 @@ Andy Beck
 </table>
 </div>
 </div>
-</div>
-<div id="switches" class="section level3">
-<h3>Switches</h3>
+<div id="scale-by-mb" class="section level4">
+<h4>Scale by MB</h4>
 <pre class="r"><code>df_wh_si %&gt;%
-  select(id, pop, switches) %&gt;%
-  rename(shapeit = switches) %&gt;%
-  inner_join({df_wh_eagle %&gt;% select(id, pop, switches) %&gt;% rename(eagle = switches)}, by = c(&quot;id&quot;, &quot;pop&quot;)) %&gt;%
+  mutate(total_errors_mb = total_errors / size_mb) %&gt;%
+  select(id, pop, total_errors_mb) %&gt;%
+  rename(shapeit = total_errors_mb) %&gt;%
+  inner_join({df_wh_eagle %&gt;% 
+      mutate(total_errors_mb = total_errors / size_mb) %&gt;%
+      select(id, pop, total_errors_mb) %&gt;% rename(eagle = total_errors_mb)}, by = c(&quot;id&quot;, &quot;pop&quot;)) %&gt;%
   ggplot(aes(x = shapeit, y = eagle, colour = pop)) + 
   geom_point() +
   geom_abline(slope = 1, intercept = 0) +
-  ggtitle(&quot;Switches&quot;) +
-  xlab(&quot;SHAPEIT5 Switches&quot;) +
-  ylab(&quot;EAGLE2 Switches&quot;) +
+  ggtitle(&quot;Total Errors per MB&quot;) +
+  xlab(&quot;SHAPEIT Errors&quot;) +
+  ylab(&quot;Eagle Errors&quot;) +
   guides(colour=guide_legend(title=&quot;Population&quot;)) +
-  scale_color_jco() +
-  theme_bw(base_size = 16) +
-  theme(legend.position = c(0.2, .85))</code></pre>
+  scale_color_manual(values = cbPalette) +
+  theme_bw(base_size = 14) +
+  theme(legend.position = c(0.15, .7))</code></pre>
 <p><img src="figure/phasing_results.Rmd/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-16-1">
@@ -1981,6 +2050,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/3fe89750818b03dc973a4a5e1f059b65cafefd6f/docs/figure/phasing_results.Rmd/unnamed-chunk-16-1.png" target="_blank">3fe8975</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/theandyb/phasing/blob/4fcb226cc86c3137ca2568efc8ab33a80a19581d/docs/figure/phasing_results.Rmd/unnamed-chunk-16-1.png" target="_blank">4fcb226</a>
@@ -2063,19 +2143,22 @@ Andy Beck
 </div>
 </div>
 <pre class="r"><code>df_wh_si %&gt;%
-  select(id, pop, switches) %&gt;%
-  rename(shapeit = switches) %&gt;%
-  inner_join({df_wh_beagle %&gt;% select(id, pop, switches) %&gt;% rename(beagle = switches)}, by = c(&quot;id&quot;, &quot;pop&quot;)) %&gt;%
+  mutate(total_errors_mb = total_errors / size_mb) %&gt;%
+  select(id, pop, total_errors_mb) %&gt;%
+  rename(shapeit = total_errors_mb) %&gt;%
+  inner_join({df_wh_beagle %&gt;%
+      mutate(total_errors_mb = total_errors / size_mb) %&gt;%
+      select(id, pop, total_errors_mb) %&gt;% rename(beagle = total_errors_mb)}, by = c(&quot;id&quot;, &quot;pop&quot;)) %&gt;%
   ggplot(aes(x = shapeit, y = beagle, colour = pop)) + 
   geom_point() +
   geom_abline(slope = 1, intercept = 0) +
-  ggtitle(&quot;Switches&quot;) +
-  xlab(&quot;SHAPEIT5 Switches&quot;) +
-  ylab(&quot;BEAGLE5 Switches&quot;) +
+  ggtitle(&quot;Total Errors&quot;) +
+  xlab(&quot;SHAPEIT Errors&quot;) +
+  ylab(&quot;Beagle Errors&quot;) +
   guides(colour=guide_legend(title=&quot;Population&quot;)) +
-  scale_color_jco() +
-  theme_bw(base_size = 16) +
-  theme(legend.position = c(0.8, .2))</code></pre>
+  scale_color_manual(values = cbPalette) +
+  theme_bw(base_size = 14) +
+  theme(legend.position = c(0.8, .25))</code></pre>
 <p><img src="figure/phasing_results.Rmd/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-17-1">
@@ -2099,6 +2182,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/3fe89750818b03dc973a4a5e1f059b65cafefd6f/docs/figure/phasing_results.Rmd/unnamed-chunk-17-1.png" target="_blank">3fe8975</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/theandyb/phasing/blob/4fcb226cc86c3137ca2568efc8ab33a80a19581d/docs/figure/phasing_results.Rmd/unnamed-chunk-17-1.png" target="_blank">4fcb226</a>
@@ -2170,19 +2264,22 @@ Andy Beck
 </div>
 </div>
 <pre class="r"><code>df_wh_eagle %&gt;%
-  select(id, pop, switches) %&gt;%
-  rename(eagle = switches) %&gt;%
-  inner_join({df_wh_beagle %&gt;% select(id, pop, switches) %&gt;% rename(beagle = switches)}, by = c(&quot;id&quot;, &quot;pop&quot;)) %&gt;%
+  mutate(total_errors_mb = total_errors / size_mb) %&gt;%
+  select(id, pop, total_errors_mb) %&gt;%
+  rename(eagle = total_errors_mb) %&gt;%
+  inner_join({df_wh_beagle %&gt;% 
+      mutate(total_errors_mb = total_errors / size_mb) %&gt;%
+      select(id, pop, total_errors_mb) %&gt;% rename(beagle = total_errors_mb)}, by = c(&quot;id&quot;, &quot;pop&quot;)) %&gt;%
   ggplot(aes(x = eagle, y = beagle, colour = pop)) + 
   geom_point() +
   geom_abline(slope = 1, intercept = 0) +
-  ggtitle(&quot;Switches&quot;) +
-  xlab(&quot;EAGLE2 Switches&quot;) +
-  ylab(&quot;BEAGLE5 Switches&quot;) +
+  ggtitle(&quot;Total Errors&quot;) +
+  xlab(&quot;Eagle Errors&quot;) +
+  ylab(&quot;Beagle Errors&quot;) +
   guides(colour=guide_legend(title=&quot;Population&quot;)) +
-  scale_color_jco() +
+  scale_color_manual(values = cbPalette) +
   theme_bw(base_size = 16) +
-  theme(legend.position = c(0.8, .2))</code></pre>
+  theme(legend.position = c(0.8, .29))</code></pre>
 <p><img src="figure/phasing_results.Rmd/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-18-1">
@@ -2206,6 +2303,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/3fe89750818b03dc973a4a5e1f059b65cafefd6f/docs/figure/phasing_results.Rmd/unnamed-chunk-18-1.png" target="_blank">3fe8975</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/theandyb/phasing/blob/4fcb226cc86c3137ca2568efc8ab33a80a19581d/docs/figure/phasing_results.Rmd/unnamed-chunk-18-1.png" target="_blank">4fcb226</a>
@@ -2288,26 +2396,24 @@ Andy Beck
 </div>
 </div>
 </div>
-<div id="error-rates" class="section level3">
-<h3>Error Rates</h3>
-<p>Plot error rates against pairs of methods:</p>
-<pre class="r"><code>out_file &lt;- paste0(svg_out_dir, &quot;error_rate_si_e.svg&quot;)
-df_wh_si %&gt;%
-  select(id, pop, all_switchflip_rate) %&gt;%
-  rename(shapeit = all_switchflip_rate) %&gt;%
-  inner_join({df_wh_eagle %&gt;% select(id, pop, all_switchflip_rate) %&gt;% rename(eagle = all_switchflip_rate)}, by = c(&quot;id&quot;, &quot;pop&quot;)) %&gt;%
+</div>
+<div id="switches" class="section level3">
+<h3>Switches</h3>
+<pre class="r"><code>df_wh_si %&gt;%
+  select(id, pop, switches) %&gt;%
+  rename(shapeit = switches) %&gt;%
+  inner_join({df_wh_eagle %&gt;% 
+      select(id, pop, switches) %&gt;% rename(eagle = switches)}, by = c(&quot;id&quot;, &quot;pop&quot;)) %&gt;%
   ggplot(aes(x = shapeit, y = eagle, colour = pop)) + 
   geom_point() +
   geom_abline(slope = 1, intercept = 0) +
-  ggtitle(&quot;Switch/Flip Rate&quot;, &quot;#(Switches + Flips) / #(Heterozygous Sites)&quot;) +
-  xlab(&quot;SHAPEIT5 Error Rate&quot;) +
-  ylab(&quot;EAGLE2 Error Rate&quot;) +
+  ggtitle(&quot;Switches&quot;) +
+  xlab(&quot;SHAPEIT Switches&quot;) +
+  ylab(&quot;Eagle Switches&quot;) +
   guides(colour=guide_legend(title=&quot;Population&quot;)) +
-  scale_color_jco() +
+  scale_color_manual(values = cbPalette) +
   theme_bw(base_size = 16) +
-  xlim(c(0,0.006)) + ylim(c(0,0.006)) +
-  theme(legend.position = c(0.8, .2))</code></pre>
-<pre><code>Warning: Removed 62 rows containing missing values (`geom_point()`).</code></pre>
+  guides(colour=&quot;none&quot;)</code></pre>
 <p><img src="figure/phasing_results.Rmd/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-19-1">
@@ -2331,6 +2437,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/3fe89750818b03dc973a4a5e1f059b65cafefd6f/docs/figure/phasing_results.Rmd/unnamed-chunk-19-1.png" target="_blank">3fe8975</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/theandyb/phasing/blob/4fcb226cc86c3137ca2568efc8ab33a80a19581d/docs/figure/phasing_results.Rmd/unnamed-chunk-19-1.png" target="_blank">4fcb226</a>
@@ -2390,23 +2507,20 @@ Andy Beck
 </table>
 </div>
 </div>
-<pre class="r"><code>ggsave(filename = out_file, width = 5.33, height = 4.26, dpi = 300, units = &quot;in&quot;)</code></pre>
-<pre><code>Warning: Removed 62 rows containing missing values (`geom_point()`).</code></pre>
 <pre class="r"><code>df_wh_si %&gt;%
-  select(id, pop, all_switchflip_rate) %&gt;%
-  rename(shapeit = all_switchflip_rate) %&gt;%
-  inner_join({df_wh_beagle %&gt;% select(id, pop, all_switchflip_rate) %&gt;% rename(beagle = all_switchflip_rate)}, by = c(&quot;id&quot;, &quot;pop&quot;)) %&gt;%
+  select(id, pop, switches) %&gt;%
+  rename(shapeit = switches) %&gt;%
+  inner_join({df_wh_beagle %&gt;% select(id, pop, switches) %&gt;% rename(beagle = switches)}, by = c(&quot;id&quot;, &quot;pop&quot;)) %&gt;%
   ggplot(aes(x = shapeit, y = beagle, colour = pop)) + 
   geom_point() +
   geom_abline(slope = 1, intercept = 0) +
-  ggtitle(&quot;Switch/Flip Rate&quot;, &quot;#(Switches + Flips) / #(Heterozygous Sites)&quot;)  +
-  xlab(&quot;SHAPEIT5 Error Rate&quot;) +
-  ylab(&quot;BEAGLE5 Error Rate&quot;) +
-  guides(colour=guide_legend(title=&quot;Population&quot;)) + 
-  scale_color_jco() +
+  ggtitle(&quot;Switches&quot;) +
+  xlab(&quot;SHAPEIT Switches&quot;) +
+  ylab(&quot;Beagle Switches&quot;) +
+  guides(colour=guide_legend(title=&quot;Population&quot;)) +
+  scale_color_manual(values = cbPalette) +
   theme_bw(base_size = 16) +
-  xlim(c(0,0.008)) + ylim(c(0,0.008)) +
-  theme(legend.position = c(0.8, .2))</code></pre>
+  guides(colour=&quot;none&quot;)</code></pre>
 <p><img src="figure/phasing_results.Rmd/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-20-1">
@@ -2430,6 +2544,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/3fe89750818b03dc973a4a5e1f059b65cafefd6f/docs/figure/phasing_results.Rmd/unnamed-chunk-20-1.png" target="_blank">3fe8975</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/theandyb/phasing/blob/4fcb226cc86c3137ca2568efc8ab33a80a19581d/docs/figure/phasing_results.Rmd/unnamed-chunk-20-1.png" target="_blank">4fcb226</a>
@@ -2489,23 +2614,20 @@ Andy Beck
 </table>
 </div>
 </div>
-<pre class="r"><code>out_file &lt;- paste0(svg_out_dir, &quot;error_rate_si_b.svg&quot;)
-ggsave(filename = out_file, width = 5.33, height = 4.26, dpi = 300, units = &quot;in&quot;)</code></pre>
 <pre class="r"><code>df_wh_eagle %&gt;%
-  select(id, pop, all_switchflip_rate) %&gt;%
-  rename(eagle = all_switchflip_rate) %&gt;%
-  inner_join({df_wh_beagle %&gt;% select(id, pop, all_switchflip_rate) %&gt;% rename(beagle = all_switchflip_rate)}, by = c(&quot;id&quot;, &quot;pop&quot;)) %&gt;%
+  select(id, pop, switches) %&gt;%
+  rename(eagle = switches) %&gt;%
+  inner_join({df_wh_beagle %&gt;% select(id, pop, switches) %&gt;% rename(beagle = switches)}, by = c(&quot;id&quot;, &quot;pop&quot;)) %&gt;%
   ggplot(aes(x = eagle, y = beagle, colour = pop)) + 
   geom_point() +
   geom_abline(slope = 1, intercept = 0) +
-  ggtitle(&quot;Switch/Flip Rate&quot;, &quot;#(Switches + Flips) / #(Heterozygous Sites)&quot;)  +
-  xlab(&quot;EAGLE2 Error Rate&quot;) +
-  ylab(&quot;BEAGLE5 Error Rate&quot;) +
-  guides(colour=guide_legend(title=&quot;Population&quot;)) + 
-  scale_color_jco() +
+  ggtitle(&quot;Switches&quot;) +
+  xlab(&quot;Eagle Switches&quot;) +
+  ylab(&quot;Beagle Switches&quot;) +
+  guides(colour=guide_legend(title=&quot;Population&quot;)) +
+  scale_color_manual(values = cbPalette) +
   theme_bw(base_size = 16) +
-  xlim(c(0,0.008)) + ylim(c(0,0.008)) +
-  theme(legend.position = c(0.8, .2))</code></pre>
+  guides(colour=&quot;none&quot;)</code></pre>
 <p><img src="figure/phasing_results.Rmd/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-21-1">
@@ -2529,6 +2651,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/3fe89750818b03dc973a4a5e1f059b65cafefd6f/docs/figure/phasing_results.Rmd/unnamed-chunk-21-1.png" target="_blank">3fe8975</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/theandyb/phasing/blob/4fcb226cc86c3137ca2568efc8ab33a80a19581d/docs/figure/phasing_results.Rmd/unnamed-chunk-21-1.png" target="_blank">4fcb226</a>
@@ -2599,25 +2732,25 @@ Andy Beck
 </table>
 </div>
 </div>
-<pre class="r"><code>out_file &lt;- paste0(svg_out_dir, &quot;error_rate_e_b.svg&quot;)
-ggsave(filename = out_file, width = 5.33, height = 4.26, dpi = 300, units = &quot;in&quot;)</code></pre>
-</div>
-<div id="flips-by-method" class="section level3">
-<h3>Flips by method</h3>
+<div id="per-mb" class="section level4">
+<h4>Per MB</h4>
 <pre class="r"><code>df_wh_si %&gt;%
-  select(id, pop, flips, n_het) %&gt;%
-  rename(shapeit = flips) %&gt;%
-  inner_join({df_wh_eagle %&gt;% select(id, pop, flips) %&gt;% rename(eagle = flips)}, by = c(&quot;id&quot;, &quot;pop&quot;)) %&gt;%
+  mutate(switches_mb = switches / size_mb) %&gt;%
+  select(id, pop, switches_mb) %&gt;%
+  rename(shapeit = switches_mb) %&gt;%
+  inner_join({df_wh_eagle %&gt;% 
+      mutate(switches_mb = switches / size_mb) %&gt;%
+      select(id, pop, switches_mb) %&gt;% rename(eagle = switches_mb)}, by = c(&quot;id&quot;, &quot;pop&quot;)) %&gt;%
   ggplot(aes(x = shapeit, y = eagle, colour = pop)) + 
   geom_point() +
   geom_abline(slope = 1, intercept = 0) +
-  ggtitle(&quot;Flips per pseudo-diplod&quot;) +
-  xlab(&quot;SHAPEIT5 flips&quot;) +
-  ylab(&quot;EAGLE2 flips&quot;) +
+  ggtitle(&quot;Switches per MB&quot;) +
+  xlab(&quot;SHAPEIT Switches&quot;) +
+  ylab(&quot;Eagle Switches&quot;) +
   guides(colour=guide_legend(title=&quot;Population&quot;)) +
-  scale_color_jco() +
+  scale_color_manual(values = cbPalette) +
   theme_bw(base_size = 16) +
-  theme(legend.position = c(0.8, .2))</code></pre>
+  guides(colour=&quot;none&quot;)</code></pre>
 <p><img src="figure/phasing_results.Rmd/unnamed-chunk-22-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-22-1">
@@ -2641,6 +2774,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/3fe89750818b03dc973a4a5e1f059b65cafefd6f/docs/figure/phasing_results.Rmd/unnamed-chunk-22-1.png" target="_blank">3fe8975</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/theandyb/phasing/blob/4fcb226cc86c3137ca2568efc8ab33a80a19581d/docs/figure/phasing_results.Rmd/unnamed-chunk-22-1.png" target="_blank">4fcb226</a>
@@ -2723,19 +2867,22 @@ Andy Beck
 </div>
 </div>
 <pre class="r"><code>df_wh_si %&gt;%
-  select(id, pop, flips, n_het) %&gt;%
-  rename(shapeit = flips) %&gt;%
-  inner_join({df_wh_beagle %&gt;% select(id, pop, flips) %&gt;% rename(beagle = flips)}, by = c(&quot;id&quot;, &quot;pop&quot;)) %&gt;%
+  mutate(switches_mb = switches / size_mb) %&gt;%
+  select(id, pop, switches_mb) %&gt;%
+  rename(shapeit = switches_mb) %&gt;%
+  inner_join({df_wh_beagle %&gt;% 
+      mutate(switches_mb = switches / size_mb) %&gt;%
+      select(id, pop, switches_mb) %&gt;% rename(beagle = switches_mb)}, by = c(&quot;id&quot;, &quot;pop&quot;)) %&gt;%
   ggplot(aes(x = shapeit, y = beagle, colour = pop)) + 
   geom_point() +
   geom_abline(slope = 1, intercept = 0) +
-  ggtitle(&quot;Flips per pseudo-diplod&quot;) +
-  xlab(&quot;SHAPEIT5 flips&quot;) +
-  ylab(&quot;BEAGLE5 flips&quot;) +
+  ggtitle(&quot;Switches per MB&quot;) +
+  xlab(&quot;SHAPEIT Switches&quot;) +
+  ylab(&quot;Beagle Switches&quot;) +
   guides(colour=guide_legend(title=&quot;Population&quot;)) +
-  scale_color_jco() +
+  scale_color_manual(values = cbPalette) +
   theme_bw(base_size = 16) +
-  theme(legend.position = c(0.8, .2))</code></pre>
+  guides(colour=&quot;none&quot;)</code></pre>
 <p><img src="figure/phasing_results.Rmd/unnamed-chunk-23-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-23-1">
@@ -2759,6 +2906,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/3fe89750818b03dc973a4a5e1f059b65cafefd6f/docs/figure/phasing_results.Rmd/unnamed-chunk-23-1.png" target="_blank">3fe8975</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/theandyb/phasing/blob/6030950131da236fee909d5c46c06fffcac60224/docs/figure/phasing_results.Rmd/unnamed-chunk-23-1.png" target="_blank">6030950</a>
@@ -2863,19 +3021,22 @@ Andy Beck
 </div>
 </div>
 <pre class="r"><code>df_wh_eagle %&gt;%
-  select(id, pop, flips, n_het) %&gt;%
-  rename(eagle = flips) %&gt;%
-  inner_join({df_wh_beagle %&gt;% select(id, pop, flips) %&gt;% rename(beagle = flips)}, by = c(&quot;id&quot;, &quot;pop&quot;)) %&gt;%
+  mutate(switches_mb = switches / size_mb) %&gt;%
+  select(id, pop, switches_mb) %&gt;%
+  rename(eagle = switches_mb) %&gt;%
+  inner_join({df_wh_beagle %&gt;% 
+      mutate(switches_mb = switches / size_mb) %&gt;%
+      select(id, pop, switches_mb) %&gt;% rename(beagle = switches_mb)}, by = c(&quot;id&quot;, &quot;pop&quot;)) %&gt;%
   ggplot(aes(x = eagle, y = beagle, colour = pop)) + 
   geom_point() +
   geom_abline(slope = 1, intercept = 0) +
-  ggtitle(&quot;Flips per pseudo-diplod&quot;) +
-  xlab(&quot;EAGLE2 flips&quot;) +
-  ylab(&quot;BEAGLE5 flips&quot;) +
+  ggtitle(&quot;Switches per MB&quot;) +
+  xlab(&quot;Eagle Switches&quot;) +
+  ylab(&quot;Beagle Switches&quot;) +
   guides(colour=guide_legend(title=&quot;Population&quot;)) +
-  scale_color_jco() +
+  scale_color_manual(values = cbPalette) +
   theme_bw(base_size = 16) +
-  theme(legend.position = c(0.8, .2))</code></pre>
+  guides(colour=&quot;none&quot;)</code></pre>
 <p><img src="figure/phasing_results.Rmd/unnamed-chunk-24-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-24-1">
@@ -2899,6 +3060,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/3fe89750818b03dc973a4a5e1f059b65cafefd6f/docs/figure/phasing_results.Rmd/unnamed-chunk-24-1.png" target="_blank">3fe8975</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/theandyb/phasing/blob/6030950131da236fee909d5c46c06fffcac60224/docs/figure/phasing_results.Rmd/unnamed-chunk-24-1.png" target="_blank">6030950</a>
@@ -2992,27 +3164,27 @@ Andy Beck
 </div>
 </div>
 </div>
-<div id="flip-rate" class="section level3">
-<h3>Flip Rate</h3>
-<pre class="r"><code>df_wh_si %&gt;%
-  select(id, pop, flips, n_het) %&gt;%
-  mutate(flips = flips / (n_het)) %&gt;%
-  rename(shapeit = flips) %&gt;%
-  inner_join({df_wh_eagle %&gt;% 
-      select(id, pop, flips, n_het) %&gt;% 
-      mutate(flips = flips / (n_het)) %&gt;%
-      rename(eagle = flips)}, by = c(&quot;id&quot;, &quot;pop&quot;)) %&gt;%
+</div>
+<div id="error-rates" class="section level3">
+<h3>Error Rates</h3>
+<p>Plot error rates against pairs of methods:</p>
+<pre class="r"><code>out_file &lt;- paste0(svg_out_dir, &quot;error_rate_si_e.svg&quot;)
+df_wh_si %&gt;%
+  select(id, pop, all_switchflip_rate) %&gt;%
+  rename(shapeit = all_switchflip_rate) %&gt;%
+  inner_join({df_wh_eagle %&gt;% select(id, pop, all_switchflip_rate) %&gt;% rename(eagle = all_switchflip_rate)}, by = c(&quot;id&quot;, &quot;pop&quot;)) %&gt;%
   ggplot(aes(x = shapeit, y = eagle, colour = pop)) + 
   geom_point() +
   geom_abline(slope = 1, intercept = 0) +
-  ggtitle(&quot;Flip Rate&quot;, &quot;#(Flips) / #(Heterozygous Sites)&quot;) +
-  xlab(&quot;SHAPEIT5 Flip Rate&quot;) +
-  ylab(&quot;EAGLE2 flips&quot;) +
-  guides(colour=guide_legend(title=&quot;Population&quot;)) + 
-  scale_color_jco() +
+  ggtitle(&quot;Switch/Flip Rate&quot;, &quot;#(Switches + Flips) / #(Heterozygous Sites)&quot;) +
+  xlab(&quot;SHAPEIT Error Rate&quot;) +
+  ylab(&quot;Eagle Error Rate&quot;) +
+  guides(colour=guide_legend(title=&quot;Population&quot;)) +
+  scale_color_manual(values = cbPalette) +
   theme_bw(base_size = 16) +
-  xlim(c(0,0.003)) + ylim(c(0,0.003)) +
-  theme(legend.position = c(0.8, .2))</code></pre>
+  xlim(c(0,0.006)) + ylim(c(0,0.006)) +
+  guides(colour=&quot;none&quot;)</code></pre>
+<pre><code>Warning: Removed 62 rows containing missing values (`geom_point()`).</code></pre>
 <p><img src="figure/phasing_results.Rmd/unnamed-chunk-25-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-25-1">
@@ -3036,6 +3208,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/3fe89750818b03dc973a4a5e1f059b65cafefd6f/docs/figure/phasing_results.Rmd/unnamed-chunk-25-1.png" target="_blank">3fe8975</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/theandyb/phasing/blob/6030950131da236fee909d5c46c06fffcac60224/docs/figure/phasing_results.Rmd/unnamed-chunk-25-1.png" target="_blank">6030950</a>
@@ -3128,124 +3311,23 @@ Andy Beck
 </table>
 </div>
 </div>
-<pre class="r"><code>out_file &lt;- paste0(svg_out_dir, &quot;flip_rate_s_e.svg&quot;)
-ggsave(filename = out_file, width = 5.33, height = 4.26, dpi = 300, units = &quot;in&quot;)
-
-df_wh_si %&gt;%
-  select(id, pop, flips, n_het) %&gt;%
-  mutate(flips = flips / (n_het)) %&gt;%
-  rename(shapeit = flips) %&gt;%
-  inner_join({df_wh_beagle %&gt;% 
-      select(id, pop, flips, n_het) %&gt;% 
-      mutate(flips = flips / (n_het)) %&gt;%
-      rename(beagle = flips)}, by = c(&quot;id&quot;, &quot;pop&quot;)) %&gt;%
+<pre class="r"><code>ggsave(filename = out_file, width = 5.33, height = 4.26, dpi = 300, units = &quot;in&quot;)</code></pre>
+<pre><code>Warning: Removed 62 rows containing missing values (`geom_point()`).</code></pre>
+<pre class="r"><code>df_wh_si %&gt;%
+  select(id, pop, all_switchflip_rate) %&gt;%
+  rename(shapeit = all_switchflip_rate) %&gt;%
+  inner_join({df_wh_beagle %&gt;% select(id, pop, all_switchflip_rate) %&gt;% rename(beagle = all_switchflip_rate)}, by = c(&quot;id&quot;, &quot;pop&quot;)) %&gt;%
   ggplot(aes(x = shapeit, y = beagle, colour = pop)) + 
   geom_point() +
   geom_abline(slope = 1, intercept = 0) +
-  ggtitle(&quot;Flip Rate&quot;, &quot;# Flips / #(Heterozygous Sites)&quot;) +
-  xlab(&quot;SHAPEIT5 Flip Rate&quot;) +
-  ylab(&quot;BEAGLE5 Flip Rate&quot;) +
-  guides(colour=guide_legend(title=&quot;Population&quot;)) +
-  scale_color_jco() +
-  theme_bw(base_size = 16) +
-  xlim(c(0,0.003)) + ylim(c(0,0.003)) +
-  theme(legend.position = c(0.8, .2))</code></pre>
-<p><img src="figure/phasing_results.Rmd/unnamed-chunk-25-2.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-25-2">
-Past versions of unnamed-chunk-25-2.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-25-2" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/theandyb/phasing/blob/6030950131da236fee909d5c46c06fffcac60224/docs/figure/phasing_results.Rmd/unnamed-chunk-25-2.png" target="_blank">6030950</a>
-</td>
-<td>
-Andy Beck
-</td>
-<td>
-2024-01-24
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/theandyb/phasing/blob/4fcb226cc86c3137ca2568efc8ab33a80a19581d/docs/figure/phasing_results.Rmd/unnamed-chunk-25-2.png" target="_blank">4fcb226</a>
-</td>
-<td>
-Andy Beck
-</td>
-<td>
-2024-01-23
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre class="r"><code>out_file &lt;- paste0(svg_out_dir, &quot;flip_rate_s_b.svg&quot;)
-ggsave(filename = out_file, width = 5.33, height = 4.26, dpi = 300, units = &quot;in&quot;)
-
-df_wh_eagle %&gt;%
-  select(id, pop, flips, n_het) %&gt;%
-  mutate(flips = flips / (n_het)) %&gt;%
-  rename(eagle = flips) %&gt;%
-  inner_join({df_wh_beagle %&gt;% 
-      select(id, pop, flips, n_het) %&gt;% 
-      mutate(flips = flips / (n_het)) %&gt;%
-      rename(beagle = flips)}, by = c(&quot;id&quot;, &quot;pop&quot;)) %&gt;%
-  ggplot(aes(x = eagle, y = beagle, colour = pop)) + 
-  geom_point() +
-  geom_abline(slope = 1, intercept = 0) +
-  ggtitle(&quot;Flip Rate&quot;, &quot;# Flips / #(Heterozygous Sites)&quot;) +
-  xlab(&quot;EAGLE2 flips&quot;) +
-  ylab(&quot;BEAGLE5 flips&quot;) +
-  guides(colour=guide_legend(title=&quot;Population&quot;)) +
-  scale_color_jco() +
-  theme_bw(base_size = 16) +
-  xlim(c(0,0.003)) + ylim(c(0,0.003)) +
-  theme(legend.position = c(0.8, .2))</code></pre>
-<p><img src="figure/phasing_results.Rmd/unnamed-chunk-25-3.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>out_file &lt;- paste0(svg_out_dir, &quot;flip_rate_b_e.svg&quot;)
-ggsave(filename = out_file, width = 5.33, height = 4.26, dpi = 300, units = &quot;in&quot;)</code></pre>
-</div>
-<div id="switch-rate" class="section level3">
-<h3>Switch Rate</h3>
-<pre class="r"><code>df_wh_si %&gt;%
-  select(id, pop, switches, n_het) %&gt;%
-  mutate(switches = switches / (n_het)) %&gt;%
-  rename(shapeit = switches) %&gt;%
-  inner_join({df_wh_eagle %&gt;% 
-      select(id, pop, switches, n_het) %&gt;% 
-      mutate(switches = switches / (n_het)) %&gt;%
-      rename(eagle = switches)}, by = c(&quot;id&quot;, &quot;pop&quot;)) %&gt;%
-  ggplot(aes(x = shapeit, y = eagle, colour = pop)) + 
-  geom_point() +
-  geom_abline(slope = 1, intercept = 0) +
-  ggtitle(&quot;Switch Rate&quot;, &quot;#(Switches) / #(Heterozygous Sites)&quot;) +
-  xlab(&quot;SHAPEIT5 Switch Rate&quot;) +
-  ylab(&quot;EAGLE2 Switch Rate&quot;) +
+  ggtitle(&quot;Switch/Flip Rate&quot;, &quot;#(Switches + Flips) / #(Heterozygous Sites)&quot;)  +
+  xlab(&quot;SHAPEIT Error Rate&quot;) +
+  ylab(&quot;Beagle Error Rate&quot;) +
   guides(colour=guide_legend(title=&quot;Population&quot;)) + 
-  scale_color_jco() +
+  scale_color_manual(values = cbPalette) +
   theme_bw(base_size = 16) +
-  xlim(c(0,0.0052)) + ylim(c(0,0.0052)) +
-  theme(legend.position = c(0.8, .2))</code></pre>
+  xlim(c(0,0.008)) + ylim(c(0,0.008)) +
+  guides(colour=&quot;none&quot;)</code></pre>
 <p><img src="figure/phasing_results.Rmd/unnamed-chunk-26-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-26-1">
@@ -3269,6 +3351,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/3fe89750818b03dc973a4a5e1f059b65cafefd6f/docs/figure/phasing_results.Rmd/unnamed-chunk-26-1.png" target="_blank">3fe8975</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/theandyb/phasing/blob/6030950131da236fee909d5c46c06fffcac60224/docs/figure/phasing_results.Rmd/unnamed-chunk-26-1.png" target="_blank">6030950</a>
@@ -3361,188 +3454,23 @@ Andy Beck
 </table>
 </div>
 </div>
-<pre class="r"><code>out_file &lt;- paste0(svg_out_dir, &quot;switch_rate_s_e.svg&quot;)
-ggsave(filename = out_file, width = 5.33, height = 4.26, dpi = 300, units = &quot;in&quot;)
-
-df_wh_si %&gt;%
-  select(id, pop, switches, n_het) %&gt;%
-  mutate(switches = switches / (n_het)) %&gt;%
-  rename(shapeit = switches) %&gt;%
-  inner_join({df_wh_beagle %&gt;% 
-      select(id, pop, switches, n_het) %&gt;% 
-      mutate(switches = switches / (n_het)) %&gt;%
-      rename(beagle = switches)}, by = c(&quot;id&quot;, &quot;pop&quot;)) %&gt;%
-  ggplot(aes(x = shapeit, y = beagle, colour = pop)) + 
-  geom_point() +
-  geom_abline(slope = 1, intercept = 0) +
-  ggtitle(&quot;Switch Rate&quot;, &quot;# Switches / #(Heterozygous Sites)&quot;) +
-  xlab(&quot;SHAPEIT5 Switch Rate&quot;) +
-  ylab(&quot;BEAGLE5 Switch Rate&quot;) +
-  guides(colour=guide_legend(title=&quot;Population&quot;)) +
-  scale_color_jco() +
-  theme_bw(base_size = 16) +
-  xlim(c(0,0.005)) + ylim(c(0,0.005)) +
-  theme(legend.position = c(0.8, .2))</code></pre>
-<p><img src="figure/phasing_results.Rmd/unnamed-chunk-26-2.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-26-2">
-Past versions of unnamed-chunk-26-2.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-26-2" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/theandyb/phasing/blob/564c18237e83e5b1b19221495c615ef1d9e6a68b/docs/figure/phasing_results.Rmd/unnamed-chunk-26-2.png" target="_blank">564c182</a>
-</td>
-<td>
-Andy Beck
-</td>
-<td>
-2023-06-08
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/theandyb/phasing/blob/daf3402d4a64d9518b0facdbc7d6d2c8320af8dd/docs/figure/phasing_results.Rmd/unnamed-chunk-26-2.png" target="_blank">daf3402</a>
-</td>
-<td>
-Andy Beck
-</td>
-<td>
-2023-06-07
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/theandyb/phasing/blob/a9663e8ecc214ea6c29205726c35eb52fc522031/docs/figure/phasing_results.Rmd/unnamed-chunk-26-2.png" target="_blank">a9663e8</a>
-</td>
-<td>
-Andy Beck
-</td>
-<td>
-2023-06-06
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre class="r"><code>out_file &lt;- paste0(svg_out_dir, &quot;switch_rate_s_b.svg&quot;)
-ggsave(filename = out_file, width = 5.33, height = 4.26, dpi = 300, units = &quot;in&quot;)
-
-df_wh_eagle %&gt;%
-  select(id, pop, switches, n_het) %&gt;%
-  mutate(switches = switches / (n_het)) %&gt;%
-  rename(eagle = switches) %&gt;%
-  inner_join({df_wh_beagle %&gt;% 
-      select(id, pop, switches, n_het) %&gt;% 
-      mutate(switches = switches / (n_het)) %&gt;%
-      rename(beagle = switches)}, by = c(&quot;id&quot;, &quot;pop&quot;)) %&gt;%
+<pre class="r"><code>out_file &lt;- paste0(svg_out_dir, &quot;error_rate_si_b.svg&quot;)
+ggsave(filename = out_file, width = 5.33, height = 4.26, dpi = 300, units = &quot;in&quot;)</code></pre>
+<pre class="r"><code>df_wh_eagle %&gt;%
+  select(id, pop, all_switchflip_rate) %&gt;%
+  rename(eagle = all_switchflip_rate) %&gt;%
+  inner_join({df_wh_beagle %&gt;% select(id, pop, all_switchflip_rate) %&gt;% rename(beagle = all_switchflip_rate)}, by = c(&quot;id&quot;, &quot;pop&quot;)) %&gt;%
   ggplot(aes(x = eagle, y = beagle, colour = pop)) + 
   geom_point() +
   geom_abline(slope = 1, intercept = 0) +
-  ggtitle(&quot;Switch Rate&quot;, &quot;# Switches / #(Heterozygous Sites)&quot;) +
-  xlab(&quot;EAGLE2 Switch Rate&quot;) +
-  ylab(&quot;BEAGLE5 Switch Rate&quot;) +
-  guides(colour=guide_legend(title=&quot;Population&quot;)) +
-  scale_color_jco() +
+  ggtitle(&quot;Switch/Flip Rate&quot;, &quot;#(Switches + Flips) / #(Heterozygous Sites)&quot;)  +
+  xlab(&quot;Eagle Error Rate&quot;) +
+  ylab(&quot;Beagle Error Rate&quot;) +
+  guides(colour=guide_legend(title=&quot;Population&quot;)) + 
+  scale_color_manual(values = cbPalette) +
   theme_bw(base_size = 16) +
-  xlim(c(0,0.0052)) + ylim(c(0,0.0052)) +
-  theme(legend.position = c(0.8, .2))</code></pre>
-<p><img src="figure/phasing_results.Rmd/unnamed-chunk-26-3.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-26-3">
-Past versions of unnamed-chunk-26-3.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-26-3" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/theandyb/phasing/blob/564c18237e83e5b1b19221495c615ef1d9e6a68b/docs/figure/phasing_results.Rmd/unnamed-chunk-26-3.png" target="_blank">564c182</a>
-</td>
-<td>
-Andy Beck
-</td>
-<td>
-2023-06-08
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/theandyb/phasing/blob/daf3402d4a64d9518b0facdbc7d6d2c8320af8dd/docs/figure/phasing_results.Rmd/unnamed-chunk-26-3.png" target="_blank">daf3402</a>
-</td>
-<td>
-Andy Beck
-</td>
-<td>
-2023-06-07
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/theandyb/phasing/blob/a9663e8ecc214ea6c29205726c35eb52fc522031/docs/figure/phasing_results.Rmd/unnamed-chunk-26-3.png" target="_blank">a9663e8</a>
-</td>
-<td>
-Andy Beck
-</td>
-<td>
-2023-06-06
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre class="r"><code>out_file &lt;- paste0(svg_out_dir, &quot;switch_rate_b_e.svg&quot;)
-ggsave(filename = out_file, width = 5.33, height = 4.26, dpi = 300, units = &quot;in&quot;)</code></pre>
-</div>
-<div id="hets-between-switches" class="section level3">
-<h3>Hets between switches</h3>
-<div id="shapeit-vs-beagle" class="section level4">
-<h4>Shapeit vs BEAGLE</h4>
-<pre class="r"><code>df_vcftools %&gt;% 
-  ggplot(aes(x = med_hets_switch_shapeit, y = med_hets_switch_beagle, color = pop)) +
-  geom_point() +
-  scale_color_jco() +
-  xlab(&quot;SHAPEIT&quot;) +
-  ylab(&quot;BEAGLE&quot;) +
-  ggtitle(&quot;Median Heterozygous Sites \nBetween Switches&quot;) +
-  geom_abline(slope = 1, intercept = 0) +
-  theme_bw(base_size = 12) +
-  theme(legend.position = c(0.85, .25)) +
-  guides(colour=guide_legend(title=&quot;Population&quot;))</code></pre>
+  xlim(c(0,0.008)) + ylim(c(0,0.008)) +
+  guides(colour=&quot;none&quot;)</code></pre>
 <p><img src="figure/phasing_results.Rmd/unnamed-chunk-27-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-27-1">
@@ -3566,6 +3494,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/3fe89750818b03dc973a4a5e1f059b65cafefd6f/docs/figure/phasing_results.Rmd/unnamed-chunk-27-1.png" target="_blank">3fe8975</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/theandyb/phasing/blob/6030950131da236fee909d5c46c06fffcac60224/docs/figure/phasing_results.Rmd/unnamed-chunk-27-1.png" target="_blank">6030950</a>
@@ -3647,20 +3586,25 @@ Andy Beck
 </table>
 </div>
 </div>
-<pre class="r"><code>df_vcftools %&gt;% 
-  mutate(sr_shapeit = med_hets_switch_shapeit / n_hets,
-         sr_beagle = med_hets_switch_beagle / n_hets) %&gt;%
-  filter(pop %in% c(&quot;AFR&quot;, &quot;EUR&quot;)) %&gt;%
-  ggplot(aes(x = sr_shapeit, y = sr_beagle, color = pop)) +
+<pre class="r"><code>out_file &lt;- paste0(svg_out_dir, &quot;error_rate_e_b.svg&quot;)
+ggsave(filename = out_file, width = 5.33, height = 4.26, dpi = 300, units = &quot;in&quot;)</code></pre>
+</div>
+<div id="flips-by-method" class="section level3">
+<h3>Flips by method</h3>
+<pre class="r"><code>df_wh_si %&gt;%
+  select(id, pop, flips, n_het) %&gt;%
+  rename(shapeit = flips) %&gt;%
+  inner_join({df_wh_eagle %&gt;% select(id, pop, flips) %&gt;% rename(eagle = flips)}, by = c(&quot;id&quot;, &quot;pop&quot;)) %&gt;%
+  ggplot(aes(x = shapeit, y = eagle, colour = pop)) + 
   geom_point() +
-  scale_color_jco() +
-  xlab(&quot;SHAPEIT&quot;) +
-  ylab(&quot;BEAGLE&quot;) +
-  ggtitle(&quot;Median Heterozygous Sites \nBetween Switches&quot;) +
   geom_abline(slope = 1, intercept = 0) +
-  theme_bw(base_size = 12) +
-  theme(legend.position = c(0.85, .25)) +
-  guides(colour=guide_legend(title=&quot;Population&quot;))</code></pre>
+  ggtitle(&quot;Flips per pseudo-diplod&quot;) +
+  xlab(&quot;SHAPEIT flips&quot;) +
+  ylab(&quot;Eagle flips&quot;) +
+  guides(colour=guide_legend(title=&quot;Population&quot;)) +
+  scale_color_manual(values = cbPalette) +
+  theme_bw(base_size = 16) +
+  guides(colour=&quot;none&quot;)</code></pre>
 <p><img src="figure/phasing_results.Rmd/unnamed-chunk-28-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-28-1">
@@ -3684,6 +3628,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/3fe89750818b03dc973a4a5e1f059b65cafefd6f/docs/figure/phasing_results.Rmd/unnamed-chunk-28-1.png" target="_blank">3fe8975</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/theandyb/phasing/blob/6030950131da236fee909d5c46c06fffcac60224/docs/figure/phasing_results.Rmd/unnamed-chunk-28-1.png" target="_blank">6030950</a>
@@ -3776,20 +3731,20 @@ Andy Beck
 </table>
 </div>
 </div>
-</div>
-<div id="shapeit-vs-eagle" class="section level4">
-<h4>Shapeit vs EAGLE</h4>
-<pre class="r"><code>df_vcftools %&gt;% 
-  ggplot(aes(x = med_hets_switch_shapeit, y = med_hets_switch_eagle, color = pop)) +
+<pre class="r"><code>df_wh_si %&gt;%
+  select(id, pop, flips, n_het) %&gt;%
+  rename(shapeit = flips) %&gt;%
+  inner_join({df_wh_beagle %&gt;% select(id, pop, flips) %&gt;% rename(beagle = flips)}, by = c(&quot;id&quot;, &quot;pop&quot;)) %&gt;%
+  ggplot(aes(x = shapeit, y = beagle, colour = pop)) + 
   geom_point() +
-  scale_color_jco() +
-  xlab(&quot;SHAPEIT&quot;) +
-  ylab(&quot;EAGLE&quot;) +
-  ggtitle(&quot;Median Heterozygous Sites \nBetween Switches&quot;) +
   geom_abline(slope = 1, intercept = 0) +
-  theme_bw(base_size = 12) +
-  theme(legend.position = c(0.85, .25)) +
-  guides(colour=guide_legend(title=&quot;Population&quot;))</code></pre>
+  ggtitle(&quot;Flips per pseudo-diplod&quot;) +
+  xlab(&quot;SHAPEIT flips&quot;) +
+  ylab(&quot;Beagle flips&quot;) +
+  guides(colour=guide_legend(title=&quot;Population&quot;)) +
+  scale_color_manual(values = cbPalette) +
+  theme_bw(base_size = 16) +
+  guides(colour=&quot;none&quot;)</code></pre>
 <p><img src="figure/phasing_results.Rmd/unnamed-chunk-29-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-29-1">
@@ -3813,6 +3768,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/3fe89750818b03dc973a4a5e1f059b65cafefd6f/docs/figure/phasing_results.Rmd/unnamed-chunk-29-1.png" target="_blank">3fe8975</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/theandyb/phasing/blob/6030950131da236fee909d5c46c06fffcac60224/docs/figure/phasing_results.Rmd/unnamed-chunk-29-1.png" target="_blank">6030950</a>
@@ -3916,20 +3882,20 @@ Andy Beck
 </table>
 </div>
 </div>
-<pre class="r"><code>df_vcftools %&gt;% 
-  mutate(sr_shapeit = med_hets_switch_shapeit / n_hets,
-         sr_eagle = med_hets_switch_eagle / n_hets) %&gt;%
-  filter(pop %in% c(&quot;AFR&quot;, &quot;EUR&quot;)) %&gt;%
-  ggplot(aes(x = sr_shapeit, y = sr_eagle, color = pop)) +
+<pre class="r"><code>df_wh_eagle %&gt;%
+  select(id, pop, flips, n_het) %&gt;%
+  rename(eagle = flips) %&gt;%
+  inner_join({df_wh_beagle %&gt;% select(id, pop, flips) %&gt;% rename(beagle = flips)}, by = c(&quot;id&quot;, &quot;pop&quot;)) %&gt;%
+  ggplot(aes(x = eagle, y = beagle, colour = pop)) + 
   geom_point() +
-  scale_color_jco() +
-  xlab(&quot;SHAPEIT&quot;) +
-  ylab(&quot;EAGLE&quot;) +
-  ggtitle(&quot;Median Heterozygous Sites \nBetween Switches&quot;) +
   geom_abline(slope = 1, intercept = 0) +
-  theme_bw(base_size = 12) +
-  theme(legend.position = c(0.85, .25)) +
-  guides(colour=guide_legend(title=&quot;Population&quot;))</code></pre>
+  ggtitle(&quot;Flips per pseudo-diplod&quot;) +
+  xlab(&quot;Eagle flips&quot;) +
+  ylab(&quot;Beagle flips&quot;) +
+  guides(colour=guide_legend(title=&quot;Population&quot;)) +
+  scale_color_manual(values = cbPalette) +
+  theme_bw(base_size = 16) +
+  guides(colour=&quot;none&quot;)</code></pre>
 <p><img src="figure/phasing_results.Rmd/unnamed-chunk-30-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-30-1">
@@ -3953,6 +3919,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/3fe89750818b03dc973a4a5e1f059b65cafefd6f/docs/figure/phasing_results.Rmd/unnamed-chunk-30-1.png" target="_blank">3fe8975</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/theandyb/phasing/blob/4fcb226cc86c3137ca2568efc8ab33a80a19581d/docs/figure/phasing_results.Rmd/unnamed-chunk-30-1.png" target="_blank">4fcb226</a>
@@ -4034,20 +4011,24 @@ Andy Beck
 </table>
 </div>
 </div>
-</div>
-<div id="beagle-vs-eagle" class="section level4">
-<h4>BEAGLE vs EAGLE</h4>
-<pre class="r"><code>df_vcftools %&gt;% 
-  ggplot(aes(x = med_hets_switch_beagle, y = med_hets_switch_eagle, color = pop)) +
+<div id="per-mb-1" class="section level4">
+<h4>Per MB</h4>
+<pre class="r"><code>df_wh_si %&gt;%
+  mutate(flips_mb = flips / size_mb) %&gt;%
+  select(id, pop, flips_mb) %&gt;%
+  rename(shapeit = flips_mb) %&gt;%
+  inner_join({df_wh_eagle %&gt;%
+      mutate(flips_mb = flips / size_mb) %&gt;%
+      select(id, pop, flips_mb) %&gt;% rename(eagle = flips_mb)}, by = c(&quot;id&quot;, &quot;pop&quot;)) %&gt;%
+  ggplot(aes(x = shapeit, y = eagle, colour = pop)) + 
   geom_point() +
-  scale_color_jco() +
-  xlab(&quot;BEAGLE&quot;) +
-  ylab(&quot;EAGLE&quot;) +
-  ggtitle(&quot;Median Heterozygous Sites \nBetween Switches&quot;) +
   geom_abline(slope = 1, intercept = 0) +
-  theme_bw(base_size = 12) +
-  theme(legend.position = c(0.88, .75)) +
-  guides(colour=guide_legend(title=&quot;Population&quot;))</code></pre>
+  xlab(&quot;SHAPEIT flips per MB&quot;) +
+  ylab(&quot;Eagle flips per MB&quot;) +
+  guides(colour=guide_legend(title=&quot;Population&quot;)) +
+  scale_color_manual(values = cbPalette) +
+  theme_bw(base_size = 16) +
+  guides(colour=&quot;none&quot;)</code></pre>
 <p><img src="figure/phasing_results.Rmd/unnamed-chunk-31-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-31-1">
@@ -4071,6 +4052,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/3fe89750818b03dc973a4a5e1f059b65cafefd6f/docs/figure/phasing_results.Rmd/unnamed-chunk-31-1.png" target="_blank">3fe8975</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/theandyb/phasing/blob/6030950131da236fee909d5c46c06fffcac60224/docs/figure/phasing_results.Rmd/unnamed-chunk-31-1.png" target="_blank">6030950</a>
@@ -4174,19 +4166,22 @@ Andy Beck
 </table>
 </div>
 </div>
-<pre class="r"><code>df_vcftools %&gt;% 
-  mutate(sr_beagle = med_hets_switch_beagle / n_hets,
-         sr_eagle = med_hets_switch_eagle / n_hets) %&gt;%
-  filter(pop %in% c(&quot;AFR&quot;, &quot;EUR&quot;)) %&gt;%
-  ggplot(aes(x = sr_beagle, y = sr_eagle, color = pop)) +
+<pre class="r"><code>df_wh_si %&gt;%
+  mutate(flips_mb = flips / size_mb) %&gt;%
+  select(id, pop, flips_mb) %&gt;%
+  rename(shapeit = flips_mb) %&gt;%
+  inner_join({df_wh_beagle %&gt;%
+      mutate(flips_mb = flips / size_mb) %&gt;%
+      select(id, pop, flips_mb) %&gt;% rename(beagle = flips_mb)}, by = c(&quot;id&quot;, &quot;pop&quot;)) %&gt;%
+  ggplot(aes(x = shapeit, y = beagle, colour = pop)) + 
   geom_point() +
-  scale_color_jco() +
-  xlab(&quot;BEAGLE&quot;) +
-  ylab(&quot;EAGLE&quot;) +
-  ggtitle(&quot;Median Heterozygous Sites \nBetween Switches&quot;) +
   geom_abline(slope = 1, intercept = 0) +
-  theme_bw(base_size = 12) +
-  guides(colour=guide_legend(title=&quot;Population&quot;))</code></pre>
+  xlab(&quot;SHAPEIT flips per MB&quot;) +
+  ylab(&quot;Beagle flips per MB&quot;) +
+  guides(colour=guide_legend(title=&quot;Population&quot;)) +
+  scale_color_manual(values = cbPalette) +
+  theme_bw(base_size = 16) +
+  guides(colour=&quot;none&quot;)</code></pre>
 <p><img src="figure/phasing_results.Rmd/unnamed-chunk-32-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-32-1">
@@ -4210,6 +4205,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/3fe89750818b03dc973a4a5e1f059b65cafefd6f/docs/figure/phasing_results.Rmd/unnamed-chunk-32-1.png" target="_blank">3fe8975</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/theandyb/phasing/blob/6030950131da236fee909d5c46c06fffcac60224/docs/figure/phasing_results.Rmd/unnamed-chunk-32-1.png" target="_blank">6030950</a>
@@ -4285,6 +4291,1053 @@ Andy Beck
 </td>
 <td>
 2022-06-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>df_wh_eagle %&gt;%
+  mutate(flips_mb = flips / size_mb) %&gt;%
+  select(id, pop, flips_mb) %&gt;%
+  rename(eagle = flips_mb) %&gt;%
+  inner_join({df_wh_beagle %&gt;%
+      mutate(flips_mb = flips / size_mb) %&gt;%
+      select(id, pop, flips_mb) %&gt;% rename(beagle = flips_mb)}, by = c(&quot;id&quot;, &quot;pop&quot;)) %&gt;%
+  ggplot(aes(x = eagle, y = beagle, colour = pop)) + 
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  xlab(&quot;Eagle flips per MB&quot;) +
+  ylab(&quot;Beagle flips per MB&quot;) +
+  guides(colour=guide_legend(title=&quot;Population&quot;)) +
+  scale_color_manual(values = cbPalette) +
+  theme_bw(base_size = 16) +
+  guides(colour=&quot;none&quot;)</code></pre>
+<p><img src="figure/phasing_results.Rmd/unnamed-chunk-33-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-33-1">
+Past versions of unnamed-chunk-33-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-33-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/3fe89750818b03dc973a4a5e1f059b65cafefd6f/docs/figure/phasing_results.Rmd/unnamed-chunk-33-1.png" target="_blank">3fe8975</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-13
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/6030950131da236fee909d5c46c06fffcac60224/docs/figure/phasing_results.Rmd/unnamed-chunk-33-1.png" target="_blank">6030950</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-01-24
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/4fcb226cc86c3137ca2568efc8ab33a80a19581d/docs/figure/phasing_results.Rmd/unnamed-chunk-33-1.png" target="_blank">4fcb226</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-01-23
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/574c4ccd02d2362824c55f74f6236c4dd7af8d26/docs/figure/phasing_results.Rmd/unnamed-chunk-33-1.png" target="_blank">574c4cc</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-09-13
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/c7bb24341baa4348a86b45f72c90665b2ce8825c/docs/figure/phasing_results.Rmd/unnamed-chunk-33-1.png" target="_blank">c7bb243</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-08
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/a9663e8ecc214ea6c29205726c35eb52fc522031/docs/figure/phasing_results.Rmd/unnamed-chunk-33-1.png" target="_blank">a9663e8</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-06
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/e239a478a3e38767c6be48c225be9977e624f665/docs/figure/phasing_results.Rmd/unnamed-chunk-33-1.png" target="_blank">e239a47</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-02-15
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div id="flip-rate" class="section level3">
+<h3>Flip Rate</h3>
+<pre class="r"><code>df_wh_si %&gt;%
+  select(id, pop, flips, n_het) %&gt;%
+  mutate(flips = flips / (n_het)) %&gt;%
+  rename(shapeit = flips) %&gt;%
+  inner_join({df_wh_eagle %&gt;% 
+      select(id, pop, flips, n_het) %&gt;% 
+      mutate(flips = flips / (n_het)) %&gt;%
+      rename(eagle = flips)}, by = c(&quot;id&quot;, &quot;pop&quot;)) %&gt;%
+  ggplot(aes(x = shapeit, y = eagle, colour = pop)) + 
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  ggtitle(&quot;Flip Rate&quot;, &quot;#(Flips) / #(Heterozygous Sites)&quot;) +
+  xlab(&quot;SHAPEIT Flip Rate&quot;) +
+  ylab(&quot;Eagle flips&quot;) +
+  guides(colour=guide_legend(title=&quot;Population&quot;)) + 
+  scale_color_manual(values = cbPalette) +
+  theme_bw(base_size = 16) +
+  xlim(c(0,0.003)) + ylim(c(0,0.003)) +
+  theme(legend.position = c(0.8, .2))</code></pre>
+<p><img src="figure/phasing_results.Rmd/unnamed-chunk-34-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-34-1">
+Past versions of unnamed-chunk-34-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-34-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/6030950131da236fee909d5c46c06fffcac60224/docs/figure/phasing_results.Rmd/unnamed-chunk-34-1.png" target="_blank">6030950</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-01-24
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/4fcb226cc86c3137ca2568efc8ab33a80a19581d/docs/figure/phasing_results.Rmd/unnamed-chunk-34-1.png" target="_blank">4fcb226</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-01-23
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/a9663e8ecc214ea6c29205726c35eb52fc522031/docs/figure/phasing_results.Rmd/unnamed-chunk-34-1.png" target="_blank">a9663e8</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-06
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/e239a478a3e38767c6be48c225be9977e624f665/docs/figure/phasing_results.Rmd/unnamed-chunk-34-1.png" target="_blank">e239a47</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-02-15
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>out_file &lt;- paste0(svg_out_dir, &quot;flip_rate_s_e.svg&quot;)
+ggsave(filename = out_file, width = 5.33, height = 4.26, dpi = 300, units = &quot;in&quot;)
+
+df_wh_si %&gt;%
+  select(id, pop, flips, n_het) %&gt;%
+  mutate(flips = flips / (n_het)) %&gt;%
+  rename(shapeit = flips) %&gt;%
+  inner_join({df_wh_beagle %&gt;% 
+      select(id, pop, flips, n_het) %&gt;% 
+      mutate(flips = flips / (n_het)) %&gt;%
+      rename(beagle = flips)}, by = c(&quot;id&quot;, &quot;pop&quot;)) %&gt;%
+  ggplot(aes(x = shapeit, y = beagle, colour = pop)) + 
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  ggtitle(&quot;Flip Rate&quot;, &quot;# Flips / #(Heterozygous Sites)&quot;) +
+  xlab(&quot;SHAPEIT Flip Rate&quot;) +
+  ylab(&quot;Beagle Flip Rate&quot;) +
+  guides(colour=guide_legend(title=&quot;Population&quot;)) +
+  scale_color_manual(values = cbPalette) +
+  theme_bw(base_size = 16) +
+  xlim(c(0,0.003)) + ylim(c(0,0.003)) +
+  theme(legend.position = c(0.8, .2))</code></pre>
+<p><img src="figure/phasing_results.Rmd/unnamed-chunk-34-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-34-2">
+Past versions of unnamed-chunk-34-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-34-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/6030950131da236fee909d5c46c06fffcac60224/docs/figure/phasing_results.Rmd/unnamed-chunk-34-2.png" target="_blank">6030950</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-01-24
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/4fcb226cc86c3137ca2568efc8ab33a80a19581d/docs/figure/phasing_results.Rmd/unnamed-chunk-34-2.png" target="_blank">4fcb226</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-01-23
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>out_file &lt;- paste0(svg_out_dir, &quot;flip_rate_s_b.svg&quot;)
+ggsave(filename = out_file, width = 5.33, height = 4.26, dpi = 300, units = &quot;in&quot;)
+
+df_wh_eagle %&gt;%
+  select(id, pop, flips, n_het) %&gt;%
+  mutate(flips = flips / (n_het)) %&gt;%
+  rename(eagle = flips) %&gt;%
+  inner_join({df_wh_beagle %&gt;% 
+      select(id, pop, flips, n_het) %&gt;% 
+      mutate(flips = flips / (n_het)) %&gt;%
+      rename(beagle = flips)}, by = c(&quot;id&quot;, &quot;pop&quot;)) %&gt;%
+  ggplot(aes(x = eagle, y = beagle, colour = pop)) + 
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  ggtitle(&quot;Flip Rate&quot;, &quot;# Flips / #(Heterozygous Sites)&quot;) +
+  xlab(&quot;Eagle flips&quot;) +
+  ylab(&quot;Beagle flips&quot;) +
+  guides(colour=guide_legend(title=&quot;Population&quot;)) +
+  scale_color_manual(values = cbPalette) +
+  theme_bw(base_size = 16) +
+  xlim(c(0,0.003)) + ylim(c(0,0.003)) +
+  theme(legend.position = c(0.8, .2))</code></pre>
+<p><img src="figure/phasing_results.Rmd/unnamed-chunk-34-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-34-3">
+Past versions of unnamed-chunk-34-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-34-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/6030950131da236fee909d5c46c06fffcac60224/docs/figure/phasing_results.Rmd/unnamed-chunk-34-3.png" target="_blank">6030950</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-01-24
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/4fcb226cc86c3137ca2568efc8ab33a80a19581d/docs/figure/phasing_results.Rmd/unnamed-chunk-34-3.png" target="_blank">4fcb226</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-01-23
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>out_file &lt;- paste0(svg_out_dir, &quot;flip_rate_b_e.svg&quot;)
+ggsave(filename = out_file, width = 5.33, height = 4.26, dpi = 300, units = &quot;in&quot;)</code></pre>
+</div>
+<div id="switch-rate" class="section level3">
+<h3>Switch Rate</h3>
+<pre class="r"><code>df_wh_si %&gt;%
+  select(id, pop, switches, n_het) %&gt;%
+  mutate(switches = switches / (n_het)) %&gt;%
+  rename(shapeit = switches) %&gt;%
+  inner_join({df_wh_eagle %&gt;% 
+      select(id, pop, switches, n_het) %&gt;% 
+      mutate(switches = switches / (n_het)) %&gt;%
+      rename(eagle = switches)}, by = c(&quot;id&quot;, &quot;pop&quot;)) %&gt;%
+  ggplot(aes(x = shapeit, y = eagle, colour = pop)) + 
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  ggtitle(&quot;Switch Rate&quot;, &quot;#(Switches) / #(Heterozygous Sites)&quot;) +
+  xlab(&quot;SHAPEIT Switch Rate&quot;) +
+  ylab(&quot;Eagle Switch Rate&quot;) +
+  guides(colour=guide_legend(title=&quot;Population&quot;)) + 
+  scale_color_manual(values = cbPalette) +
+  theme_bw(base_size = 16) +
+  xlim(c(0,0.0052)) + ylim(c(0,0.0052)) +
+  theme(legend.position = c(0.8, .2))</code></pre>
+<p><img src="figure/phasing_results.Rmd/unnamed-chunk-35-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-35-1">
+Past versions of unnamed-chunk-35-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-35-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/3fe89750818b03dc973a4a5e1f059b65cafefd6f/docs/figure/phasing_results.Rmd/unnamed-chunk-35-1.png" target="_blank">3fe8975</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-13
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/6030950131da236fee909d5c46c06fffcac60224/docs/figure/phasing_results.Rmd/unnamed-chunk-35-1.png" target="_blank">6030950</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-01-24
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/a9663e8ecc214ea6c29205726c35eb52fc522031/docs/figure/phasing_results.Rmd/unnamed-chunk-35-1.png" target="_blank">a9663e8</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-06
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/e239a478a3e38767c6be48c225be9977e624f665/docs/figure/phasing_results.Rmd/unnamed-chunk-35-1.png" target="_blank">e239a47</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-02-15
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>out_file &lt;- paste0(svg_out_dir, &quot;switch_rate_s_e.svg&quot;)
+ggsave(filename = out_file, width = 5.33, height = 4.26, dpi = 300, units = &quot;in&quot;)
+
+df_wh_si %&gt;%
+  select(id, pop, switches, n_het) %&gt;%
+  mutate(switches = switches / (n_het)) %&gt;%
+  rename(shapeit = switches) %&gt;%
+  inner_join({df_wh_beagle %&gt;% 
+      select(id, pop, switches, n_het) %&gt;% 
+      mutate(switches = switches / (n_het)) %&gt;%
+      rename(beagle = switches)}, by = c(&quot;id&quot;, &quot;pop&quot;)) %&gt;%
+  ggplot(aes(x = shapeit, y = beagle, colour = pop)) + 
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  ggtitle(&quot;Switch Rate&quot;, &quot;# Switches / #(Heterozygous Sites)&quot;) +
+  xlab(&quot;SHAPEIT Switch Rate&quot;) +
+  ylab(&quot;Beagle Switch Rate&quot;) +
+  guides(colour=guide_legend(title=&quot;Population&quot;)) +
+  scale_color_manual(values = cbPalette) +
+  theme_bw(base_size = 16) +
+  xlim(c(0,0.005)) + ylim(c(0,0.005)) +
+  theme(legend.position = c(0.8, .2))</code></pre>
+<p><img src="figure/phasing_results.Rmd/unnamed-chunk-35-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-35-2">
+Past versions of unnamed-chunk-35-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-35-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/3fe89750818b03dc973a4a5e1f059b65cafefd6f/docs/figure/phasing_results.Rmd/unnamed-chunk-35-2.png" target="_blank">3fe8975</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-13
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>out_file &lt;- paste0(svg_out_dir, &quot;switch_rate_s_b.svg&quot;)
+ggsave(filename = out_file, width = 5.33, height = 4.26, dpi = 300, units = &quot;in&quot;)
+
+df_wh_eagle %&gt;%
+  select(id, pop, switches, n_het) %&gt;%
+  mutate(switches = switches / (n_het)) %&gt;%
+  rename(eagle = switches) %&gt;%
+  inner_join({df_wh_beagle %&gt;% 
+      select(id, pop, switches, n_het) %&gt;% 
+      mutate(switches = switches / (n_het)) %&gt;%
+      rename(beagle = switches)}, by = c(&quot;id&quot;, &quot;pop&quot;)) %&gt;%
+  ggplot(aes(x = eagle, y = beagle, colour = pop)) + 
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  ggtitle(&quot;Switch Rate&quot;, &quot;# Switches / #(Heterozygous Sites)&quot;) +
+  xlab(&quot;Eagle Switch Rate&quot;) +
+  ylab(&quot;Beagle Switch Rate&quot;) +
+  guides(colour=guide_legend(title=&quot;Population&quot;)) +
+  scale_color_manual(values = cbPalette) +
+  theme_bw(base_size = 16) +
+  xlim(c(0,0.0052)) + ylim(c(0,0.0052)) +
+  theme(legend.position = c(0.8, .2))</code></pre>
+<p><img src="figure/phasing_results.Rmd/unnamed-chunk-35-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>out_file &lt;- paste0(svg_out_dir, &quot;switch_rate_b_e.svg&quot;)
+ggsave(filename = out_file, width = 5.33, height = 4.26, dpi = 300, units = &quot;in&quot;)</code></pre>
+</div>
+<div id="hets-between-switches" class="section level3">
+<h3>Hets between switches</h3>
+<div id="shapeit-vs-beagle" class="section level4">
+<h4>Shapeit vs BEAGLE</h4>
+<pre class="r"><code>df_vcftools %&gt;% 
+  ggplot(aes(x = med_hets_switch_shapeit, y = med_hets_switch_beagle, color = pop)) +
+  geom_point() +
+  xlab(&quot;SHAPEIT&quot;) +
+  ylab(&quot;BEAGLE&quot;) +
+  ggtitle(&quot;Median Heterozygous Sites \nBetween Switches&quot;) +
+  geom_abline(slope = 1, intercept = 0) +
+  theme_bw(base_size = 12) +
+  theme(legend.position = c(0.85, .3)) +
+  guides(colour=guide_legend(title=&quot;Population&quot;)) +
+  scale_colour_manual(values=cbPalette)</code></pre>
+<p><img src="figure/phasing_results.Rmd/unnamed-chunk-36-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-36-1">
+Past versions of unnamed-chunk-36-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-36-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/3fe89750818b03dc973a4a5e1f059b65cafefd6f/docs/figure/phasing_results.Rmd/unnamed-chunk-36-1.png" target="_blank">3fe8975</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-13
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/6030950131da236fee909d5c46c06fffcac60224/docs/figure/phasing_results.Rmd/unnamed-chunk-36-1.png" target="_blank">6030950</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-01-24
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/4fcb226cc86c3137ca2568efc8ab33a80a19581d/docs/figure/phasing_results.Rmd/unnamed-chunk-36-1.png" target="_blank">4fcb226</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-01-23
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/a9663e8ecc214ea6c29205726c35eb52fc522031/docs/figure/phasing_results.Rmd/unnamed-chunk-36-1.png" target="_blank">a9663e8</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-06
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/e239a478a3e38767c6be48c225be9977e624f665/docs/figure/phasing_results.Rmd/unnamed-chunk-36-1.png" target="_blank">e239a47</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-02-15
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>df_vcftools %&gt;% 
+  mutate(sr_shapeit = med_hets_switch_shapeit / n_hets,
+         sr_beagle = med_hets_switch_beagle / n_hets) %&gt;%
+  filter(pop %in% c(&quot;AFR&quot;, &quot;EUR&quot;)) %&gt;%
+  ggplot(aes(x = sr_shapeit, y = sr_beagle, color = pop)) +
+  geom_point() +
+  xlab(&quot;SHAPEIT&quot;) +
+  ylab(&quot;BEAGLE&quot;) +
+  ggtitle(&quot;Median Heterozygous Sites \nBetween Switches&quot;) +
+  geom_abline(slope = 1, intercept = 0) +
+  theme_bw(base_size = 12) +
+  theme(legend.position = c(0.85, .25)) +
+  guides(colour=guide_legend(title=&quot;Population&quot;)) +
+  scale_colour_manual(values=cbPalette)</code></pre>
+<p><img src="figure/phasing_results.Rmd/unnamed-chunk-37-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-37-1">
+Past versions of unnamed-chunk-37-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-37-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/3fe89750818b03dc973a4a5e1f059b65cafefd6f/docs/figure/phasing_results.Rmd/unnamed-chunk-37-1.png" target="_blank">3fe8975</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-13
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/6030950131da236fee909d5c46c06fffcac60224/docs/figure/phasing_results.Rmd/unnamed-chunk-37-1.png" target="_blank">6030950</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-01-24
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/a9663e8ecc214ea6c29205726c35eb52fc522031/docs/figure/phasing_results.Rmd/unnamed-chunk-37-1.png" target="_blank">a9663e8</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-06
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/e239a478a3e38767c6be48c225be9977e624f665/docs/figure/phasing_results.Rmd/unnamed-chunk-37-1.png" target="_blank">e239a47</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-02-15
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="shapeit-vs-eagle" class="section level4">
+<h4>Shapeit vs EAGLE</h4>
+<pre class="r"><code>df_vcftools %&gt;% 
+  ggplot(aes(x = med_hets_switch_shapeit, y = med_hets_switch_eagle, color = pop)) +
+  geom_point() +
+  xlab(&quot;SHAPEIT&quot;) +
+  ylab(&quot;EAGLE&quot;) +
+  ggtitle(&quot;Median Heterozygous Sites \nBetween Switches&quot;) +
+  geom_abline(slope = 1, intercept = 0) +
+  theme_bw(base_size = 12) +
+  theme(legend.position = c(0.79, .3)) +
+  guides(colour=guide_legend(title=&quot;Population&quot;)) +
+  scale_colour_manual(values=cbPalette)</code></pre>
+<p><img src="figure/phasing_results.Rmd/unnamed-chunk-38-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-38-1">
+Past versions of unnamed-chunk-38-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-38-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/3fe89750818b03dc973a4a5e1f059b65cafefd6f/docs/figure/phasing_results.Rmd/unnamed-chunk-38-1.png" target="_blank">3fe8975</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-13
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/6030950131da236fee909d5c46c06fffcac60224/docs/figure/phasing_results.Rmd/unnamed-chunk-38-1.png" target="_blank">6030950</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-01-24
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/a9663e8ecc214ea6c29205726c35eb52fc522031/docs/figure/phasing_results.Rmd/unnamed-chunk-38-1.png" target="_blank">a9663e8</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-06
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/e239a478a3e38767c6be48c225be9977e624f665/docs/figure/phasing_results.Rmd/unnamed-chunk-38-1.png" target="_blank">e239a47</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-02-15
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>df_vcftools %&gt;% 
+  mutate(sr_shapeit = med_hets_switch_shapeit / n_hets,
+         sr_eagle = med_hets_switch_eagle / n_hets) %&gt;%
+  filter(pop %in% c(&quot;AFR&quot;, &quot;EUR&quot;)) %&gt;%
+  ggplot(aes(x = sr_shapeit, y = sr_eagle, color = pop)) +
+  geom_point() +
+  xlab(&quot;SHAPEIT&quot;) +
+  ylab(&quot;EAGLE&quot;) +
+  ggtitle(&quot;Median Heterozygous Sites \nBetween Switches&quot;) +
+  geom_abline(slope = 1, intercept = 0) +
+  theme_bw(base_size = 12) +
+  theme(legend.position = c(0.85, .25)) +
+  guides(colour=guide_legend(title=&quot;Population&quot;)) +
+  scale_colour_manual(values=cbPalette)</code></pre>
+<p><img src="figure/phasing_results.Rmd/unnamed-chunk-39-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-39-1">
+Past versions of unnamed-chunk-39-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-39-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/3fe89750818b03dc973a4a5e1f059b65cafefd6f/docs/figure/phasing_results.Rmd/unnamed-chunk-39-1.png" target="_blank">3fe8975</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-13
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/6030950131da236fee909d5c46c06fffcac60224/docs/figure/phasing_results.Rmd/unnamed-chunk-39-1.png" target="_blank">6030950</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-01-24
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/a9663e8ecc214ea6c29205726c35eb52fc522031/docs/figure/phasing_results.Rmd/unnamed-chunk-39-1.png" target="_blank">a9663e8</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-06
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/e239a478a3e38767c6be48c225be9977e624f665/docs/figure/phasing_results.Rmd/unnamed-chunk-39-1.png" target="_blank">e239a47</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-02-15
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="beagle-vs-eagle" class="section level4">
+<h4>BEAGLE vs EAGLE</h4>
+<pre class="r"><code>df_vcftools %&gt;% 
+  ggplot(aes(x = med_hets_switch_beagle, y = med_hets_switch_eagle, color = pop)) +
+  geom_point() +
+  xlab(&quot;BEAGLE&quot;) +
+  ylab(&quot;EAGLE&quot;) +
+  ggtitle(&quot;Median Heterozygous Sites \nBetween Switches&quot;) +
+  geom_abline(slope = 1, intercept = 0) +
+  theme_bw(base_size = 12) +
+  theme(legend.position = c(0.88, .72)) +
+  guides(colour=guide_legend(title=&quot;Population&quot;)) +
+  scale_colour_manual(values=cbPalette)</code></pre>
+<p><img src="figure/phasing_results.Rmd/unnamed-chunk-40-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-40-1">
+Past versions of unnamed-chunk-40-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-40-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/3fe89750818b03dc973a4a5e1f059b65cafefd6f/docs/figure/phasing_results.Rmd/unnamed-chunk-40-1.png" target="_blank">3fe8975</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-13
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/6030950131da236fee909d5c46c06fffcac60224/docs/figure/phasing_results.Rmd/unnamed-chunk-40-1.png" target="_blank">6030950</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-01-24
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/a9663e8ecc214ea6c29205726c35eb52fc522031/docs/figure/phasing_results.Rmd/unnamed-chunk-40-1.png" target="_blank">a9663e8</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-06
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/e239a478a3e38767c6be48c225be9977e624f665/docs/figure/phasing_results.Rmd/unnamed-chunk-40-1.png" target="_blank">e239a47</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-02-15
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>df_vcftools %&gt;% 
+  mutate(sr_beagle = med_hets_switch_beagle / n_hets,
+         sr_eagle = med_hets_switch_eagle / n_hets) %&gt;%
+  filter(pop %in% c(&quot;AFR&quot;, &quot;EUR&quot;)) %&gt;%
+  ggplot(aes(x = sr_beagle, y = sr_eagle, color = pop)) +
+  geom_point() +
+  scale_colour_manual(values=cbPalette) +
+  xlab(&quot;BEAGLE&quot;) +
+  ylab(&quot;EAGLE&quot;) +
+  ggtitle(&quot;Median Heterozygous Sites \nBetween Switches&quot;) +
+  geom_abline(slope = 1, intercept = 0) +
+  theme_bw(base_size = 12) +
+  guides(colour=guide_legend(title=&quot;Population&quot;))</code></pre>
+<p><img src="figure/phasing_results.Rmd/unnamed-chunk-41-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-41-1">
+Past versions of unnamed-chunk-41-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-41-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/3fe89750818b03dc973a4a5e1f059b65cafefd6f/docs/figure/phasing_results.Rmd/unnamed-chunk-41-1.png" target="_blank">3fe8975</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-13
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/a9663e8ecc214ea6c29205726c35eb52fc522031/docs/figure/phasing_results.Rmd/unnamed-chunk-41-1.png" target="_blank">a9663e8</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-06-06
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/e239a478a3e38767c6be48c225be9977e624f665/docs/figure/phasing_results.Rmd/unnamed-chunk-41-1.png" target="_blank">e239a47</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2023-02-15
 </td>
 </tr>
 </tbody>
@@ -4368,13 +5421,13 @@ df_wh_beagle %&gt;%
 <h3>Errors at CpGs</h3>
 <p>Proportion of errors at CpG</p>
 <pre class="r"><code>df_vcftools %&gt;%
-  mutate(prop_error_eagle = n_switch_cpg_eagle / n_switch_eagle,
-         prop_error_shapeit = n_switch_cpg_shapeit / n_switch_shapeit,
-         prop_error_beagle = n_switch_cpg_beagle / n_switch_beagle) %&gt;%
+  mutate(prop_error_eagle = (n_flip_cpg_eagle + n_other_cpg_eagle) / (n_flip_eagle + n_other_eagle),
+         prop_error_shapeit = (n_flip_cpg_shapeit + n_other_cpg_shapeit) / (n_flip_shapeit + n_other_shapeit),
+         prop_error_beagle = (n_flip_cpg_beagle + n_other_cpg_beagle) / (n_flip_beagle + n_other_beagle)) %&gt;%
   select(pop, starts_with(&quot;prop_error&quot;)) %&gt;%
-  rename(EAGLE2 = prop_error_eagle,
-         BEAGLE5 = prop_error_beagle,
-         SHAPEIT5 = prop_error_shapeit) %&gt;%
+  rename(Eagle = prop_error_eagle,
+         Beagle = prop_error_beagle,
+         SHAPEIT = prop_error_shapeit) %&gt;%
   pivot_longer(-pop, names_to = &quot;method&quot;,  values_to = &quot;prop&quot;) %&gt;%
   ggplot(aes(x = method, y = prop)) + 
   geom_boxplot() +
@@ -4390,13 +5443,13 @@ df_wh_beagle %&gt;%
         legend.title=element_blank())</code></pre>
 <pre><code>Scale for colour is already present.
 Adding another scale for colour, which will replace the existing scale.</code></pre>
-<p><img src="figure/phasing_results.Rmd/unnamed-chunk-35-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/phasing_results.Rmd/unnamed-chunk-44-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-35-1">
-Past versions of unnamed-chunk-35-1.png
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-44-1">
+Past versions of unnamed-chunk-44-1.png
 </button>
 </p>
-<div id="fig-unnamed-chunk-35-1" class="collapse">
+<div id="fig-unnamed-chunk-44-1" class="collapse">
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
 <thead>
@@ -4415,18 +5468,18 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/theandyb/phasing/blob/6030950131da236fee909d5c46c06fffcac60224/docs/figure/phasing_results.Rmd/unnamed-chunk-35-1.png" target="_blank">6030950</a>
+<a href="https://github.com/theandyb/phasing/blob/3fe89750818b03dc973a4a5e1f059b65cafefd6f/docs/figure/phasing_results.Rmd/unnamed-chunk-44-1.png" target="_blank">3fe8975</a>
 </td>
 <td>
 Andy Beck
 </td>
 <td>
-2024-01-24
+2024-02-13
 </td>
 </tr>
 <tr>
 <td>
-<a href="https://github.com/theandyb/phasing/blob/a9663e8ecc214ea6c29205726c35eb52fc522031/docs/figure/phasing_results.Rmd/unnamed-chunk-35-1.png" target="_blank">a9663e8</a>
+<a href="https://github.com/theandyb/phasing/blob/a9663e8ecc214ea6c29205726c35eb52fc522031/docs/figure/phasing_results.Rmd/unnamed-chunk-44-1.png" target="_blank">a9663e8</a>
 </td>
 <td>
 Andy Beck
@@ -4437,7 +5490,7 @@ Andy Beck
 </tr>
 <tr>
 <td>
-<a href="https://github.com/theandyb/phasing/blob/e239a478a3e38767c6be48c225be9977e624f665/docs/figure/phasing_results.Rmd/unnamed-chunk-35-1.png" target="_blank">e239a47</a>
+<a href="https://github.com/theandyb/phasing/blob/e239a478a3e38767c6be48c225be9977e624f665/docs/figure/phasing_results.Rmd/unnamed-chunk-44-1.png" target="_blank">e239a47</a>
 </td>
 <td>
 Andy Beck
@@ -4458,9 +5511,9 @@ df_vcftools %&gt;%
          prop_error_shapeit = n_flip_cpg_shapeit / n_flip_shapeit,
          prop_error_beagle = n_flip_cpg_beagle / n_flip_beagle) %&gt;%
   select(pop, starts_with(&quot;prop_error&quot;)) %&gt;%
-  rename(EAGLE2 = prop_error_eagle,
-         BEAGLE5 = prop_error_beagle,
-         SHAPEIT5 = prop_error_shapeit) %&gt;%
+  rename(Eagle = prop_error_eagle,
+         Beagle = prop_error_beagle,
+         SHAPEIT = prop_error_shapeit) %&gt;%
   pivot_longer(-pop, names_to = &quot;method&quot;,  values_to = &quot;prop&quot;) %&gt;%
   ggplot(aes(x = method, y = prop)) + 
   geom_boxplot() +
@@ -4473,9 +5526,106 @@ df_vcftools %&gt;%
   theme(legend.position = c(0.75, 0.9),
         legend.box.background = element_rect(color=&quot;black&quot;, linewidth=1),
         legend.title=element_blank())</code></pre>
-<p><img src="figure/phasing_results.Rmd/unnamed-chunk-35-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/phasing_results.Rmd/unnamed-chunk-44-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-44-2">
+Past versions of unnamed-chunk-44-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-44-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/3fe89750818b03dc973a4a5e1f059b65cafefd6f/docs/figure/phasing_results.Rmd/unnamed-chunk-44-2.png" target="_blank">3fe8975</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-13
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>out_file &lt;- paste0(svg_out_dir, &quot;prop_flips_cpg.svg&quot;)
 ggsave(filename = out_file, width = 8.05, height = 6.44, dpi = 300, units = &quot;in&quot;)</code></pre>
+</div>
+<div id="t-tests" class="section level3">
+<h3>T-tests</h3>
+<pre class="r"><code>print(&quot;Eagle, Beagle&quot;)</code></pre>
+<pre><code>[1] &quot;Eagle, Beagle&quot;</code></pre>
+<pre class="r"><code>df_vcftools %&gt;%
+  mutate(prop_error_eagle = n_flip_cpg_eagle / n_flip_eagle,
+         prop_error_shapeit = n_flip_cpg_shapeit / n_flip_shapeit,
+         prop_error_beagle = n_flip_cpg_beagle / n_flip_beagle) %&gt;%
+  {t.test(.$prop_error_eagle, .$prop_error_beagle)}</code></pre>
+<pre><code>
+    Welch Two Sample t-test
+
+data:  .$prop_error_eagle and .$prop_error_beagle
+t = -2.7489, df = 1384.4, p-value = 0.006057
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ -0.010035484 -0.001677159
+sample estimates:
+mean of x mean of y 
+0.1550792 0.1609355 </code></pre>
+<pre class="r"><code>print(&quot;Eagle, Shapeit&quot;)</code></pre>
+<pre><code>[1] &quot;Eagle, Shapeit&quot;</code></pre>
+<pre class="r"><code>df_vcftools %&gt;%
+  mutate(prop_error_eagle = n_flip_cpg_eagle / n_flip_eagle,
+         prop_error_shapeit = n_flip_cpg_shapeit / n_flip_shapeit,
+         prop_error_beagle = n_flip_cpg_beagle / n_flip_beagle) %&gt;%
+  {t.test(.$prop_error_eagle, .$prop_error_shapeit)}</code></pre>
+<pre><code>
+    Welch Two Sample t-test
+
+data:  .$prop_error_eagle and .$prop_error_shapeit
+t = -3.1734, df = 1397.5, p-value = 0.00154
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ -0.010282924 -0.002426422
+sample estimates:
+mean of x mean of y 
+0.1550792 0.1614339 </code></pre>
+<pre class="r"><code>print(&quot;Beagle, Shapeit&quot;)</code></pre>
+<pre><code>[1] &quot;Beagle, Shapeit&quot;</code></pre>
+<pre class="r"><code>df_vcftools %&gt;%
+  mutate(prop_error_eagle = n_flip_cpg_eagle / n_flip_eagle,
+         prop_error_shapeit = n_flip_cpg_shapeit / n_flip_shapeit,
+         prop_error_beagle = n_flip_cpg_beagle / n_flip_beagle) %&gt;%
+  {t.test(.$prop_error_beagle, .$prop_error_shapeit)}</code></pre>
+<pre><code>
+    Welch Two Sample t-test
+
+data:  .$prop_error_beagle and .$prop_error_shapeit
+t = -0.23599, df = 1378.6, p-value = 0.8135
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ -0.004640876  0.003644173
+sample estimates:
+mean of x mean of y 
+0.1609355 0.1614339 </code></pre>
+</div>
+<div id="switches-1" class="section level3">
+<h3>Switches</h3>
 <pre class="r"><code>df_vcftools %&gt;%
   mutate(prop_error_eagle = n_other_cpg_eagle / n_other_eagle,
          prop_error_shapeit = n_other_cpg_shapeit / n_other_shapeit,
@@ -4496,13 +5646,13 @@ ggsave(filename = out_file, width = 8.05, height = 6.44, dpi = 300, units = &quo
   theme(legend.position = c(0.75, 0.9),
         legend.box.background = element_rect(color=&quot;black&quot;, linewidth=1),
         legend.title=element_blank())</code></pre>
-<p><img src="figure/phasing_results.Rmd/unnamed-chunk-36-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/phasing_results.Rmd/unnamed-chunk-46-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-36-1">
-Past versions of unnamed-chunk-36-1.png
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-46-1">
+Past versions of unnamed-chunk-46-1.png
 </button>
 </p>
-<div id="fig-unnamed-chunk-36-1" class="collapse">
+<div id="fig-unnamed-chunk-46-1" class="collapse">
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
 <thead>
@@ -4521,29 +5671,18 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/theandyb/phasing/blob/6030950131da236fee909d5c46c06fffcac60224/docs/figure/phasing_results.Rmd/unnamed-chunk-36-1.png" target="_blank">6030950</a>
+<a href="https://github.com/theandyb/phasing/blob/3fe89750818b03dc973a4a5e1f059b65cafefd6f/docs/figure/phasing_results.Rmd/unnamed-chunk-46-1.png" target="_blank">3fe8975</a>
 </td>
 <td>
 Andy Beck
 </td>
 <td>
-2024-01-24
+2024-02-13
 </td>
 </tr>
 <tr>
 <td>
-<a href="https://github.com/theandyb/phasing/blob/4fcb226cc86c3137ca2568efc8ab33a80a19581d/docs/figure/phasing_results.Rmd/unnamed-chunk-36-1.png" target="_blank">4fcb226</a>
-</td>
-<td>
-Andy Beck
-</td>
-<td>
-2024-01-23
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/theandyb/phasing/blob/a9663e8ecc214ea6c29205726c35eb52fc522031/docs/figure/phasing_results.Rmd/unnamed-chunk-36-1.png" target="_blank">a9663e8</a>
+<a href="https://github.com/theandyb/phasing/blob/a9663e8ecc214ea6c29205726c35eb52fc522031/docs/figure/phasing_results.Rmd/unnamed-chunk-46-1.png" target="_blank">a9663e8</a>
 </td>
 <td>
 Andy Beck
@@ -4554,7 +5693,7 @@ Andy Beck
 </tr>
 <tr>
 <td>
-<a href="https://github.com/theandyb/phasing/blob/e239a478a3e38767c6be48c225be9977e624f665/docs/figure/phasing_results.Rmd/unnamed-chunk-36-1.png" target="_blank">e239a47</a>
+<a href="https://github.com/theandyb/phasing/blob/e239a478a3e38767c6be48c225be9977e624f665/docs/figure/phasing_results.Rmd/unnamed-chunk-46-1.png" target="_blank">e239a47</a>
 </td>
 <td>
 Andy Beck
@@ -4567,21 +5706,78 @@ Andy Beck
 </table>
 </div>
 </div>
+</div>
+<div id="t-tests-1" class="section level3">
+<h3>T-tests</h3>
+<pre class="r"><code>print(&quot;Eagle, Beagle&quot;)</code></pre>
+<pre><code>[1] &quot;Eagle, Beagle&quot;</code></pre>
+<pre class="r"><code>df_vcftools %&gt;%
+  mutate(prop_error_eagle = n_other_cpg_eagle / n_other_eagle,
+         prop_error_shapeit = n_other_cpg_shapeit / n_other_shapeit,
+         prop_error_beagle = n_other_cpg_beagle / n_other_beagle) %&gt;%
+  {t.test(.$prop_error_eagle, .$prop_error_beagle)}</code></pre>
+<pre><code>
+    Welch Two Sample t-test
+
+data:  .$prop_error_eagle and .$prop_error_beagle
+t = 4.7976, df = 1396.1, p-value = 1.778e-06
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ 0.005678501 0.013534373
+sample estimates:
+mean of x mean of y 
+0.1936300 0.1840236 </code></pre>
+<pre class="r"><code>print(&quot;Eagle, Shapeit&quot;)</code></pre>
+<pre><code>[1] &quot;Eagle, Shapeit&quot;</code></pre>
+<pre class="r"><code>df_vcftools %&gt;%
+  mutate(prop_error_eagle = n_other_cpg_eagle / n_other_eagle,
+         prop_error_shapeit = n_other_cpg_shapeit / n_other_shapeit,
+         prop_error_beagle = n_other_cpg_beagle / n_other_beagle) %&gt;%
+  {t.test(.$prop_error_eagle, .$prop_error_shapeit)}</code></pre>
+<pre><code>
+    Welch Two Sample t-test
+
+data:  .$prop_error_eagle and .$prop_error_shapeit
+t = 14.961, df = 1372, p-value &lt; 2.2e-16
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ 0.02750197 0.03580270
+sample estimates:
+mean of x mean of y 
+0.1936300 0.1619777 </code></pre>
+<pre class="r"><code>print(&quot;Beagle, Shapeit&quot;)</code></pre>
+<pre><code>[1] &quot;Beagle, Shapeit&quot;</code></pre>
+<pre class="r"><code>df_vcftools %&gt;%
+  mutate(prop_error_eagle = n_other_cpg_eagle / n_other_eagle,
+         prop_error_shapeit = n_other_cpg_shapeit / n_other_shapeit,
+         prop_error_beagle = n_other_cpg_beagle / n_other_beagle) %&gt;%
+  {t.test(.$prop_error_beagle, .$prop_error_shapeit)}</code></pre>
+<pre><code>
+    Welch Two Sample t-test
+
+data:  .$prop_error_beagle and .$prop_error_shapeit
+t = 10.25, df = 1383.9, p-value &lt; 2.2e-16
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ 0.01782685 0.02626495
+sample estimates:
+mean of x mean of y 
+0.1840236 0.1619777 </code></pre>
 <pre class="r"><code>df_vcftools %&gt;%
   ggplot(aes(x = n_switch_cpg_eagle, y = n_switch_cpg_shapeit, colour = pop)) +
   geom_point() +
   geom_abline(slope = 1, intercept = 0) +
   ggtitle(&quot;Errors at CpGs&quot;) +
-  xlab(&quot;Errors EAGLE2&quot;) +
-  ylab(&quot;Errors SHAPEIT5&quot;) +
+  xlab(&quot;Errors Eagle&quot;) +
+  ylab(&quot;Errors SHAPEIT&quot;) +
   guides(colour=guide_legend(title=&quot;Population&quot;))</code></pre>
-<p><img src="figure/phasing_results.Rmd/unnamed-chunk-37-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/phasing_results.Rmd/unnamed-chunk-48-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-37-1">
-Past versions of unnamed-chunk-37-1.png
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-48-1">
+Past versions of unnamed-chunk-48-1.png
 </button>
 </p>
-<div id="fig-unnamed-chunk-37-1" class="collapse">
+<div id="fig-unnamed-chunk-48-1" class="collapse">
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
 <thead>
@@ -4600,18 +5796,7 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/theandyb/phasing/blob/6030950131da236fee909d5c46c06fffcac60224/docs/figure/phasing_results.Rmd/unnamed-chunk-37-1.png" target="_blank">6030950</a>
-</td>
-<td>
-Andy Beck
-</td>
-<td>
-2024-01-24
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/theandyb/phasing/blob/a9663e8ecc214ea6c29205726c35eb52fc522031/docs/figure/phasing_results.Rmd/unnamed-chunk-37-1.png" target="_blank">a9663e8</a>
+<a href="https://github.com/theandyb/phasing/blob/a9663e8ecc214ea6c29205726c35eb52fc522031/docs/figure/phasing_results.Rmd/unnamed-chunk-48-1.png" target="_blank">a9663e8</a>
 </td>
 <td>
 Andy Beck
@@ -4622,7 +5807,7 @@ Andy Beck
 </tr>
 <tr>
 <td>
-<a href="https://github.com/theandyb/phasing/blob/e239a478a3e38767c6be48c225be9977e624f665/docs/figure/phasing_results.Rmd/unnamed-chunk-37-1.png" target="_blank">e239a47</a>
+<a href="https://github.com/theandyb/phasing/blob/e239a478a3e38767c6be48c225be9977e624f665/docs/figure/phasing_results.Rmd/unnamed-chunk-48-1.png" target="_blank">e239a47</a>
 </td>
 <td>
 Andy Beck
@@ -4672,13 +5857,13 @@ dbl (6): POS, N_ALLELES, N_CHR, AF1, AF2, maf
   scale_x_log10()</code></pre>
 <pre><code>Warning: Transformation introduced infinite values in continuous x-axis</code></pre>
 <pre><code>Warning: Removed 32325 rows containing non-finite values (`stat_density()`).</code></pre>
-<p><img src="figure/phasing_results.Rmd/unnamed-chunk-39-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/phasing_results.Rmd/unnamed-chunk-50-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-39-1">
-Past versions of unnamed-chunk-39-1.png
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-50-1">
+Past versions of unnamed-chunk-50-1.png
 </button>
 </p>
-<div id="fig-unnamed-chunk-39-1" class="collapse">
+<div id="fig-unnamed-chunk-50-1" class="collapse">
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
 <thead>
@@ -4697,18 +5882,7 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/theandyb/phasing/blob/6030950131da236fee909d5c46c06fffcac60224/docs/figure/phasing_results.Rmd/unnamed-chunk-39-1.png" target="_blank">6030950</a>
-</td>
-<td>
-Andy Beck
-</td>
-<td>
-2024-01-24
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/theandyb/phasing/blob/a9663e8ecc214ea6c29205726c35eb52fc522031/docs/figure/phasing_results.Rmd/unnamed-chunk-39-1.png" target="_blank">a9663e8</a>
+<a href="https://github.com/theandyb/phasing/blob/a9663e8ecc214ea6c29205726c35eb52fc522031/docs/figure/phasing_results.Rmd/unnamed-chunk-50-1.png" target="_blank">a9663e8</a>
 </td>
 <td>
 Andy Beck
@@ -4719,7 +5893,7 @@ Andy Beck
 </tr>
 <tr>
 <td>
-<a href="https://github.com/theandyb/phasing/blob/e239a478a3e38767c6be48c225be9977e624f665/docs/figure/phasing_results.Rmd/unnamed-chunk-39-1.png" target="_blank">e239a47</a>
+<a href="https://github.com/theandyb/phasing/blob/e239a478a3e38767c6be48c225be9977e624f665/docs/figure/phasing_results.Rmd/unnamed-chunk-50-1.png" target="_blank">e239a47</a>
 </td>
 <td>
 Andy Beck
@@ -4798,16 +5972,16 @@ df_vcftools %&gt;%
   ggplot(aes(x = chi_res)) +
   geom_density() +
   geom_vline(xintercept = qchisq(0.05, df = 1, lower.tail = F)) +
-  ggtitle(&quot;Chi-Square Test: BEAGLE5&quot;, &quot;Proportion of Errors at CpGs = Proportion 1KGP Variants at CpG&quot;) +
+  ggtitle(&quot;Chi-Square Test: Beagle&quot;, &quot;Proportion of Errors at CpGs = Proportion 1KGP Variants at CpG&quot;) +
   xlab(&quot;Density&quot;) +
   ylab(&quot;Chi Square Statistics&quot;)</code></pre>
-<p><img src="figure/phasing_results.Rmd/unnamed-chunk-41-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/phasing_results.Rmd/unnamed-chunk-52-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-41-1">
-Past versions of unnamed-chunk-41-1.png
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-52-1">
+Past versions of unnamed-chunk-52-1.png
 </button>
 </p>
-<div id="fig-unnamed-chunk-41-1" class="collapse">
+<div id="fig-unnamed-chunk-52-1" class="collapse">
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
 <thead>
@@ -4826,7 +6000,7 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/theandyb/phasing/blob/a9663e8ecc214ea6c29205726c35eb52fc522031/docs/figure/phasing_results.Rmd/unnamed-chunk-41-1.png" target="_blank">a9663e8</a>
+<a href="https://github.com/theandyb/phasing/blob/a9663e8ecc214ea6c29205726c35eb52fc522031/docs/figure/phasing_results.Rmd/unnamed-chunk-52-1.png" target="_blank">a9663e8</a>
 </td>
 <td>
 Andy Beck
@@ -4837,7 +6011,7 @@ Andy Beck
 </tr>
 <tr>
 <td>
-<a href="https://github.com/theandyb/phasing/blob/e239a478a3e38767c6be48c225be9977e624f665/docs/figure/phasing_results.Rmd/unnamed-chunk-41-1.png" target="_blank">e239a47</a>
+<a href="https://github.com/theandyb/phasing/blob/e239a478a3e38767c6be48c225be9977e624f665/docs/figure/phasing_results.Rmd/unnamed-chunk-52-1.png" target="_blank">e239a47</a>
 </td>
 <td>
 Andy Beck
@@ -4857,10 +6031,10 @@ Andy Beck
   ggplot(aes(x = chi_res)) +
   geom_density() +
   geom_vline(xintercept = qchisq(0.05, df = 1, lower.tail = F)) +
-  ggtitle(&quot;Chi-Square Test: EAGLE2&quot;, &quot;Proportion of Errors at CpGs = Proportion 1KGP Variants at CpG&quot;) +
+  ggtitle(&quot;Chi-Square Test: Eagle&quot;, &quot;Proportion of Errors at CpGs = Proportion 1KGP Variants at CpG&quot;) +
   xlab(&quot;Density&quot;) +
   ylab(&quot;Chi Square Statistics&quot;)</code></pre>
-<p><img src="figure/phasing_results.Rmd/unnamed-chunk-41-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/phasing_results.Rmd/unnamed-chunk-52-2.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>df_vcftools %&gt;%
   select(pair_id, n_switch_cpg_shapeit, n_switch_shapeit) %&gt;%
   mutate(exp_switch = exp_p * n_switch_shapeit) %&gt;%
@@ -4868,10 +6042,10 @@ Andy Beck
   ggplot(aes(x = chi_res)) +
   geom_density() +
   geom_vline(xintercept = qchisq(0.05, df = 1, lower.tail = F)) +
-  ggtitle(&quot;Chi-Square Test: SHAPEIT5&quot;, &quot;Proportion of Errors at CpGs = Proportion 1KGP Variants at CpG&quot;) +
+  ggtitle(&quot;Chi-Square Test: SHAPEIT&quot;, &quot;Proportion of Errors at CpGs = Proportion 1KGP Variants at CpG&quot;) +
   xlab(&quot;Density&quot;) +
   ylab(&quot;Chi Square Statistics&quot;)</code></pre>
-<p><img src="figure/phasing_results.Rmd/unnamed-chunk-41-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/phasing_results.Rmd/unnamed-chunk-52-3.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>pchisq(9.22, df = 1, lower.tail = FALSE)</code></pre>
 <pre><code>[1] 0.002393855</code></pre>
 <p>Flips:</p>
@@ -4882,16 +6056,16 @@ Andy Beck
   ggplot(aes(x = chi_res)) +
   geom_density() +
   geom_vline(xintercept = qchisq(0.05, df = 1, lower.tail = F)) +
-  ggtitle(&quot;Chi-Square Test: BEAGLE5&quot;, &quot;Proportion of Flips at CpGs = Proportion 1KGP Variants at CpG&quot;) +
+  ggtitle(&quot;Chi-Square Test: Beagle&quot;, &quot;Proportion of Flips at CpGs = Proportion 1KGP Variants at CpG&quot;) +
   xlab(&quot;Density&quot;) +
   ylab(&quot;Chi Square Statistics&quot;)</code></pre>
-<p><img src="figure/phasing_results.Rmd/unnamed-chunk-42-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/phasing_results.Rmd/unnamed-chunk-53-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-42-1">
-Past versions of unnamed-chunk-42-1.png
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-53-1">
+Past versions of unnamed-chunk-53-1.png
 </button>
 </p>
-<div id="fig-unnamed-chunk-42-1" class="collapse">
+<div id="fig-unnamed-chunk-53-1" class="collapse">
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
 <thead>
@@ -4910,18 +6084,7 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/theandyb/phasing/blob/6030950131da236fee909d5c46c06fffcac60224/docs/figure/phasing_results.Rmd/unnamed-chunk-42-1.png" target="_blank">6030950</a>
-</td>
-<td>
-Andy Beck
-</td>
-<td>
-2024-01-24
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/theandyb/phasing/blob/a9663e8ecc214ea6c29205726c35eb52fc522031/docs/figure/phasing_results.Rmd/unnamed-chunk-42-1.png" target="_blank">a9663e8</a>
+<a href="https://github.com/theandyb/phasing/blob/a9663e8ecc214ea6c29205726c35eb52fc522031/docs/figure/phasing_results.Rmd/unnamed-chunk-53-1.png" target="_blank">a9663e8</a>
 </td>
 <td>
 Andy Beck
@@ -4932,7 +6095,7 @@ Andy Beck
 </tr>
 <tr>
 <td>
-<a href="https://github.com/theandyb/phasing/blob/e239a478a3e38767c6be48c225be9977e624f665/docs/figure/phasing_results.Rmd/unnamed-chunk-42-1.png" target="_blank">e239a47</a>
+<a href="https://github.com/theandyb/phasing/blob/e239a478a3e38767c6be48c225be9977e624f665/docs/figure/phasing_results.Rmd/unnamed-chunk-53-1.png" target="_blank">e239a47</a>
 </td>
 <td>
 Andy Beck
@@ -4952,47 +6115,10 @@ Andy Beck
   ggplot(aes(x = chi_res)) +
   geom_density() +
   geom_vline(xintercept = qchisq(0.05, df = 1, lower.tail = F)) +
-  ggtitle(&quot;Chi-Square Test: EAGLE2&quot;, &quot;Proportion of Flips at CpGs = Proportion 1KGP Variants at CpG&quot;) +
+  ggtitle(&quot;Chi-Square Test: Eagle&quot;, &quot;Proportion of Flips at CpGs = Proportion 1KGP Variants at CpG&quot;) +
   xlab(&quot;Density&quot;) +
   ylab(&quot;Chi Square Statistics&quot;)</code></pre>
-<p><img src="figure/phasing_results.Rmd/unnamed-chunk-42-2.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-42-2">
-Past versions of unnamed-chunk-42-2.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-42-2" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/theandyb/phasing/blob/6030950131da236fee909d5c46c06fffcac60224/docs/figure/phasing_results.Rmd/unnamed-chunk-42-2.png" target="_blank">6030950</a>
-</td>
-<td>
-Andy Beck
-</td>
-<td>
-2024-01-24
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/phasing_results.Rmd/unnamed-chunk-53-2.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>df_vcftools %&gt;%
   select(pair_id, n_flip_shapeit, n_flip_cpg_shapeit) %&gt;%
   mutate(exp_switch = exp_p * n_flip_shapeit) %&gt;%
@@ -5000,47 +6126,10 @@ Andy Beck
   ggplot(aes(x = chi_res)) +
   geom_density() +
   geom_vline(xintercept = qchisq(0.05, df = 1, lower.tail = F)) +
-  ggtitle(&quot;Chi-Square Test: SHAPEIT5&quot;, &quot;Proportion of Flips at CpGs = Proportion 1KGP Variants at CpG&quot;) +
+  ggtitle(&quot;Chi-Square Test: SHAPEIT&quot;, &quot;Proportion of Flips at CpGs = Proportion 1KGP Variants at CpG&quot;) +
   xlab(&quot;Density&quot;) +
   ylab(&quot;Chi Square Statistics&quot;)</code></pre>
-<p><img src="figure/phasing_results.Rmd/unnamed-chunk-42-3.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-42-3">
-Past versions of unnamed-chunk-42-3.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-42-3" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/theandyb/phasing/blob/6030950131da236fee909d5c46c06fffcac60224/docs/figure/phasing_results.Rmd/unnamed-chunk-42-3.png" target="_blank">6030950</a>
-</td>
-<td>
-Andy Beck
-</td>
-<td>
-2024-01-24
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/phasing_results.Rmd/unnamed-chunk-53-3.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="distance-metrics" class="section level2">
 <h2>Distance Metrics</h2>
@@ -5056,13 +6145,13 @@ Andy Beck
   ylab(&quot;Median Distance Between Errors&quot;) + 
   ggtitle(&quot;Median Distance Between Errors&quot;) +
   theme_bw(base_size = 14)</code></pre>
-<p><img src="figure/phasing_results.Rmd/unnamed-chunk-43-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/phasing_results.Rmd/unnamed-chunk-54-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-43-1">
-Past versions of unnamed-chunk-43-1.png
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-54-1">
+Past versions of unnamed-chunk-54-1.png
 </button>
 </p>
-<div id="fig-unnamed-chunk-43-1" class="collapse">
+<div id="fig-unnamed-chunk-54-1" class="collapse">
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
 <thead>
@@ -5081,7 +6170,7 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/theandyb/phasing/blob/a9663e8ecc214ea6c29205726c35eb52fc522031/docs/figure/phasing_results.Rmd/unnamed-chunk-43-1.png" target="_blank">a9663e8</a>
+<a href="https://github.com/theandyb/phasing/blob/a9663e8ecc214ea6c29205726c35eb52fc522031/docs/figure/phasing_results.Rmd/unnamed-chunk-54-1.png" target="_blank">a9663e8</a>
 </td>
 <td>
 Andy Beck
@@ -5092,7 +6181,7 @@ Andy Beck
 </tr>
 <tr>
 <td>
-<a href="https://github.com/theandyb/phasing/blob/e239a478a3e38767c6be48c225be9977e624f665/docs/figure/phasing_results.Rmd/unnamed-chunk-43-1.png" target="_blank">e239a47</a>
+<a href="https://github.com/theandyb/phasing/blob/e239a478a3e38767c6be48c225be9977e624f665/docs/figure/phasing_results.Rmd/unnamed-chunk-54-1.png" target="_blank">e239a47</a>
 </td>
 <td>
 Andy Beck
@@ -5172,13 +6261,13 @@ $shapeit
   ggtitle(&quot;MAF at switch sites&quot;, &quot;EUR: X1, X2&quot;) +
   xlab(&quot;MAF&quot;) +
   ylab(&quot;Density&quot;)</code></pre>
-<p><img src="figure/phasing_results.Rmd/unnamed-chunk-44-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/phasing_results.Rmd/unnamed-chunk-55-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-44-1">
-Past versions of unnamed-chunk-44-1.png
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-55-1">
+Past versions of unnamed-chunk-55-1.png
 </button>
 </p>
-<div id="fig-unnamed-chunk-44-1" class="collapse">
+<div id="fig-unnamed-chunk-55-1" class="collapse">
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
 <thead>
@@ -5197,7 +6286,7 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/theandyb/phasing/blob/a9663e8ecc214ea6c29205726c35eb52fc522031/docs/figure/phasing_results.Rmd/unnamed-chunk-44-1.png" target="_blank">a9663e8</a>
+<a href="https://github.com/theandyb/phasing/blob/a9663e8ecc214ea6c29205726c35eb52fc522031/docs/figure/phasing_results.Rmd/unnamed-chunk-55-1.png" target="_blank">a9663e8</a>
 </td>
 <td>
 Andy Beck
@@ -5208,7 +6297,7 @@ Andy Beck
 </tr>
 <tr>
 <td>
-<a href="https://github.com/theandyb/phasing/blob/e239a478a3e38767c6be48c225be9977e624f665/docs/figure/phasing_results.Rmd/unnamed-chunk-44-1.png" target="_blank">e239a47</a>
+<a href="https://github.com/theandyb/phasing/blob/e239a478a3e38767c6be48c225be9977e624f665/docs/figure/phasing_results.Rmd/unnamed-chunk-55-1.png" target="_blank">e239a47</a>
 </td>
 <td>
 Andy Beck
@@ -5228,7 +6317,7 @@ Andy Beck
   ggtitle(&quot;MAF at flip sites&quot;, &quot;EUR: X1, X2&quot;) +
   xlab(&quot;MAF&quot;) +
   ylab(&quot;Density&quot;)</code></pre>
-<p><img src="figure/phasing_results.Rmd/unnamed-chunk-44-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/phasing_results.Rmd/unnamed-chunk-55-2.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>get_dens_for_pd &lt;- function(pair_id){
   print(pair_id)
   df_pd_eagle &lt;-  read_csv(paste0(eagle_switch_dir, &quot;switch_&quot;, pair_id, &quot;.csv&quot;), show_col_types = FALSE) 
@@ -5290,14 +6379,14 @@ Andy Beck
 
 get_dens_for_pd(sample(401:700, 1))</code></pre>
 <pre><code>[1] 676</code></pre>
-<p><img src="figure/phasing_results.Rmd/unnamed-chunk-44-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/phasing_results.Rmd/unnamed-chunk-44-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/phasing_results.Rmd/unnamed-chunk-55-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/phasing_results.Rmd/unnamed-chunk-55-4.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>get_dens_for_pd(sample(1:200, 1))</code></pre>
 <pre><code>[1] 152</code></pre>
-<p><img src="figure/phasing_results.Rmd/unnamed-chunk-44-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/phasing_results.Rmd/unnamed-chunk-44-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/phasing_results.Rmd/unnamed-chunk-55-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/phasing_results.Rmd/unnamed-chunk-55-6.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>df_freq %&gt;%
   ggplot(aes(x = maf)) +
   geom_boxplot()</code></pre>
-<p><img src="figure/phasing_results.Rmd/unnamed-chunk-44-7.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/phasing_results.Rmd/unnamed-chunk-55-7.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="distribution-of-errors-across-mb-windows"
 class="section level2">
@@ -5366,19 +6455,19 @@ df_pd_eagle %&gt;%
   }
   
   for(i in 2:length(ids)){
-    df_pd_eagle2 &lt;-  read_csv(paste0(eagle_switch_dir, &quot;switch_&quot;, ids[i], &quot;.csv&quot;), show_col_types = FALSE) 
+    df_pd_Eagle &lt;-  read_csv(paste0(eagle_switch_dir, &quot;switch_&quot;, ids[i], &quot;.csv&quot;), show_col_types = FALSE) 
     df_pd_shapeit2 &lt;- read_csv(paste0(shapeit_switch_dir, &quot;switch_&quot;, ids[i], &quot;.csv&quot;), show_col_types = FALSE) 
-    df_pd_beagle2 &lt;- read_csv(paste0(beagle_switch_dir, &quot;switch_&quot;, ids[i], &quot;.csv&quot;), show_col_types = FALSE) 
+    df_pd_bEagle &lt;- read_csv(paste0(beagle_switch_dir, &quot;switch_&quot;, ids[i], &quot;.csv&quot;), show_col_types = FALSE) 
     
-    df_pd_eagle2$bin &lt;- ceiling(df_pd_eagle2$pos_start / bin_w)
-    df_pd_beagle2$bin &lt;- ceiling(df_pd_beagle2$pos_start / bin_w)
+    df_pd_Eagle$bin &lt;- ceiling(df_pd_Eagle$pos_start / bin_w)
+    df_pd_bEagle$bin &lt;- ceiling(df_pd_bEagle$pos_start / bin_w)
     df_pd_shapeit2$bin &lt;- ceiling(df_pd_shapeit2$pos_start / bin_w)
     
-    df_pd_eagle2 &lt;- df_pd_eagle2 %&gt;%
+    df_pd_Eagle &lt;- df_pd_Eagle %&gt;%
       select(bin) %&gt;%
       group_by(bin) %&gt;%
       summarize(n = n())
-    df_pd_beagle2 &lt;- df_pd_beagle2 %&gt;%
+    df_pd_bEagle &lt;- df_pd_bEagle %&gt;%
       select(bin) %&gt;%
       group_by(bin) %&gt;%
       summarize(n = n())
@@ -5388,12 +6477,12 @@ df_pd_eagle %&gt;%
       summarize(n = n())
     
     df_pd_eagle &lt;- df_pd_eagle %&gt;%
-      full_join(df_pd_eagle2, by = &quot;bin&quot;) %&gt;%
+      full_join(df_pd_Eagle, by = &quot;bin&quot;) %&gt;%
       replace_na(list(&quot;n.x&quot; = 0, &quot;n.y&quot; = 0)) %&gt;%
       mutate(n = n.x + n.y) %&gt;%
       select(bin, n)
     df_pd_beagle &lt;- df_pd_beagle %&gt;%
-      full_join(df_pd_beagle2, by = &quot;bin&quot;) %&gt;%
+      full_join(df_pd_bEagle, by = &quot;bin&quot;) %&gt;%
       replace_na(list(&quot;n.x&quot; = 0, &quot;n.y&quot; = 0)) %&gt;%
       mutate(n = n.x + n.y) %&gt;%
       select(bin, n)
@@ -5424,13 +6513,13 @@ sas_cnt_1mb &lt;- counts_per_bin(601:700, bin_w = 1e6)</code></pre>
   xlab(&quot;MB Bin&quot;) +
   ylab(&quot;Switches&quot;) +
   scale_color_manual(values = cbPalette)</code></pre>
-<p><img src="figure/phasing_results.Rmd/unnamed-chunk-46-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/phasing_results.Rmd/unnamed-chunk-57-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-46-1">
-Past versions of unnamed-chunk-46-1.png
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-57-1">
+Past versions of unnamed-chunk-57-1.png
 </button>
 </p>
-<div id="fig-unnamed-chunk-46-1" class="collapse">
+<div id="fig-unnamed-chunk-57-1" class="collapse">
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
 <thead>
@@ -5449,7 +6538,7 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/theandyb/phasing/blob/a9663e8ecc214ea6c29205726c35eb52fc522031/docs/figure/phasing_results.Rmd/unnamed-chunk-46-1.png" target="_blank">a9663e8</a>
+<a href="https://github.com/theandyb/phasing/blob/a9663e8ecc214ea6c29205726c35eb52fc522031/docs/figure/phasing_results.Rmd/unnamed-chunk-57-1.png" target="_blank">a9663e8</a>
 </td>
 <td>
 Andy Beck
@@ -5460,7 +6549,7 @@ Andy Beck
 </tr>
 <tr>
 <td>
-<a href="https://github.com/theandyb/phasing/blob/e239a478a3e38767c6be48c225be9977e624f665/docs/figure/phasing_results.Rmd/unnamed-chunk-46-1.png" target="_blank">e239a47</a>
+<a href="https://github.com/theandyb/phasing/blob/e239a478a3e38767c6be48c225be9977e624f665/docs/figure/phasing_results.Rmd/unnamed-chunk-57-1.png" target="_blank">e239a47</a>
 </td>
 <td>
 Andy Beck
@@ -5480,7 +6569,7 @@ Andy Beck
   xlab(&quot;MB Bin&quot;) +
   ylab(&quot;Switches&quot;) +
   scale_color_manual(values = cbPalette)</code></pre>
-<p><img src="figure/phasing_results.Rmd/unnamed-chunk-46-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/phasing_results.Rmd/unnamed-chunk-57-2.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>amr_cnt_1mb %&gt;%
   ggplot(aes(x = bin, y = n, colour = method)) +
   geom_line() +
@@ -5488,7 +6577,7 @@ Andy Beck
   xlab(&quot;MB Bin&quot;) +
   ylab(&quot;Switches&quot;) +
   scale_color_manual(values = cbPalette)</code></pre>
-<p><img src="figure/phasing_results.Rmd/unnamed-chunk-46-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/phasing_results.Rmd/unnamed-chunk-57-3.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>eas_cnt_1mb %&gt;%
   ggplot(aes(x = bin, y = n, colour = method)) +
   geom_line() +
@@ -5496,7 +6585,7 @@ Andy Beck
   xlab(&quot;MB Bin&quot;) +
   ylab(&quot;Switches&quot;) +
   scale_color_manual(values = cbPalette)</code></pre>
-<p><img src="figure/phasing_results.Rmd/unnamed-chunk-46-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/phasing_results.Rmd/unnamed-chunk-57-4.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>sas_cnt_1mb %&gt;%
   ggplot(aes(x = bin, y = n, colour = method)) +
   geom_line() +
@@ -5504,7 +6593,7 @@ Andy Beck
   xlab(&quot;MB Bin&quot;) +
   ylab(&quot;Switches&quot;) +
   scale_color_manual(values = cbPalette)</code></pre>
-<p><img src="figure/phasing_results.Rmd/unnamed-chunk-46-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/phasing_results.Rmd/unnamed-chunk-57-5.png" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -5530,7 +6619,7 @@ locale:
  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
 [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
 
-time zone: America/Detroit
+time zone: America/New_York
 tzcode source: system (glibc)
 
 attached base packages:
