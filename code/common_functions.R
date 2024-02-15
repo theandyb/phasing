@@ -257,6 +257,50 @@ switch_summary <- function(pair_id, eagle_dir, beagle_dir, shapeit_dir, gc_conte
     pull(hets_btw) %>%
     median(na.rm = T)
 
+  # mean number of hets between switches and flips
+  mean_hets_switch_beagle <- het_df %>%
+    filter(beagle_switch) %>%
+    mutate(next_id = lead(id)) %>%
+    mutate(hets_btw = next_id - id - 1) %>%
+    pull(hets_btw) %>%
+    mean(na.rm = T)
+
+  mean_hets_switch_eagle <- het_df %>%
+    filter(eagle_switch) %>%
+    mutate(next_id = lead(id)) %>%
+    mutate(hets_btw = next_id - id - 1) %>%
+    pull(hets_btw) %>%
+    mean(na.rm = T)
+
+  mean_hets_switch_shapeit <- het_df %>%
+    filter(shapeit_switch) %>%
+    mutate(next_id = lead(id)) %>%
+    mutate(hets_btw = next_id - id - 1) %>%
+    pull(hets_btw) %>%
+    mean(na.rm = T)
+
+  # number hets between flips
+  mean_hets_flip_beagle <- het_df %>%
+    filter(beagle_flip) %>%
+    mutate(next_id = lead(id)) %>%
+    mutate(hets_btw = next_id - id - 1) %>%
+    pull(hets_btw) %>%
+    mean(na.rm = T)
+
+  mean_hets_flip_eagle <- het_df %>%
+    filter(eagle_flip) %>%
+    mutate(next_id = lead(id)) %>%
+    mutate(hets_btw = next_id - id - 1) %>%
+    pull(hets_btw) %>%
+    mean(na.rm = T)
+
+  mean_hets_flip_shapeit <- het_df %>%
+    filter(shapeit_flip) %>%
+    mutate(next_id = lead(id)) %>%
+    mutate(hets_btw = next_id - id - 1) %>%
+    pull(hets_btw) %>%
+    mean(na.rm = T)
+
 
 
   return(data.frame(pair_id = pair_id,
@@ -293,6 +337,12 @@ switch_summary <- function(pair_id, eagle_dir, beagle_dir, shapeit_dir, gc_conte
                     med_hets_flip_beagle = med_hets_flip_beagle,
                     med_hets_flip_eagle = med_hets_flip_eagle,
                     med_hets_flip_shapeit = med_hets_flip_shapeit,
+                    mean_hets_switch_beagle = mean_hets_switch_beagle,
+                    mean_hets_switch_eagle = mean_hets_switch_eagle,
+                    mean_hets_switch_shapeit = mean_hets_switch_shapeit,
+                    mean_hets_flip_beagle = mean_hets_flip_beagle,
+                    mean_hets_flip_eagle = mean_hets_flip_eagle,
+                    mean_hets_flip_shapeit = mean_hets_flip_shapeit,
                     n_hets = length(het_df$pos_start)
   ))
 }

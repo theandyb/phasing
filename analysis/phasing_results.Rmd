@@ -369,12 +369,12 @@ df_wh_si %>%
   geom_point() +
   geom_abline(slope = 1, intercept = 0) +
   ggtitle("Total Errors") +
-  xlab("SHAPEIT5 Errors") +
-  ylab("EAGLE2 Errors") +
+  xlab("SHAPEIT Errors") +
+  ylab("Eagle Errors") +
   guides(colour=guide_legend(title="Population")) +
-  scale_color_jco() +
+  scale_color_manual(values = cbPalette) +
   theme_bw(base_size = 14) +
-  theme(legend.position = c(0.2, .85))
+  theme(legend.position = c(0.15, .7))
 ```
 
 ```{r}
@@ -386,10 +386,10 @@ df_wh_si %>%
   geom_point() +
   geom_abline(slope = 1, intercept = 0) +
   ggtitle("Total Errors") +
-  xlab("SHAPEIT5 Errors") +
-  ylab("BEAGLE5 Errors") +
+  xlab("SHAPEIT Errors") +
+  ylab("Beagle Errors") +
   guides(colour=guide_legend(title="Population")) +
-  scale_color_jco() +
+  scale_color_manual(values = cbPalette) +
   theme_bw(base_size = 14) +
   theme(legend.position = c(0.8, .2))
 ```
@@ -403,12 +403,74 @@ df_wh_eagle %>%
   geom_point() +
   geom_abline(slope = 1, intercept = 0) +
   ggtitle("Total Errors") +
-  xlab("EAGLE2 Errors") +
-  ylab("BEAGLE5 Errors") +
+  xlab("Eagle Errors") +
+  ylab("Beagle Errors") +
   guides(colour=guide_legend(title="Population")) +
-  scale_color_jco() +
+  scale_color_manual(values = cbPalette) +
   theme_bw(base_size = 16) +
   theme(legend.position = c(0.8, .2))
+```
+
+#### Scale by MB
+
+```{r}
+df_wh_si %>%
+  mutate(total_errors_mb = total_errors / size_mb) %>%
+  select(id, pop, total_errors_mb) %>%
+  rename(shapeit = total_errors_mb) %>%
+  inner_join({df_wh_eagle %>% 
+      mutate(total_errors_mb = total_errors / size_mb) %>%
+      select(id, pop, total_errors_mb) %>% rename(eagle = total_errors_mb)}, by = c("id", "pop")) %>%
+  ggplot(aes(x = shapeit, y = eagle, colour = pop)) + 
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  ggtitle("Total Errors per MB") +
+  xlab("SHAPEIT Errors") +
+  ylab("Eagle Errors") +
+  guides(colour=guide_legend(title="Population")) +
+  scale_color_manual(values = cbPalette) +
+  theme_bw(base_size = 14) +
+  theme(legend.position = c(0.15, .7))
+```
+
+```{r}
+df_wh_si %>%
+  mutate(total_errors_mb = total_errors / size_mb) %>%
+  select(id, pop, total_errors_mb) %>%
+  rename(shapeit = total_errors_mb) %>%
+  inner_join({df_wh_beagle %>%
+      mutate(total_errors_mb = total_errors / size_mb) %>%
+      select(id, pop, total_errors_mb) %>% rename(beagle = total_errors_mb)}, by = c("id", "pop")) %>%
+  ggplot(aes(x = shapeit, y = beagle, colour = pop)) + 
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  ggtitle("Total Errors") +
+  xlab("SHAPEIT Errors") +
+  ylab("Beagle Errors") +
+  guides(colour=guide_legend(title="Population")) +
+  scale_color_manual(values = cbPalette) +
+  theme_bw(base_size = 14) +
+  theme(legend.position = c(0.8, .25))
+```
+
+```{r}
+df_wh_eagle %>%
+  mutate(total_errors_mb = total_errors / size_mb) %>%
+  select(id, pop, total_errors_mb) %>%
+  rename(eagle = total_errors_mb) %>%
+  inner_join({df_wh_beagle %>% 
+      mutate(total_errors_mb = total_errors / size_mb) %>%
+      select(id, pop, total_errors_mb) %>% rename(beagle = total_errors_mb)}, by = c("id", "pop")) %>%
+  ggplot(aes(x = eagle, y = beagle, colour = pop)) + 
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  ggtitle("Total Errors") +
+  xlab("Eagle Errors") +
+  ylab("Beagle Errors") +
+  guides(colour=guide_legend(title="Population")) +
+  scale_color_manual(values = cbPalette) +
+  theme_bw(base_size = 16) +
+  theme(legend.position = c(0.8, .29))
 ```
 
 ### Switches
@@ -417,17 +479,18 @@ df_wh_eagle %>%
 df_wh_si %>%
   select(id, pop, switches) %>%
   rename(shapeit = switches) %>%
-  inner_join({df_wh_eagle %>% select(id, pop, switches) %>% rename(eagle = switches)}, by = c("id", "pop")) %>%
+  inner_join({df_wh_eagle %>% 
+      select(id, pop, switches) %>% rename(eagle = switches)}, by = c("id", "pop")) %>%
   ggplot(aes(x = shapeit, y = eagle, colour = pop)) + 
   geom_point() +
   geom_abline(slope = 1, intercept = 0) +
   ggtitle("Switches") +
-  xlab("SHAPEIT5 Switches") +
-  ylab("EAGLE2 Switches") +
+  xlab("SHAPEIT Switches") +
+  ylab("Eagle Switches") +
   guides(colour=guide_legend(title="Population")) +
-  scale_color_jco() +
+  scale_color_manual(values = cbPalette) +
   theme_bw(base_size = 16) +
-  theme(legend.position = c(0.2, .85))
+  guides(colour="none")
 ```
 
 ```{r}
@@ -439,12 +502,12 @@ df_wh_si %>%
   geom_point() +
   geom_abline(slope = 1, intercept = 0) +
   ggtitle("Switches") +
-  xlab("SHAPEIT5 Switches") +
-  ylab("BEAGLE5 Switches") +
+  xlab("SHAPEIT Switches") +
+  ylab("Beagle Switches") +
   guides(colour=guide_legend(title="Population")) +
-  scale_color_jco() +
+  scale_color_manual(values = cbPalette) +
   theme_bw(base_size = 16) +
-  theme(legend.position = c(0.8, .2))
+  guides(colour="none")
 ```
 
 ```{r}
@@ -456,12 +519,74 @@ df_wh_eagle %>%
   geom_point() +
   geom_abline(slope = 1, intercept = 0) +
   ggtitle("Switches") +
-  xlab("EAGLE2 Switches") +
-  ylab("BEAGLE5 Switches") +
+  xlab("Eagle Switches") +
+  ylab("Beagle Switches") +
   guides(colour=guide_legend(title="Population")) +
-  scale_color_jco() +
+  scale_color_manual(values = cbPalette) +
   theme_bw(base_size = 16) +
-  theme(legend.position = c(0.8, .2))
+  guides(colour="none")
+```
+
+#### Per MB
+
+```{r}
+df_wh_si %>%
+  mutate(switches_mb = switches / size_mb) %>%
+  select(id, pop, switches_mb) %>%
+  rename(shapeit = switches_mb) %>%
+  inner_join({df_wh_eagle %>% 
+      mutate(switches_mb = switches / size_mb) %>%
+      select(id, pop, switches_mb) %>% rename(eagle = switches_mb)}, by = c("id", "pop")) %>%
+  ggplot(aes(x = shapeit, y = eagle, colour = pop)) + 
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  ggtitle("Switches per MB") +
+  xlab("SHAPEIT Switches") +
+  ylab("Eagle Switches") +
+  guides(colour=guide_legend(title="Population")) +
+  scale_color_manual(values = cbPalette) +
+  theme_bw(base_size = 16) +
+  guides(colour="none")
+```
+
+```{r}
+df_wh_si %>%
+  mutate(switches_mb = switches / size_mb) %>%
+  select(id, pop, switches_mb) %>%
+  rename(shapeit = switches_mb) %>%
+  inner_join({df_wh_beagle %>% 
+      mutate(switches_mb = switches / size_mb) %>%
+      select(id, pop, switches_mb) %>% rename(beagle = switches_mb)}, by = c("id", "pop")) %>%
+  ggplot(aes(x = shapeit, y = beagle, colour = pop)) + 
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  ggtitle("Switches per MB") +
+  xlab("SHAPEIT Switches") +
+  ylab("Beagle Switches") +
+  guides(colour=guide_legend(title="Population")) +
+  scale_color_manual(values = cbPalette) +
+  theme_bw(base_size = 16) +
+  guides(colour="none")
+```
+
+```{r}
+df_wh_eagle %>%
+  mutate(switches_mb = switches / size_mb) %>%
+  select(id, pop, switches_mb) %>%
+  rename(eagle = switches_mb) %>%
+  inner_join({df_wh_beagle %>% 
+      mutate(switches_mb = switches / size_mb) %>%
+      select(id, pop, switches_mb) %>% rename(beagle = switches_mb)}, by = c("id", "pop")) %>%
+  ggplot(aes(x = eagle, y = beagle, colour = pop)) + 
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  ggtitle("Switches per MB") +
+  xlab("Eagle Switches") +
+  ylab("Beagle Switches") +
+  guides(colour=guide_legend(title="Population")) +
+  scale_color_manual(values = cbPalette) +
+  theme_bw(base_size = 16) +
+  guides(colour="none")
 ```
 
 ### Error Rates
@@ -478,13 +603,13 @@ df_wh_si %>%
   geom_point() +
   geom_abline(slope = 1, intercept = 0) +
   ggtitle("Switch/Flip Rate", "#(Switches + Flips) / #(Heterozygous Sites)") +
-  xlab("SHAPEIT5 Error Rate") +
-  ylab("EAGLE2 Error Rate") +
+  xlab("SHAPEIT Error Rate") +
+  ylab("Eagle Error Rate") +
   guides(colour=guide_legend(title="Population")) +
-  scale_color_jco() +
+  scale_color_manual(values = cbPalette) +
   theme_bw(base_size = 16) +
   xlim(c(0,0.006)) + ylim(c(0,0.006)) +
-  theme(legend.position = c(0.8, .2))
+  guides(colour="none")
 ggsave(filename = out_file, width = 5.33, height = 4.26, dpi = 300, units = "in")
 
 ```
@@ -498,13 +623,13 @@ df_wh_si %>%
   geom_point() +
   geom_abline(slope = 1, intercept = 0) +
   ggtitle("Switch/Flip Rate", "#(Switches + Flips) / #(Heterozygous Sites)")  +
-  xlab("SHAPEIT5 Error Rate") +
-  ylab("BEAGLE5 Error Rate") +
+  xlab("SHAPEIT Error Rate") +
+  ylab("Beagle Error Rate") +
   guides(colour=guide_legend(title="Population")) + 
-  scale_color_jco() +
+  scale_color_manual(values = cbPalette) +
   theme_bw(base_size = 16) +
   xlim(c(0,0.008)) + ylim(c(0,0.008)) +
-  theme(legend.position = c(0.8, .2))
+  guides(colour="none")
 out_file <- paste0(svg_out_dir, "error_rate_si_b.svg")
 ggsave(filename = out_file, width = 5.33, height = 4.26, dpi = 300, units = "in")
 ```
@@ -518,13 +643,13 @@ df_wh_eagle %>%
   geom_point() +
   geom_abline(slope = 1, intercept = 0) +
   ggtitle("Switch/Flip Rate", "#(Switches + Flips) / #(Heterozygous Sites)")  +
-  xlab("EAGLE2 Error Rate") +
-  ylab("BEAGLE5 Error Rate") +
+  xlab("Eagle Error Rate") +
+  ylab("Beagle Error Rate") +
   guides(colour=guide_legend(title="Population")) + 
-  scale_color_jco() +
+  scale_color_manual(values = cbPalette) +
   theme_bw(base_size = 16) +
   xlim(c(0,0.008)) + ylim(c(0,0.008)) +
-  theme(legend.position = c(0.8, .2))
+  guides(colour="none")
 out_file <- paste0(svg_out_dir, "error_rate_e_b.svg")
 ggsave(filename = out_file, width = 5.33, height = 4.26, dpi = 300, units = "in")
 ```
@@ -540,12 +665,12 @@ df_wh_si %>%
   geom_point() +
   geom_abline(slope = 1, intercept = 0) +
   ggtitle("Flips per pseudo-diplod") +
-  xlab("SHAPEIT5 flips") +
-  ylab("EAGLE2 flips") +
+  xlab("SHAPEIT flips") +
+  ylab("Eagle flips") +
   guides(colour=guide_legend(title="Population")) +
-  scale_color_jco() +
+  scale_color_manual(values = cbPalette) +
   theme_bw(base_size = 16) +
-  theme(legend.position = c(0.8, .2))
+  guides(colour="none")
 ```
 
 ```{r}
@@ -557,12 +682,12 @@ df_wh_si %>%
   geom_point() +
   geom_abline(slope = 1, intercept = 0) +
   ggtitle("Flips per pseudo-diplod") +
-  xlab("SHAPEIT5 flips") +
-  ylab("BEAGLE5 flips") +
+  xlab("SHAPEIT flips") +
+  ylab("Beagle flips") +
   guides(colour=guide_legend(title="Population")) +
-  scale_color_jco() +
+  scale_color_manual(values = cbPalette) +
   theme_bw(base_size = 16) +
-  theme(legend.position = c(0.8, .2))
+  guides(colour="none")
 ```
 
 ```{r}
@@ -574,12 +699,71 @@ df_wh_eagle %>%
   geom_point() +
   geom_abline(slope = 1, intercept = 0) +
   ggtitle("Flips per pseudo-diplod") +
-  xlab("EAGLE2 flips") +
-  ylab("BEAGLE5 flips") +
+  xlab("Eagle flips") +
+  ylab("Beagle flips") +
   guides(colour=guide_legend(title="Population")) +
-  scale_color_jco() +
+  scale_color_manual(values = cbPalette) +
   theme_bw(base_size = 16) +
-  theme(legend.position = c(0.8, .2))
+  guides(colour="none")
+```
+
+#### Per MB
+
+```{r}
+df_wh_si %>%
+  mutate(flips_mb = flips / size_mb) %>%
+  select(id, pop, flips_mb) %>%
+  rename(shapeit = flips_mb) %>%
+  inner_join({df_wh_eagle %>%
+      mutate(flips_mb = flips / size_mb) %>%
+      select(id, pop, flips_mb) %>% rename(eagle = flips_mb)}, by = c("id", "pop")) %>%
+  ggplot(aes(x = shapeit, y = eagle, colour = pop)) + 
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  xlab("SHAPEIT flips per MB") +
+  ylab("Eagle flips per MB") +
+  guides(colour=guide_legend(title="Population")) +
+  scale_color_manual(values = cbPalette) +
+  theme_bw(base_size = 16) +
+  guides(colour="none")
+```
+
+```{r}
+df_wh_si %>%
+  mutate(flips_mb = flips / size_mb) %>%
+  select(id, pop, flips_mb) %>%
+  rename(shapeit = flips_mb) %>%
+  inner_join({df_wh_beagle %>%
+      mutate(flips_mb = flips / size_mb) %>%
+      select(id, pop, flips_mb) %>% rename(beagle = flips_mb)}, by = c("id", "pop")) %>%
+  ggplot(aes(x = shapeit, y = beagle, colour = pop)) + 
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  xlab("SHAPEIT flips per MB") +
+  ylab("Beagle flips per MB") +
+  guides(colour=guide_legend(title="Population")) +
+  scale_color_manual(values = cbPalette) +
+  theme_bw(base_size = 16) +
+  guides(colour="none")
+```
+
+```{r}
+df_wh_eagle %>%
+  mutate(flips_mb = flips / size_mb) %>%
+  select(id, pop, flips_mb) %>%
+  rename(eagle = flips_mb) %>%
+  inner_join({df_wh_beagle %>%
+      mutate(flips_mb = flips / size_mb) %>%
+      select(id, pop, flips_mb) %>% rename(beagle = flips_mb)}, by = c("id", "pop")) %>%
+  ggplot(aes(x = eagle, y = beagle, colour = pop)) + 
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  xlab("Eagle flips per MB") +
+  ylab("Beagle flips per MB") +
+  guides(colour=guide_legend(title="Population")) +
+  scale_color_manual(values = cbPalette) +
+  theme_bw(base_size = 16) +
+  guides(colour="none")
 ```
 
 ### Flip Rate
@@ -597,10 +781,10 @@ df_wh_si %>%
   geom_point() +
   geom_abline(slope = 1, intercept = 0) +
   ggtitle("Flip Rate", "#(Flips) / #(Heterozygous Sites)") +
-  xlab("SHAPEIT5 Flip Rate") +
-  ylab("EAGLE2 flips") +
+  xlab("SHAPEIT Flip Rate") +
+  ylab("Eagle flips") +
   guides(colour=guide_legend(title="Population")) + 
-  scale_color_jco() +
+  scale_color_manual(values = cbPalette) +
   theme_bw(base_size = 16) +
   xlim(c(0,0.003)) + ylim(c(0,0.003)) +
   theme(legend.position = c(0.8, .2))
@@ -619,10 +803,10 @@ df_wh_si %>%
   geom_point() +
   geom_abline(slope = 1, intercept = 0) +
   ggtitle("Flip Rate", "# Flips / #(Heterozygous Sites)") +
-  xlab("SHAPEIT5 Flip Rate") +
-  ylab("BEAGLE5 Flip Rate") +
+  xlab("SHAPEIT Flip Rate") +
+  ylab("Beagle Flip Rate") +
   guides(colour=guide_legend(title="Population")) +
-  scale_color_jco() +
+  scale_color_manual(values = cbPalette) +
   theme_bw(base_size = 16) +
   xlim(c(0,0.003)) + ylim(c(0,0.003)) +
   theme(legend.position = c(0.8, .2))
@@ -641,10 +825,10 @@ df_wh_eagle %>%
   geom_point() +
   geom_abline(slope = 1, intercept = 0) +
   ggtitle("Flip Rate", "# Flips / #(Heterozygous Sites)") +
-  xlab("EAGLE2 flips") +
-  ylab("BEAGLE5 flips") +
+  xlab("Eagle flips") +
+  ylab("Beagle flips") +
   guides(colour=guide_legend(title="Population")) +
-  scale_color_jco() +
+  scale_color_manual(values = cbPalette) +
   theme_bw(base_size = 16) +
   xlim(c(0,0.003)) + ylim(c(0,0.003)) +
   theme(legend.position = c(0.8, .2))
@@ -667,10 +851,10 @@ df_wh_si %>%
   geom_point() +
   geom_abline(slope = 1, intercept = 0) +
   ggtitle("Switch Rate", "#(Switches) / #(Heterozygous Sites)") +
-  xlab("SHAPEIT5 Switch Rate") +
-  ylab("EAGLE2 Switch Rate") +
+  xlab("SHAPEIT Switch Rate") +
+  ylab("Eagle Switch Rate") +
   guides(colour=guide_legend(title="Population")) + 
-  scale_color_jco() +
+  scale_color_manual(values = cbPalette) +
   theme_bw(base_size = 16) +
   xlim(c(0,0.0052)) + ylim(c(0,0.0052)) +
   theme(legend.position = c(0.8, .2))
@@ -689,10 +873,10 @@ df_wh_si %>%
   geom_point() +
   geom_abline(slope = 1, intercept = 0) +
   ggtitle("Switch Rate", "# Switches / #(Heterozygous Sites)") +
-  xlab("SHAPEIT5 Switch Rate") +
-  ylab("BEAGLE5 Switch Rate") +
+  xlab("SHAPEIT Switch Rate") +
+  ylab("Beagle Switch Rate") +
   guides(colour=guide_legend(title="Population")) +
-  scale_color_jco() +
+  scale_color_manual(values = cbPalette) +
   theme_bw(base_size = 16) +
   xlim(c(0,0.005)) + ylim(c(0,0.005)) +
   theme(legend.position = c(0.8, .2))
@@ -711,10 +895,10 @@ df_wh_eagle %>%
   geom_point() +
   geom_abline(slope = 1, intercept = 0) +
   ggtitle("Switch Rate", "# Switches / #(Heterozygous Sites)") +
-  xlab("EAGLE2 Switch Rate") +
-  ylab("BEAGLE5 Switch Rate") +
+  xlab("Eagle Switch Rate") +
+  ylab("Beagle Switch Rate") +
   guides(colour=guide_legend(title="Population")) +
-  scale_color_jco() +
+  scale_color_manual(values = cbPalette) +
   theme_bw(base_size = 16) +
   xlim(c(0,0.0052)) + ylim(c(0,0.0052)) +
   theme(legend.position = c(0.8, .2))
@@ -729,14 +913,14 @@ ggsave(filename = out_file, width = 5.33, height = 4.26, dpi = 300, units = "in"
 df_vcftools %>% 
   ggplot(aes(x = med_hets_switch_shapeit, y = med_hets_switch_beagle, color = pop)) +
   geom_point() +
-  scale_color_jco() +
   xlab("SHAPEIT") +
   ylab("BEAGLE") +
   ggtitle("Median Heterozygous Sites \nBetween Switches") +
   geom_abline(slope = 1, intercept = 0) +
   theme_bw(base_size = 12) +
-  theme(legend.position = c(0.85, .25)) +
-  guides(colour=guide_legend(title="Population"))
+  theme(legend.position = c(0.85, .3)) +
+  guides(colour=guide_legend(title="Population")) +
+  scale_colour_manual(values=cbPalette)
 ```
 
 ```{r}
@@ -746,14 +930,14 @@ df_vcftools %>%
   filter(pop %in% c("AFR", "EUR")) %>%
   ggplot(aes(x = sr_shapeit, y = sr_beagle, color = pop)) +
   geom_point() +
-  scale_color_jco() +
   xlab("SHAPEIT") +
   ylab("BEAGLE") +
   ggtitle("Median Heterozygous Sites \nBetween Switches") +
   geom_abline(slope = 1, intercept = 0) +
   theme_bw(base_size = 12) +
   theme(legend.position = c(0.85, .25)) +
-  guides(colour=guide_legend(title="Population"))
+  guides(colour=guide_legend(title="Population")) +
+  scale_colour_manual(values=cbPalette)
 ```
 
 #### Shapeit vs EAGLE
@@ -762,14 +946,14 @@ df_vcftools %>%
 df_vcftools %>% 
   ggplot(aes(x = med_hets_switch_shapeit, y = med_hets_switch_eagle, color = pop)) +
   geom_point() +
-  scale_color_jco() +
   xlab("SHAPEIT") +
   ylab("EAGLE") +
   ggtitle("Median Heterozygous Sites \nBetween Switches") +
   geom_abline(slope = 1, intercept = 0) +
   theme_bw(base_size = 12) +
-  theme(legend.position = c(0.85, .25)) +
-  guides(colour=guide_legend(title="Population"))
+  theme(legend.position = c(0.79, .3)) +
+  guides(colour=guide_legend(title="Population")) +
+  scale_colour_manual(values=cbPalette)
 ```
 
 ```{r}
@@ -779,14 +963,14 @@ df_vcftools %>%
   filter(pop %in% c("AFR", "EUR")) %>%
   ggplot(aes(x = sr_shapeit, y = sr_eagle, color = pop)) +
   geom_point() +
-  scale_color_jco() +
   xlab("SHAPEIT") +
   ylab("EAGLE") +
   ggtitle("Median Heterozygous Sites \nBetween Switches") +
   geom_abline(slope = 1, intercept = 0) +
   theme_bw(base_size = 12) +
   theme(legend.position = c(0.85, .25)) +
-  guides(colour=guide_legend(title="Population"))
+  guides(colour=guide_legend(title="Population")) +
+  scale_colour_manual(values=cbPalette)
 ```
 
 #### BEAGLE vs EAGLE
@@ -795,14 +979,14 @@ df_vcftools %>%
 df_vcftools %>% 
   ggplot(aes(x = med_hets_switch_beagle, y = med_hets_switch_eagle, color = pop)) +
   geom_point() +
-  scale_color_jco() +
   xlab("BEAGLE") +
   ylab("EAGLE") +
   ggtitle("Median Heterozygous Sites \nBetween Switches") +
   geom_abline(slope = 1, intercept = 0) +
   theme_bw(base_size = 12) +
-  theme(legend.position = c(0.88, .75)) +
-  guides(colour=guide_legend(title="Population"))
+  theme(legend.position = c(0.88, .72)) +
+  guides(colour=guide_legend(title="Population")) +
+  scale_colour_manual(values=cbPalette)
 ```
 
 ```{r}
@@ -812,7 +996,7 @@ df_vcftools %>%
   filter(pop %in% c("AFR", "EUR")) %>%
   ggplot(aes(x = sr_beagle, y = sr_eagle, color = pop)) +
   geom_point() +
-  scale_color_jco() +
+  scale_colour_manual(values=cbPalette) +
   xlab("BEAGLE") +
   ylab("EAGLE") +
   ggtitle("Median Heterozygous Sites \nBetween Switches") +
@@ -870,13 +1054,13 @@ Proportion of errors at CpG
 
 ```{r}
 df_vcftools %>%
-  mutate(prop_error_eagle = n_switch_cpg_eagle / n_switch_eagle,
-         prop_error_shapeit = n_switch_cpg_shapeit / n_switch_shapeit,
-         prop_error_beagle = n_switch_cpg_beagle / n_switch_beagle) %>%
+  mutate(prop_error_eagle = (n_flip_cpg_eagle + n_other_cpg_eagle) / (n_flip_eagle + n_other_eagle),
+         prop_error_shapeit = (n_flip_cpg_shapeit + n_other_cpg_shapeit) / (n_flip_shapeit + n_other_shapeit),
+         prop_error_beagle = (n_flip_cpg_beagle + n_other_cpg_beagle) / (n_flip_beagle + n_other_beagle)) %>%
   select(pop, starts_with("prop_error")) %>%
-  rename(EAGLE2 = prop_error_eagle,
-         BEAGLE5 = prop_error_beagle,
-         SHAPEIT5 = prop_error_shapeit) %>%
+  rename(Eagle = prop_error_eagle,
+         Beagle = prop_error_beagle,
+         SHAPEIT = prop_error_shapeit) %>%
   pivot_longer(-pop, names_to = "method",  values_to = "prop") %>%
   ggplot(aes(x = method, y = prop)) + 
   geom_boxplot() +
@@ -898,9 +1082,9 @@ df_vcftools %>%
          prop_error_shapeit = n_flip_cpg_shapeit / n_flip_shapeit,
          prop_error_beagle = n_flip_cpg_beagle / n_flip_beagle) %>%
   select(pop, starts_with("prop_error")) %>%
-  rename(EAGLE2 = prop_error_eagle,
-         BEAGLE5 = prop_error_beagle,
-         SHAPEIT5 = prop_error_shapeit) %>%
+  rename(Eagle = prop_error_eagle,
+         Beagle = prop_error_beagle,
+         SHAPEIT = prop_error_shapeit) %>%
   pivot_longer(-pop, names_to = "method",  values_to = "prop") %>%
   ggplot(aes(x = method, y = prop)) + 
   geom_boxplot() +
@@ -916,6 +1100,33 @@ df_vcftools %>%
 out_file <- paste0(svg_out_dir, "prop_flips_cpg.svg")
 ggsave(filename = out_file, width = 8.05, height = 6.44, dpi = 300, units = "in")
 ```
+
+### T-tests
+
+```{r}
+print("Eagle, Beagle")
+df_vcftools %>%
+  mutate(prop_error_eagle = n_flip_cpg_eagle / n_flip_eagle,
+         prop_error_shapeit = n_flip_cpg_shapeit / n_flip_shapeit,
+         prop_error_beagle = n_flip_cpg_beagle / n_flip_beagle) %>%
+  {t.test(.$prop_error_eagle, .$prop_error_beagle)}
+
+print("Eagle, Shapeit")
+df_vcftools %>%
+  mutate(prop_error_eagle = n_flip_cpg_eagle / n_flip_eagle,
+         prop_error_shapeit = n_flip_cpg_shapeit / n_flip_shapeit,
+         prop_error_beagle = n_flip_cpg_beagle / n_flip_beagle) %>%
+  {t.test(.$prop_error_eagle, .$prop_error_shapeit)}
+
+print("Beagle, Shapeit")
+df_vcftools %>%
+  mutate(prop_error_eagle = n_flip_cpg_eagle / n_flip_eagle,
+         prop_error_shapeit = n_flip_cpg_shapeit / n_flip_shapeit,
+         prop_error_beagle = n_flip_cpg_beagle / n_flip_beagle) %>%
+  {t.test(.$prop_error_beagle, .$prop_error_shapeit)}
+```
+
+### Switches
 
 ```{r}
 df_vcftools %>%
@@ -940,6 +1151,32 @@ df_vcftools %>%
         legend.title=element_blank())
 ```
 
+### T-tests
+
+```{r}
+print("Eagle, Beagle")
+df_vcftools %>%
+  mutate(prop_error_eagle = n_other_cpg_eagle / n_other_eagle,
+         prop_error_shapeit = n_other_cpg_shapeit / n_other_shapeit,
+         prop_error_beagle = n_other_cpg_beagle / n_other_beagle) %>%
+  {t.test(.$prop_error_eagle, .$prop_error_beagle)}
+
+print("Eagle, Shapeit")
+df_vcftools %>%
+  mutate(prop_error_eagle = n_other_cpg_eagle / n_other_eagle,
+         prop_error_shapeit = n_other_cpg_shapeit / n_other_shapeit,
+         prop_error_beagle = n_other_cpg_beagle / n_other_beagle) %>%
+  {t.test(.$prop_error_eagle, .$prop_error_shapeit)}
+
+print("Beagle, Shapeit")
+df_vcftools %>%
+  mutate(prop_error_eagle = n_other_cpg_eagle / n_other_eagle,
+         prop_error_shapeit = n_other_cpg_shapeit / n_other_shapeit,
+         prop_error_beagle = n_other_cpg_beagle / n_other_beagle) %>%
+  {t.test(.$prop_error_beagle, .$prop_error_shapeit)}
+```
+
+
 
 ```{r}
 df_vcftools %>%
@@ -947,8 +1184,8 @@ df_vcftools %>%
   geom_point() +
   geom_abline(slope = 1, intercept = 0) +
   ggtitle("Errors at CpGs") +
-  xlab("Errors EAGLE2") +
-  ylab("Errors SHAPEIT5") +
+  xlab("Errors Eagle") +
+  ylab("Errors SHAPEIT") +
   guides(colour=guide_legend(title="Population"))
 ```
 
@@ -1023,7 +1260,7 @@ df_vcftools %>%
   ggplot(aes(x = chi_res)) +
   geom_density() +
   geom_vline(xintercept = qchisq(0.05, df = 1, lower.tail = F)) +
-  ggtitle("Chi-Square Test: BEAGLE5", "Proportion of Errors at CpGs = Proportion 1KGP Variants at CpG") +
+  ggtitle("Chi-Square Test: Beagle", "Proportion of Errors at CpGs = Proportion 1KGP Variants at CpG") +
   xlab("Density") +
   ylab("Chi Square Statistics")
 
@@ -1034,7 +1271,7 @@ df_vcftools %>%
   ggplot(aes(x = chi_res)) +
   geom_density() +
   geom_vline(xintercept = qchisq(0.05, df = 1, lower.tail = F)) +
-  ggtitle("Chi-Square Test: EAGLE2", "Proportion of Errors at CpGs = Proportion 1KGP Variants at CpG") +
+  ggtitle("Chi-Square Test: Eagle", "Proportion of Errors at CpGs = Proportion 1KGP Variants at CpG") +
   xlab("Density") +
   ylab("Chi Square Statistics")
 
@@ -1045,7 +1282,7 @@ df_vcftools %>%
   ggplot(aes(x = chi_res)) +
   geom_density() +
   geom_vline(xintercept = qchisq(0.05, df = 1, lower.tail = F)) +
-  ggtitle("Chi-Square Test: SHAPEIT5", "Proportion of Errors at CpGs = Proportion 1KGP Variants at CpG") +
+  ggtitle("Chi-Square Test: SHAPEIT", "Proportion of Errors at CpGs = Proportion 1KGP Variants at CpG") +
   xlab("Density") +
   ylab("Chi Square Statistics")
 
@@ -1063,7 +1300,7 @@ df_vcftools %>%
   ggplot(aes(x = chi_res)) +
   geom_density() +
   geom_vline(xintercept = qchisq(0.05, df = 1, lower.tail = F)) +
-  ggtitle("Chi-Square Test: BEAGLE5", "Proportion of Flips at CpGs = Proportion 1KGP Variants at CpG") +
+  ggtitle("Chi-Square Test: Beagle", "Proportion of Flips at CpGs = Proportion 1KGP Variants at CpG") +
   xlab("Density") +
   ylab("Chi Square Statistics")
 
@@ -1074,7 +1311,7 @@ df_vcftools %>%
   ggplot(aes(x = chi_res)) +
   geom_density() +
   geom_vline(xintercept = qchisq(0.05, df = 1, lower.tail = F)) +
-  ggtitle("Chi-Square Test: EAGLE2", "Proportion of Flips at CpGs = Proportion 1KGP Variants at CpG") +
+  ggtitle("Chi-Square Test: Eagle", "Proportion of Flips at CpGs = Proportion 1KGP Variants at CpG") +
   xlab("Density") +
   ylab("Chi Square Statistics")
 
@@ -1085,7 +1322,7 @@ df_vcftools %>%
   ggplot(aes(x = chi_res)) +
   geom_density() +
   geom_vline(xintercept = qchisq(0.05, df = 1, lower.tail = F)) +
-  ggtitle("Chi-Square Test: SHAPEIT5", "Proportion of Flips at CpGs = Proportion 1KGP Variants at CpG") +
+  ggtitle("Chi-Square Test: SHAPEIT", "Proportion of Flips at CpGs = Proportion 1KGP Variants at CpG") +
   xlab("Density") +
   ylab("Chi Square Statistics")
 ```
@@ -1296,19 +1533,19 @@ counts_per_bin <- function(ids = 1:200, bin_w = 1000){
   }
   
   for(i in 2:length(ids)){
-    df_pd_eagle2 <-  read_csv(paste0(eagle_switch_dir, "switch_", ids[i], ".csv"), show_col_types = FALSE) 
+    df_pd_Eagle <-  read_csv(paste0(eagle_switch_dir, "switch_", ids[i], ".csv"), show_col_types = FALSE) 
     df_pd_shapeit2 <- read_csv(paste0(shapeit_switch_dir, "switch_", ids[i], ".csv"), show_col_types = FALSE) 
-    df_pd_beagle2 <- read_csv(paste0(beagle_switch_dir, "switch_", ids[i], ".csv"), show_col_types = FALSE) 
+    df_pd_bEagle <- read_csv(paste0(beagle_switch_dir, "switch_", ids[i], ".csv"), show_col_types = FALSE) 
     
-    df_pd_eagle2$bin <- ceiling(df_pd_eagle2$pos_start / bin_w)
-    df_pd_beagle2$bin <- ceiling(df_pd_beagle2$pos_start / bin_w)
+    df_pd_Eagle$bin <- ceiling(df_pd_Eagle$pos_start / bin_w)
+    df_pd_bEagle$bin <- ceiling(df_pd_bEagle$pos_start / bin_w)
     df_pd_shapeit2$bin <- ceiling(df_pd_shapeit2$pos_start / bin_w)
     
-    df_pd_eagle2 <- df_pd_eagle2 %>%
+    df_pd_Eagle <- df_pd_Eagle %>%
       select(bin) %>%
       group_by(bin) %>%
       summarize(n = n())
-    df_pd_beagle2 <- df_pd_beagle2 %>%
+    df_pd_bEagle <- df_pd_bEagle %>%
       select(bin) %>%
       group_by(bin) %>%
       summarize(n = n())
@@ -1318,12 +1555,12 @@ counts_per_bin <- function(ids = 1:200, bin_w = 1000){
       summarize(n = n())
     
     df_pd_eagle <- df_pd_eagle %>%
-      full_join(df_pd_eagle2, by = "bin") %>%
+      full_join(df_pd_Eagle, by = "bin") %>%
       replace_na(list("n.x" = 0, "n.y" = 0)) %>%
       mutate(n = n.x + n.y) %>%
       select(bin, n)
     df_pd_beagle <- df_pd_beagle %>%
-      full_join(df_pd_beagle2, by = "bin") %>%
+      full_join(df_pd_bEagle, by = "bin") %>%
       replace_na(list("n.x" = 0, "n.y" = 0)) %>%
       mutate(n = n.x + n.y) %>%
       select(bin, n)

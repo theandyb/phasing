@@ -46,13 +46,22 @@ get_dens_for_pd <- function(pair_id,
   
   # match start pos to maf
   df_pd_beagle <- df_pd_beagle %>%
-    inner_join({df_freq %>% select(POS, maf)}, by=c("pos_start" = "POS"))
+    inner_join({df_freq %>% select(POS, maf)}, by=c("pos_start" = "POS")) %>%
+    group_by(across(c(-maf))) %>% 
+    summarize(maf = max(maf)) %>%
+    ungroup()
   
   df_pd_eagle <- df_pd_eagle %>%
-    inner_join({df_freq %>% select(POS, maf)}, by=c("pos_start" = "POS"))
+    inner_join({df_freq %>% select(POS, maf)}, by=c("pos_start" = "POS")) %>%
+    group_by(across(c(-maf))) %>% 
+    summarize(maf = max(maf)) %>%
+    ungroup()
   
   df_pd_shapeit <- df_pd_shapeit %>%
-    inner_join({df_freq %>% select(POS, maf)}, by=c("pos_start" = "POS"))
+    inner_join({df_freq %>% select(POS, maf)}, by=c("pos_start" = "POS")) %>%
+    group_by(across(c(-maf))) %>% 
+    summarize(maf = max(maf)) %>%
+    ungroup()
   
   df_pd_maf <- df_pd_beagle %>%
     select(maf, is_flip) %>%
