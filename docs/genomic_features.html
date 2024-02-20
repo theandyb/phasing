@@ -595,15 +595,15 @@ output/chrX_maf_simple.tsv
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomtheandybphasingtree81c213f1f6bc57ff5bbcca227f135f7cbb3b8ea0targetblank81c213fa">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomtheandybphasingtreeb8a98dbdc9780e517b6f128e7492a1fcd8b26277targetblankb8a98dba">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/theandyb/phasing/tree/81c213f1f6bc57ff5bbcca227f135f7cbb3b8ea0" target="_blank">81c213f</a>
+<a href="https://github.com/theandyb/phasing/tree/b8a98dbdc9780e517b6f128e7492a1fcd8b26277" target="_blank">b8a98db</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomtheandybphasingtree81c213f1f6bc57ff5bbcca227f135f7cbb3b8ea0targetblank81c213fa"
+id="strongRepositoryversionstrongahrefhttpsgithubcomtheandybphasingtreeb8a98dbdc9780e517b6f128e7492a1fcd8b26277targetblankb8a98dba"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -613,7 +613,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/theandyb/phasing/tree/81c213f1f6bc57ff5bbcca227f135f7cbb3b8ea0" target="_blank">81c213f</a>.
+<a href="https://github.com/theandyb/phasing/tree/b8a98dbdc9780e517b6f128e7492a1fcd8b26277" target="_blank">b8a98db</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -704,6 +704,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/b8a98dbdc9780e517b6f128e7492a1fcd8b26277/analysis/genomic_features.Rmd" target="_blank">b8a98db</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-20
+</td>
+<td>
+wflow_publish("analysis/genomic_features.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/theandyb/phasing/89f1ecd4e359f3aece944160ea88fa6e7859a9ba/docs/genomic_features.html" target="_blank">89f1ecd</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-20
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1118,7 +1152,7 @@ take a gander at looking at the overlap of errors:</p>
 <pre class="r"><code>pct_b_e &lt;- ((df$switch_b | df$flip_b) &amp; (df$switch_e | df$flip_e)) %&gt;% sum()</code></pre>
 <div id="all-in-one-function" class="section level4">
 <h4>All in one function</h4>
-<pre class="r"><code>get_summary_stats &lt;- function(id, het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq){
+<pre class="r"><code>get_summary_stats &lt;- function(id, het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq, rr_df){
   df &lt;- annotate_het_list(id, het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq)
   # stats on all positions
   n_het &lt;- length(df$pos)
@@ -1126,6 +1160,12 @@ take a gander at looking at the overlap of errors:</p>
   n_pos &lt;- max(df$pos) - min(df$pos)
   median_maf &lt;- median(df$maf, na.rm=T)
   mean_maf &lt;- mean(df$maf, na.rm =T)
+  
+  # rr
+  dt1 &lt;- as.data.table(df)
+  dt1 &lt;- rr_df[dt1, on = .(start &lt;= pos, end &gt;= pos)]
+  dt1 &lt;- as.data.frame(dt1)
+  
   # total errors
   n_err_beagle &lt;- sum((df$switch_b | df$flip_b))
   n_err_eagle &lt;- sum((df$switch_e | df$flip_e))
@@ -1194,6 +1234,19 @@ take a gander at looking at the overlap of errors:</p>
   pct_fl_s_e &lt;- (((df$flip_s ) &amp; (df$switch_e | df$flip_e)) %&gt;% sum()) / n_err_shapeit
   pct_fl_s_b &lt;- (((df$flip_s ) &amp; (df$switch_b | df$flip_b)) %&gt;% sum()) / n_err_shapeit
   
+  # Recombination
+  med_rr_b_err &lt;- dt1 %&gt;% filter(switch_b | flip_b) %&gt;% pull(rr) %&gt;% median(na.rm=T)
+  med_rr_e_err &lt;- dt1 %&gt;% filter(switch_e | flip_e) %&gt;% pull(rr) %&gt;% median(na.rm=T)
+  med_rr_s_err &lt;- dt1 %&gt;% filter(switch_s | flip_s) %&gt;% pull(rr) %&gt;% median(na.rm=T)
+  med_rr_b_sw &lt;- dt1 %&gt;% filter(switch_b) %&gt;% pull(rr) %&gt;% median(na.rm=T)
+  med_rr_e_sw &lt;- dt1 %&gt;% filter(switch_e) %&gt;% pull(rr) %&gt;% median(na.rm=T)
+  med_rr_s_sw &lt;- dt1 %&gt;% filter(switch_s) %&gt;% pull(rr) %&gt;% median(na.rm=T)
+  med_rr_b_fl &lt;- dt1 %&gt;% filter(flip_b) %&gt;% pull(rr) %&gt;% median(na.rm=T)
+  med_rr_e_fl &lt;- dt1 %&gt;% filter(flip_e) %&gt;% pull(rr) %&gt;% median(na.rm=T)
+  med_rr_s_fl &lt;- dt1 %&gt;% filter(flip_s) %&gt;% pull(rr) %&gt;% median(na.rm=T)
+  
+  med_rr_all &lt;- dt1 %&gt;% pull(rr) %&gt;% median(na.rm = TRUE)
+  
   result &lt;- data.frame(n_het = n_het,
                        n_cpg = n_cpg,
                        n_pos = n_pos,
@@ -1252,7 +1305,17 @@ take a gander at looking at the overlap of errors:</p>
                        pct_fl_e_b = pct_fl_e_b,
                        pct_fl_e_s = pct_fl_e_s,
                        pct_fl_s_b = pct_fl_s_b,
-                       pct_fl_s_e = pct_fl_s_e)
+                       pct_fl_s_e = pct_fl_s_e,
+                       med_rr_b_err = med_rr_b_err,
+                       med_rr_e_err = med_rr_e_err,
+                       med_rr_s_err = med_rr_s_err,
+                       med_rr_b_sw = med_rr_b_sw,
+                       med_rr_e_sw =med_rr_e_sw,
+                       med_rr_s_sw = med_rr_s_sw,
+                       med_rr_b_fl = med_rr_b_fl,
+                       med_rr_e_fl = med_rr_e_fl,
+                       med_rr_s_fl = med_rr_s_fl,
+                       med_rr_all = med_rr_all)
   return(result)
 }</code></pre>
 <p>And now let’s load the basic summary statistics from all synthetic
@@ -1260,7 +1323,13 @@ diploids:</p>
 <pre class="r"><code>results &lt;- vector(mode = &quot;list&quot;, length = 700)
 for(i in 1:700){
   print(i)
-  results[[i]] &lt;- get_summary_stats(i, het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq)
+  results[[i]] &lt;- get_summary_stats(i, 
+                                    het_loc_dir, 
+                                    beagle_switch_dir, 
+                                    eagle_switch_dir, 
+                                    shapeit_switch_dir, 
+                                    df_freq, 
+                                    rr_df)
 }</code></pre>
 <pre><code>[1] 1
 [1] 2
@@ -1987,6 +2056,43 @@ results$pop &lt;- c(rep(&quot;EUR&quot;, 200), rep(&quot;AFR&quot;, 200), rep(&q
 
 ggMarginal(p1, groupColour = TRUE)</code></pre>
 <p><img src="figure/genomic_features.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-1">
+Past versions of unnamed-chunk-10-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-10-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/89f1ecd4e359f3aece944160ea88fa6e7859a9ba/docs/figure/genomic_features.Rmd/unnamed-chunk-10-1.png" target="_blank">89f1ecd</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>p1 &lt;- results %&gt;%
   mutate(e_per_mb = (n_err_eagle / n_pos)*1000,
          s_per_mb = (n_err_shapeit / n_pos) * 1000) %&gt;%
@@ -2001,6 +2107,43 @@ ggMarginal(p1, groupColour = TRUE)</code></pre>
 
 ggMarginal(p1, groupColour = TRUE)</code></pre>
 <p><img src="figure/genomic_features.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-11-1">
+Past versions of unnamed-chunk-11-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-11-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/89f1ecd4e359f3aece944160ea88fa6e7859a9ba/docs/figure/genomic_features.Rmd/unnamed-chunk-11-1.png" target="_blank">89f1ecd</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>p1 &lt;- results %&gt;%
   mutate(b_per_mb = (n_err_beagle / n_pos)*1000,
          s_per_mb = (n_err_shapeit / n_pos) * 1000) %&gt;%
@@ -2015,6 +2158,43 @@ ggMarginal(p1, groupColour = TRUE)</code></pre>
 
 ggMarginal(p1, groupColour = TRUE)</code></pre>
 <p><img src="figure/genomic_features.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-12-1">
+Past versions of unnamed-chunk-12-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-12-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/89f1ecd4e359f3aece944160ea88fa6e7859a9ba/docs/figure/genomic_features.Rmd/unnamed-chunk-12-1.png" target="_blank">89f1ecd</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="switches-per-mb" class="section level2">
 <h2>Switches per MB</h2>
@@ -2032,6 +2212,43 @@ ggMarginal(p1, groupColour = TRUE)</code></pre>
 
 ggMarginal(p1, groupColour = TRUE)</code></pre>
 <p><img src="figure/genomic_features.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-13-1">
+Past versions of unnamed-chunk-13-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-13-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/89f1ecd4e359f3aece944160ea88fa6e7859a9ba/docs/figure/genomic_features.Rmd/unnamed-chunk-13-1.png" target="_blank">89f1ecd</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>p1 &lt;- results %&gt;%
   mutate(s_per_mb = (n_switch_shapeit / n_pos)*1000,
          e_per_mb = (n_switch_eagle / n_pos) * 1000) %&gt;%
@@ -2046,6 +2263,43 @@ ggMarginal(p1, groupColour = TRUE)</code></pre>
 
 ggMarginal(p1, groupColour = TRUE)</code></pre>
 <p><img src="figure/genomic_features.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-14-1">
+Past versions of unnamed-chunk-14-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-14-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/89f1ecd4e359f3aece944160ea88fa6e7859a9ba/docs/figure/genomic_features.Rmd/unnamed-chunk-14-1.png" target="_blank">89f1ecd</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>p1 &lt;- results %&gt;%
   mutate(s_per_mb = (n_switch_shapeit / n_pos)*1000,
          b_per_mb = (n_switch_beagle / n_pos) * 1000) %&gt;%
@@ -2060,6 +2314,43 @@ ggMarginal(p1, groupColour = TRUE)</code></pre>
 
 ggMarginal(p1, groupColour = TRUE)</code></pre>
 <p><img src="figure/genomic_features.Rmd/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-15-1">
+Past versions of unnamed-chunk-15-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-15-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/89f1ecd4e359f3aece944160ea88fa6e7859a9ba/docs/figure/genomic_features.Rmd/unnamed-chunk-15-1.png" target="_blank">89f1ecd</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="flips-per-mb" class="section level2">
 <h2>Flips per MB</h2>
@@ -2077,6 +2368,43 @@ ggMarginal(p1, groupColour = TRUE)</code></pre>
 
 ggMarginal(p1, groupColour = TRUE)</code></pre>
 <p><img src="figure/genomic_features.Rmd/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-16-1">
+Past versions of unnamed-chunk-16-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-16-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/89f1ecd4e359f3aece944160ea88fa6e7859a9ba/docs/figure/genomic_features.Rmd/unnamed-chunk-16-1.png" target="_blank">89f1ecd</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>p1 &lt;- results %&gt;%
   mutate(s_per_mb = (n_flip_shapeit / n_pos)*1000,
          e_per_mb = (n_flip_eagle / n_pos) * 1000) %&gt;%
@@ -2091,6 +2419,43 @@ ggMarginal(p1, groupColour = TRUE)</code></pre>
 
 ggMarginal(p1, groupColour = TRUE)</code></pre>
 <p><img src="figure/genomic_features.Rmd/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-17-1">
+Past versions of unnamed-chunk-17-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-17-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/89f1ecd4e359f3aece944160ea88fa6e7859a9ba/docs/figure/genomic_features.Rmd/unnamed-chunk-17-1.png" target="_blank">89f1ecd</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>p1 &lt;- results %&gt;%
   mutate(s_per_mb = (n_flip_shapeit / n_pos)*1000,
          b_per_mb = (n_flip_beagle / n_pos) * 1000) %&gt;%
@@ -2105,6 +2470,43 @@ ggMarginal(p1, groupColour = TRUE)</code></pre>
 
 ggMarginal(p1, groupColour = TRUE)</code></pre>
 <p><img src="figure/genomic_features.Rmd/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-18-1">
+Past versions of unnamed-chunk-18-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-18-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/89f1ecd4e359f3aece944160ea88fa6e7859a9ba/docs/figure/genomic_features.Rmd/unnamed-chunk-18-1.png" target="_blank">89f1ecd</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div id="cpg-enrichment-depletion" class="section level1">
@@ -2128,6 +2530,43 @@ ggMarginal(p1, groupColour = TRUE)</code></pre>
   theme_classic() +
   geom_hline(yintercept = 1)</code></pre>
 <p><img src="figure/genomic_features.Rmd/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-19-1">
+Past versions of unnamed-chunk-19-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-19-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/89f1ecd4e359f3aece944160ea88fa6e7859a9ba/docs/figure/genomic_features.Rmd/unnamed-chunk-19-1.png" target="_blank">89f1ecd</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>results %&gt;%
   mutate(b_pct_cpg = n_err_beagle_cpg / n_err_beagle,
          e_pct_cpg = n_err_eagle_cpg / n_err_eagle,
@@ -2146,6 +2585,43 @@ ggMarginal(p1, groupColour = TRUE)</code></pre>
   scale_color_manual(values = cbPalette) +
   geom_hline(yintercept = 1)</code></pre>
 <p><img src="figure/genomic_features.Rmd/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-20-1">
+Past versions of unnamed-chunk-20-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-20-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/89f1ecd4e359f3aece944160ea88fa6e7859a9ba/docs/figure/genomic_features.Rmd/unnamed-chunk-20-1.png" target="_blank">89f1ecd</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>results %&gt;%
   mutate(b_pct_cpg = n_err_beagle_cpg / n_err_beagle,
          e_pct_cpg = n_err_eagle_cpg / n_err_eagle,
@@ -2207,6 +2683,43 @@ mean of x mean of y
   theme_classic() +
   geom_hline(yintercept = 1)</code></pre>
 <p><img src="figure/genomic_features.Rmd/unnamed-chunk-23-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-23-1">
+Past versions of unnamed-chunk-23-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-23-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/89f1ecd4e359f3aece944160ea88fa6e7859a9ba/docs/figure/genomic_features.Rmd/unnamed-chunk-23-1.png" target="_blank">89f1ecd</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>results %&gt;%
   mutate(b_pct_cpg = n_switch_beagle_cpg / n_switch_beagle,
          e_pct_cpg = n_switch_eagle_cpg / n_switch_eagle,
@@ -2225,6 +2738,43 @@ mean of x mean of y
   scale_color_manual(values = cbPalette) +
   geom_hline(yintercept = 1)</code></pre>
 <p><img src="figure/genomic_features.Rmd/unnamed-chunk-24-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-24-1">
+Past versions of unnamed-chunk-24-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-24-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/89f1ecd4e359f3aece944160ea88fa6e7859a9ba/docs/figure/genomic_features.Rmd/unnamed-chunk-24-1.png" target="_blank">89f1ecd</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>results %&gt;%
    mutate(b_pct_cpg = n_switch_beagle_cpg / n_switch_beagle,
          e_pct_cpg = n_switch_eagle_cpg / n_switch_eagle,
@@ -2286,6 +2836,43 @@ mean of x mean of y
   theme_classic() +
   geom_hline(yintercept = 1)</code></pre>
 <p><img src="figure/genomic_features.Rmd/unnamed-chunk-27-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-27-1">
+Past versions of unnamed-chunk-27-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-27-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/89f1ecd4e359f3aece944160ea88fa6e7859a9ba/docs/figure/genomic_features.Rmd/unnamed-chunk-27-1.png" target="_blank">89f1ecd</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>results %&gt;%
   mutate(b_pct_cpg = n_flip_beagle_cpg / n_flip_beagle,
          e_pct_cpg = n_flip_eagle_cpg / n_flip_eagle,
@@ -2304,6 +2891,43 @@ mean of x mean of y
   scale_color_manual(values = cbPalette) +
   geom_hline(yintercept = 1)</code></pre>
 <p><img src="figure/genomic_features.Rmd/unnamed-chunk-28-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-28-1">
+Past versions of unnamed-chunk-28-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-28-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/89f1ecd4e359f3aece944160ea88fa6e7859a9ba/docs/figure/genomic_features.Rmd/unnamed-chunk-28-1.png" target="_blank">89f1ecd</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>results %&gt;%
   mutate(b_pct_cpg = n_flip_beagle_cpg / n_flip_beagle,
          e_pct_cpg = n_flip_eagle_cpg / n_flip_eagle,
@@ -2330,6 +2954,136 @@ mean of x
   ggplot(aes(x = comp, y= pct)) +
   geom_boxplot()</code></pre>
 <p><img src="figure/genomic_features.Rmd/unnamed-chunk-30-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-30-1">
+Past versions of unnamed-chunk-30-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-30-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/89f1ecd4e359f3aece944160ea88fa6e7859a9ba/docs/figure/genomic_features.Rmd/unnamed-chunk-30-1.png" target="_blank">89f1ecd</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div id="recombination-rate" class="section level1">
+<h1>Recombination Rate</h1>
+<div id="total-errors-1" class="section level2">
+<h2>Total Errors</h2>
+<pre class="r"><code>results %&gt;%
+  mutate(beagle = med_rr_b_err / med_rr_all,
+         eagle = med_rr_e_err / med_rr_all,
+         shapeit = med_rr_s_err / med_rr_all) %&gt;%
+  select(beagle, eagle, shapeit, pop) %&gt;%
+  pivot_longer(-pop, names_to = &quot;method&quot;, values_to = &quot;enrich&quot;) %&gt;%
+  ggplot(aes(x = method, y = enrich)) + 
+  geom_boxplot() +
+  xlab(&quot;Method&quot;) +
+  ylab(&quot;Enrichment&quot;) +
+  theme_classic() +
+  geom_hline(yintercept = 1)</code></pre>
+<p><img src="figure/genomic_features.Rmd/unnamed-chunk-31-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>results %&gt;%
+  mutate(beagle = med_rr_b_err / med_rr_all,
+         eagle = med_rr_e_err / med_rr_all,
+         shapeit = med_rr_s_err / med_rr_all) %&gt;%
+  select(beagle, eagle, shapeit, pop) %&gt;%
+  pivot_longer(-pop, names_to = &quot;method&quot;, values_to = &quot;enrich&quot;) %&gt;%
+  ggplot(aes(x = method, y = enrich, color = pop)) + 
+  geom_boxplot() +
+  xlab(&quot;Method&quot;) +
+  ylab(&quot;Enrichment&quot;) +
+  theme_classic() +
+  scale_color_manual(values = cbPalette) +
+  geom_hline(yintercept = 1)</code></pre>
+<p><img src="figure/genomic_features.Rmd/unnamed-chunk-32-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="switches-1" class="section level2">
+<h2>Switches</h2>
+<pre class="r"><code>results %&gt;%
+  mutate(beagle = med_rr_b_sw / med_rr_all,
+         eagle = med_rr_e_sw / med_rr_all,
+         shapeit = med_rr_s_sw / med_rr_all) %&gt;%
+  select(beagle, eagle, shapeit, pop) %&gt;%
+  pivot_longer(-pop, names_to = &quot;method&quot;, values_to = &quot;enrich&quot;) %&gt;%
+  ggplot(aes(x = method, y = enrich)) + 
+  geom_boxplot() +
+  xlab(&quot;Method&quot;) +
+  ylab(&quot;Enrichment&quot;) +
+  theme_classic() +
+  geom_hline(yintercept = 1)</code></pre>
+<p><img src="figure/genomic_features.Rmd/unnamed-chunk-33-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>results %&gt;%
+  mutate(beagle = med_rr_b_sw / med_rr_all,
+         eagle = med_rr_e_sw / med_rr_all,
+         shapeit = med_rr_s_sw / med_rr_all) %&gt;%
+  select(beagle, eagle, shapeit, pop) %&gt;%
+  pivot_longer(-pop, names_to = &quot;method&quot;, values_to = &quot;enrich&quot;) %&gt;%
+  ggplot(aes(x = method, y = enrich, color = pop)) + 
+  geom_boxplot() +
+  xlab(&quot;Method&quot;) +
+  ylab(&quot;Enrichment&quot;) +
+  theme_classic() +
+  scale_color_manual(values = cbPalette) +
+  geom_hline(yintercept = 1)</code></pre>
+<p><img src="figure/genomic_features.Rmd/unnamed-chunk-34-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="flips-1" class="section level2">
+<h2>Flips</h2>
+<pre class="r"><code>results %&gt;%
+  mutate(beagle = med_rr_b_fl / med_rr_all,
+         eagle = med_rr_e_fl / med_rr_all,
+         shapeit = med_rr_s_fl / med_rr_all) %&gt;%
+  select(beagle, eagle, shapeit, pop) %&gt;%
+  pivot_longer(-pop, names_to = &quot;method&quot;, values_to = &quot;enrich&quot;) %&gt;%
+  ggplot(aes(x = method, y = enrich)) + 
+  geom_boxplot() +
+  xlab(&quot;Method&quot;) +
+  ylab(&quot;Enrichment&quot;) +
+  theme_classic() +
+  geom_hline(yintercept = 1)</code></pre>
+<p><img src="figure/genomic_features.Rmd/unnamed-chunk-35-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>results %&gt;%
+  mutate(beagle = med_rr_b_fl / med_rr_all,
+         eagle = med_rr_e_fl / med_rr_all,
+         shapeit = med_rr_s_fl / med_rr_all) %&gt;%
+  select(beagle, eagle, shapeit, pop) %&gt;%
+  pivot_longer(-pop, names_to = &quot;method&quot;, values_to = &quot;enrich&quot;) %&gt;%
+  ggplot(aes(x = method, y = enrich, color = pop)) + 
+  geom_boxplot() +
+  xlab(&quot;Method&quot;) +
+  ylab(&quot;Enrichment&quot;) +
+  theme_classic() +
+  scale_color_manual(values = cbPalette) +
+  geom_hline(yintercept = 1)</code></pre>
+<p><img src="figure/genomic_features.Rmd/unnamed-chunk-36-1.png" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -2362,9 +3116,10 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] ggExtra_0.10.1  lubridate_1.9.2 forcats_1.0.0   stringr_1.5.1  
- [5] dplyr_1.1.4     purrr_1.0.2     readr_2.1.4     tidyr_1.3.0    
- [9] tibble_3.2.1    ggplot2_3.4.4   tidyverse_2.0.0 workflowr_1.7.0
+ [1] data.table_1.14.8 ggExtra_0.10.1    lubridate_1.9.2   forcats_1.0.0    
+ [5] stringr_1.5.1     dplyr_1.1.4       purrr_1.0.2       readr_2.1.4      
+ [9] tidyr_1.3.0       tibble_3.2.1      ggplot2_3.4.4     tidyverse_2.0.0  
+[13] workflowr_1.7.0  
 
 loaded via a namespace (and not attached):
  [1] gtable_0.3.4     xfun_0.39        bslib_0.5.0      processx_3.8.1  
@@ -2373,7 +3128,7 @@ loaded via a namespace (and not attached):
 [13] highr_0.10       pkgconfig_2.0.3  lifecycle_1.0.4  farver_2.1.1    
 [17] compiler_4.3.2   git2r_0.32.0     munsell_0.5.0    getPass_0.2-2   
 [21] httpuv_1.6.11    htmltools_0.5.6  sass_0.4.6       yaml_2.3.7      
-[25] later_1.3.1      pillar_1.9.0     crayon_1.5.2     jquerylib_0.1.4 
+[25] crayon_1.5.2     later_1.3.1      pillar_1.9.0     jquerylib_0.1.4 
 [29] whisker_0.4.1    ellipsis_0.3.2   cachem_1.0.8     mime_0.12       
 [33] tidyselect_1.2.0 digest_0.6.33    stringi_1.8.2    labeling_0.4.3  
 [37] rprojroot_2.0.3  fastmap_1.1.1    grid_4.3.2       archive_1.1.5   
