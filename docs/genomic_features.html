@@ -1,0 +1,2482 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Andy Beck" />
+
+<meta name="date" content="2024-02-16" />
+
+<title>Genomic Context of Phasing Errors</title>
+
+<script src="site_libs/header-attrs-2.22/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/spacelab.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.0/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.0/css/v4-shims.min.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">phasing</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/theandyb/phasing">
+    <span class="fab fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Genomic Context of Phasing Errors</h1>
+<h4 class="author">Andy Beck</h4>
+<h4 class="date">2024-02-16</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2024-02-20
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 1
+</p>
+<p>
+<strong>Knit directory:</strong> <code>phasing/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.0). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20220221code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20220221)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20220221code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20220221)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongabsolute">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>File paths:</strong> absolute </a>
+</p>
+</div>
+<div id="strongFilepathsstrongabsolute" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Using absolute paths to the files within your workflowr project makes it
+difficult for you and others to run your code on a different machine.
+Change the absolute path(s) below to the suggested relative path(s) to
+make your code more reproducible.
+</p>
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th style="text-align:left;">
+absolute
+</th>
+<th style="text-align:left;">
+relative
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/switch_errors/eagle/annotated/
+</td>
+<td style="text-align:left;">
+output/final_switch_errors/switch_errors/eagle/annotated
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/switch_errors/shapeit/annotated/
+</td>
+<td style="text-align:left;">
+output/final_switch_errors/switch_errors/shapeit/annotated
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/switch_errors/beagle/annotated/
+</td>
+<td style="text-align:left;">
+output/final_switch_errors/switch_errors/beagle/annotated
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/vcf_n_sites/
+</td>
+<td style="text-align:left;">
+output/final_switch_errors/vcf_n_sites
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/whatshap/
+</td>
+<td style="text-align:left;">
+output/final_switch_errors/whatshap
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/het_loc/annotated/
+</td>
+<td style="text-align:left;">
+output/final_switch_errors/het_loc/annotated
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+/net/snowwhite/home/beckandy/research/phasing/output/chrX_maf_simple.tsv
+</td>
+<td style="text-align:left;">
+output/chrX_maf_simple.tsv
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomtheandybphasingtree81c213f1f6bc57ff5bbcca227f135f7cbb3b8ea0targetblank81c213fa">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/theandyb/phasing/tree/81c213f1f6bc57ff5bbcca227f135f7cbb3b8ea0" target="_blank">81c213f</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomtheandybphasingtree81c213f1f6bc57ff5bbcca227f135f7cbb3b8ea0targetblank81c213fa"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/theandyb/phasing/tree/81c213f1f6bc57ff5bbcca227f135f7cbb3b8ea0" target="_blank">81c213f</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    data/1kgp/
+    Ignored:    data/consensus/
+    Ignored:    data/gnomAD/
+    Ignored:    data/mask/
+    Ignored:    data/ovary/
+    Ignored:    data/recomb/
+    Ignored:    data/ref/
+    Ignored:    data/shapeit/
+    Ignored:    output/2023_switch_errors/
+    Ignored:    output/X_hets/
+    Ignored:    output/admix_switch_errors/
+    Ignored:    output/afr_eur_ref/
+    Ignored:    output/background_rates/
+    Ignored:    output/figures/
+    Ignored:    output/filter_switch_errors/
+    Ignored:    output/final_switch_errors/
+    Ignored:    output/gnomad/
+    Ignored:    output/male_only_reference/
+    Ignored:    output/nygc/
+    Ignored:    output/singleton_switch_errors/
+    Ignored:    plink.log
+    Ignored:    sandbox/
+
+Unstaged changes:
+    Modified:   analysis/_site.yml
+    Modified:   code/batch_annotate_het.sh
+    Modified:   code/batch_annotate_switch.sh
+    Modified:   code/batch_diploid_v3.sh
+    Modified:   code/batch_vote_phase.sh
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/genomic_features.Rmd</code>) and
+HTML (<code>docs/genomic_features.html</code>) files. If you’ve
+configured a remote Git repository (see <code>?wflow_git_remote</code>),
+click on the hyperlinks in the table below to view the files as they
+were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/81c213f1f6bc57ff5bbcca227f135f7cbb3b8ea0/analysis/genomic_features.Rmd" target="_blank">81c213f</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-20
+</td>
+<td>
+wflow_publish("analysis/genomic_features.Rmd")
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>Here in this document we endeavor to further characterize the genomic
+context in which statistical phasing errors occur. Of particular
+interest is the comparison of contexts in which phasing errors occur in
+the three methods we compare in our analyses. In this document, we will
+evaluate the genomic context as defined by</p>
+<ol style="list-style-type: decimal">
+<li>GC content</li>
+<li>Recombination rate</li>
+<li>Replication Timing</li>
+<li>CpG status at heterozygous positions</li>
+<li>Minor allele frequencies at heterozygous positions</li>
+</ol>
+</div>
+<div id="loading-data" class="section level1">
+<h1>Loading Data</h1>
+<div id="single-synthetic-diploid" class="section level2">
+<h2>Single Synthetic Diploid</h2>
+<p>In our results, we have for each synthetic diploid the list of all
+heterozygous positions at which an error can occur. Additionally, we
+have annotated each of these sites with its CpG status, along with the
+3-mer nucleotide motif centered at the position. For example, if we load
+this list for a single synthetic diploid:</p>
+<pre class="r"><code>load_het_pos &lt;- function(id, het_loc_dir){
+  fname &lt;- paste0(het_loc_dir, &quot;pair_&quot;, id, &quot;.csv&quot;)
+  return(read_csv(fname, show_col_types = FALSE))
+}
+
+load_het_pos(1, het_loc_dir) %&gt;% 
+  head() %&gt;%
+  knitr::kable()</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="right">pos</th>
+<th align="left">gt</th>
+<th align="right">cpg</th>
+<th align="left">motif</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">2785460</td>
+<td align="left">0/1</td>
+<td align="right">0</td>
+<td align="left">AAT</td>
+</tr>
+<tr class="even">
+<td align="right">2785503</td>
+<td align="left">0/1</td>
+<td align="right">0</td>
+<td align="left">GAT</td>
+</tr>
+<tr class="odd">
+<td align="right">2785592</td>
+<td align="left">1/0</td>
+<td align="right">0</td>
+<td align="left">CAT</td>
+</tr>
+<tr class="even">
+<td align="right">2786294</td>
+<td align="left">0/1</td>
+<td align="right">0</td>
+<td align="left">TGT</td>
+</tr>
+<tr class="odd">
+<td align="right">2786428</td>
+<td align="left">1/0</td>
+<td align="right">0</td>
+<td align="left">CTG</td>
+</tr>
+<tr class="even">
+<td align="right">2786515</td>
+<td align="left">0/1</td>
+<td align="right">0</td>
+<td align="left">CAC</td>
+</tr>
+</tbody>
+</table>
+<p>Additionally, for each site we will want to append the error status
+for each of the three algorithms. To do so, we will also need to load
+the switch error locations, while also identifying which errors are
+flips:</p>
+<pre class="r"><code>load_switch_df &lt;- function(id, switch_dir){
+  fname &lt;- paste0(switch_dir, &quot;switch_&quot;, id, &quot;.csv&quot;)
+  results &lt;- read_csv(fname, show_col_types = FALSE)
+  flip_loc &lt;- get_flip_pos(results)
+  results$is_flip &lt;- (results$pos_start %in% flip_loc) | (results$pos_end %in% flip_loc)
+  results$flip &lt;- results$pos_end %in% flip_loc
+  results &lt;- results %&gt;%
+    filter(flip | (!is_flip &amp; !flip))
+  return(results %&gt;% select(-is_flip))
+}
+
+load_switch_df(1, eagle_switch_dir) %&gt;%
+  head() %&gt;%
+  knitr::kable()</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="right">pos_start</th>
+<th align="right">pos_end</th>
+<th align="right">cpg_start</th>
+<th align="right">cpg_end</th>
+<th align="left">motif_start</th>
+<th align="left">end_motif</th>
+<th align="left">flip</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">2804015</td>
+<td align="right">2862937</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="left">CAT</td>
+<td align="left">TGT</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="right">2903543</td>
+<td align="right">2916189</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="left">CCT</td>
+<td align="left">CAG</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="right">3695276</td>
+<td align="right">3714940</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="left">TCC</td>
+<td align="left">CGG</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="even">
+<td align="right">3784510</td>
+<td align="right">3785937</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="left">TAT</td>
+<td align="left">CAA</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="right">4710875</td>
+<td align="right">4712329</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="left">ACG</td>
+<td align="left">AGA</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="right">5796471</td>
+<td align="right">5818454</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="left">TTT</td>
+<td align="left">CGA</td>
+<td align="left">TRUE</td>
+</tr>
+</tbody>
+</table>
+<p>To put everything together, we now want to take our list of
+heterozygous positions in each synthetic diploid and annotate each
+position with whether or not the site is a location of an error in each
+of the three methods:</p>
+<pre class="r"><code>annotate_het_list &lt;- function(id, het_loc_dir, beagle_dir, eagle_dir, shapeit_dir, df_freq){
+  result &lt;- load_het_pos(id, het_loc_dir)
+  df_b &lt;- load_switch_df(id, beagle_dir)
+  df_e &lt;- load_switch_df(id, eagle_dir)
+  df_s &lt;- load_switch_df(id, shapeit_dir)
+  
+  result$switch_b &lt;- result$pos %in% {df_b %&gt;% filter(!flip) %&gt;% pull(pos_start)}
+  result$flip_b &lt;- result$pos %in% {df_b %&gt;% filter(flip) %&gt;% pull(pos_start)}
+  
+  result$switch_e &lt;- result$pos %in% {df_e %&gt;% filter(!flip) %&gt;% pull(pos_start)}
+  result$flip_e &lt;- result$pos %in% {df_e %&gt;% filter(flip) %&gt;% pull(pos_start)}
+  
+  result$switch_s &lt;- result$pos %in% {df_s %&gt;% filter(!flip) %&gt;% pull(pos_start)}
+  result$flip_s &lt;- result$pos %in% {df_s %&gt;% filter(flip) %&gt;% pull(pos_start)}
+  
+  result &lt;- left_join(result,
+                       {df_freq %&gt;%
+                           select(POS, maf)},
+                       by = c(&quot;pos&quot; = &quot;POS&quot;))
+  
+  return(result)
+}
+
+annotate_het_list(1, het_loc_dir, 
+                  beagle_dir = beagle_switch_dir, 
+                  eagle_dir = eagle_switch_dir, 
+                  shapeit_dir = shapeit_switch_dir,
+                  df_freq) %&gt;%
+  filter(switch_b) %&gt;%
+  head(10) %&gt;%
+  knitr::kable()</code></pre>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="5%" />
+<col width="5%" />
+<col width="7%" />
+<col width="11%" />
+<col width="8%" />
+<col width="11%" />
+<col width="8%" />
+<col width="11%" />
+<col width="8%" />
+<col width="12%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="right">pos</th>
+<th align="left">gt</th>
+<th align="right">cpg</th>
+<th align="left">motif</th>
+<th align="left">switch_b</th>
+<th align="left">flip_b</th>
+<th align="left">switch_e</th>
+<th align="left">flip_e</th>
+<th align="left">switch_s</th>
+<th align="left">flip_s</th>
+<th align="right">maf</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">3714940</td>
+<td align="left">1/0</td>
+<td align="right">1</td>
+<td align="left">CGG</td>
+<td align="left">TRUE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">TRUE</td>
+<td align="left">FALSE</td>
+<td align="right">0.0214570</td>
+</tr>
+<tr class="even">
+<td align="right">3753097</td>
+<td align="left">0/1</td>
+<td align="right">0</td>
+<td align="left">GAG</td>
+<td align="left">TRUE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="right">0.2474170</td>
+</tr>
+<tr class="odd">
+<td align="right">4471598</td>
+<td align="left">0/1</td>
+<td align="right">0</td>
+<td align="left">AAA</td>
+<td align="left">TRUE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">TRUE</td>
+<td align="right">0.0172185</td>
+</tr>
+<tr class="even">
+<td align="right">5796471</td>
+<td align="left">1/0</td>
+<td align="right">0</td>
+<td align="left">TTT</td>
+<td align="left">TRUE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">TRUE</td>
+<td align="left">FALSE</td>
+<td align="left">TRUE</td>
+<td align="right">0.0140397</td>
+</tr>
+<tr class="odd">
+<td align="right">5821302</td>
+<td align="left">0/1</td>
+<td align="right">0</td>
+<td align="left">CAT</td>
+<td align="left">TRUE</td>
+<td align="left">FALSE</td>
+<td align="left">TRUE</td>
+<td align="left">FALSE</td>
+<td align="left">TRUE</td>
+<td align="left">FALSE</td>
+<td align="right">0.2540400</td>
+</tr>
+<tr class="even">
+<td align="right">6248718</td>
+<td align="left">1/0</td>
+<td align="right">0</td>
+<td align="left">ACA</td>
+<td align="left">TRUE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="right">0.0045033</td>
+</tr>
+<tr class="odd">
+<td align="right">7810625</td>
+<td align="left">1/0</td>
+<td align="right">1</td>
+<td align="left">CGG</td>
+<td align="left">TRUE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">TRUE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="right">0.0633113</td>
+</tr>
+<tr class="even">
+<td align="right">8014014</td>
+<td align="left">1/0</td>
+<td align="right">0</td>
+<td align="left">TTC</td>
+<td align="left">TRUE</td>
+<td align="left">FALSE</td>
+<td align="left">TRUE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">TRUE</td>
+<td align="right">0.3441060</td>
+</tr>
+<tr class="odd">
+<td align="right">8486608</td>
+<td align="left">0/1</td>
+<td align="right">0</td>
+<td align="left">AGA</td>
+<td align="left">TRUE</td>
+<td align="left">FALSE</td>
+<td align="left">TRUE</td>
+<td align="left">FALSE</td>
+<td align="left">TRUE</td>
+<td align="left">FALSE</td>
+<td align="right">0.0063576</td>
+</tr>
+<tr class="even">
+<td align="right">9700979</td>
+<td align="left">0/1</td>
+<td align="right">0</td>
+<td align="left">GTG</td>
+<td align="left">TRUE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">TRUE</td>
+<td align="left">FALSE</td>
+<td align="right">0.1165560</td>
+</tr>
+</tbody>
+</table>
+<div id="summary-statistics-per-sd" class="section level3">
+<h3>Summary Statistics per SD</h3>
+<p>Let us now load the results for a single synthetic diploid and
+compute the statistics we may be interested in collecting across all
+synthetic diploids. While we have already looked at simple metrics such
+as total number of errors of each type for each method, we are now also
+interested in things such as:</p>
+<ol style="list-style-type: decimal">
+<li>Overlap of errors across methods</li>
+<li>Enrichment/Depletion of errors based on CpG status, 3mer motif</li>
+</ol>
+<pre class="r"><code>df &lt;- annotate_het_list(1, het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq)</code></pre>
+<p>Let’s first look at all heterozygous positions and report proportions
+for both 3mers and CpG status:</p>
+<pre class="r"><code>pct_cpg &lt;- sum(df$cpg) / length(df$cpg)
+background_3mer &lt;- df %&gt;%
+  group_by(motif) %&gt;%
+  summarize(n = n())
+
+# to do: table to df (or just make a df to begin with using group_by and summary)</code></pre>
+<p>For now, I’m only going to consider enrichment at CpG, since this is
+much easier to digest (you know, one number instead of 64). Let’s now
+take a gander at looking at the overlap of errors:</p>
+<pre class="r"><code>pct_b_e &lt;- ((df$switch_b | df$flip_b) &amp; (df$switch_e | df$flip_e)) %&gt;% sum()</code></pre>
+<div id="all-in-one-function" class="section level4">
+<h4>All in one function</h4>
+<pre class="r"><code>get_summary_stats &lt;- function(id, het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq){
+  df &lt;- annotate_het_list(id, het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq)
+  # stats on all positions
+  n_het &lt;- length(df$pos)
+  n_cpg &lt;- sum(df$cpg)
+  n_pos &lt;- max(df$pos) - min(df$pos)
+  median_maf &lt;- median(df$maf, na.rm=T)
+  mean_maf &lt;- mean(df$maf, na.rm =T)
+  # total errors
+  n_err_beagle &lt;- sum((df$switch_b | df$flip_b))
+  n_err_eagle &lt;- sum((df$switch_e | df$flip_e))
+  n_err_shapeit &lt;- sum((df$switch_s | df$flip_s))
+  med_maf_err_beagle &lt;- df %&gt;% filter(switch_b | flip_b) %&gt;% pull(maf) %&gt;% median(na.rm=T)
+  med_maf_err_eagle &lt;- df %&gt;% filter(switch_e | flip_e) %&gt;% pull(maf) %&gt;% median(na.rm=T)
+  med_maf_err_shapeit &lt;- df %&gt;% filter(switch_s | flip_s) %&gt;% pull(maf) %&gt;% median(na.rm=T)
+  mean_maf_err_beagle &lt;- df %&gt;% filter(switch_b | flip_b) %&gt;% pull(maf) %&gt;% mean(na.rm=T)
+  mean_maf_err_eagle &lt;- df %&gt;% filter(switch_e | flip_e) %&gt;% pull(maf) %&gt;% mean(na.rm=T)
+  mean_maf_err_shapeit &lt;- df %&gt;% filter(switch_s | flip_s) %&gt;% pull(maf) %&gt;% mean(na.rm=T)
+  ## CpG
+  n_err_beagle_cpg &lt;- sum((df$switch_b | df$flip_b) &amp; df$cpg == 1)
+  n_err_eagle_cpg &lt;- sum((df$switch_e | df$flip_e) &amp; df$cpg == 1)
+  n_err_shapeit_cpg &lt;- sum((df$switch_s | df$flip_s) &amp; df$cpg == 1)
+  # number swtiches
+  n_switch_beagle &lt;- sum(df$switch_b)
+  n_switch_eagle &lt;- sum(df$switch_e)
+  n_switch_shapeit &lt;- sum(df$switch_s)
+  med_maf_switch_beagle &lt;- df %&gt;% filter(switch_b) %&gt;% pull(maf) %&gt;% median(na.rm=T)
+  med_maf_switch_eagle &lt;- df %&gt;% filter(switch_e) %&gt;% pull(maf) %&gt;% median(na.rm=T)
+  med_maf_switch_shapeit &lt;- df %&gt;% filter(switch_s) %&gt;% pull(maf) %&gt;% median(na.rm=T)
+  mean_maf_switch_beagle &lt;- df %&gt;% filter(switch_b) %&gt;% pull(maf) %&gt;% mean(na.rm=T)
+  mean_maf_switch_eagle &lt;- df %&gt;% filter(switch_e) %&gt;% pull(maf) %&gt;% mean(na.rm=T)
+  mean_maf_switch_shapeit &lt;- df %&gt;% filter(switch_s) %&gt;% pull(maf) %&gt;% mean(na.rm=T)
+  ## CpG
+  n_switch_beagle_cpg &lt;- sum(df$switch_b &amp; df$cpg == 1)
+  n_switch_eagle_cpg &lt;- sum(df$switch_e &amp; df$cpg == 1)
+  n_switch_shapeit_cpg &lt;- sum(df$switch_s &amp; df$cpg == 1)
+  # number flips
+  n_flip_beagle &lt;- sum(df$flip_b)
+  n_flip_eagle &lt;- sum(df$flip_e)
+  n_flip_shapeit &lt;- sum(df$flip_s)
+  med_maf_flip_beagle &lt;- df %&gt;% filter(flip_b) %&gt;% pull(maf) %&gt;% median(na.rm=T)
+  med_maf_flip_eagle &lt;- df %&gt;% filter(flip_e) %&gt;% pull(maf) %&gt;% median(na.rm=T)
+  med_maf_flip_shapeit &lt;- df %&gt;% filter(flip_s) %&gt;% pull(maf) %&gt;% median(na.rm=T)
+  mean_maf_flip_beagle &lt;- df %&gt;% filter(flip_b) %&gt;% pull(maf) %&gt;% median(na.rm=T)
+  mean_maf_flip_eagle &lt;- df %&gt;% filter(flip_e) %&gt;% pull(maf) %&gt;% median(na.rm=T)
+  mean_maf_flip_shapeit &lt;- df %&gt;% filter(flip_s) %&gt;% pull(maf) %&gt;% median(na.rm=T)
+  ## CpG
+  n_flip_beagle_cpg &lt;- sum(df$flip_b &amp; df$cpg == 1)
+  n_flip_eagle_cpg &lt;- sum(df$flip_e &amp; df$cpg == 1)
+  n_flip_shapeit_cpg &lt;- sum(df$flip_s &amp; df$cpg == 1)
+  
+  # Overlap metrics
+  ## total errors
+  pct_b_e &lt;- (((df$switch_b | df$flip_b) &amp; (df$switch_e | df$flip_e)) %&gt;% sum()) / n_err_beagle
+  pct_b_s &lt;- (((df$switch_b | df$flip_b) &amp; (df$switch_s | df$flip_s)) %&gt;% sum()) / n_err_beagle
+  pct_e_b &lt;- (((df$switch_e | df$flip_e) &amp; (df$switch_b | df$flip_b)) %&gt;% sum()) / n_err_eagle
+  pct_e_s &lt;- (((df$switch_e | df$flip_e) &amp; (df$switch_s | df$flip_s)) %&gt;% sum()) / n_err_eagle
+  pct_s_e &lt;- (((df$switch_s | df$flip_s) &amp; (df$switch_e | df$flip_e)) %&gt;% sum()) / n_err_shapeit
+  pct_s_b &lt;- (((df$switch_s | df$flip_s) &amp; (df$switch_b | df$flip_b)) %&gt;% sum()) / n_err_shapeit
+  
+  ## switches
+  pct_sw_b_e &lt;- (((df$switch_b ) &amp; (df$switch_e | df$flip_e)) %&gt;% sum()) / n_err_beagle
+  pct_sw_b_s &lt;- (((df$switch_b ) &amp; (df$switch_s | df$flip_s)) %&gt;% sum()) / n_err_beagle
+  pct_sw_e_b &lt;- (((df$switch_e ) &amp; (df$switch_b | df$flip_b)) %&gt;% sum()) / n_err_eagle
+  pct_sw_e_s &lt;- (((df$switch_e ) &amp; (df$switch_s | df$flip_s)) %&gt;% sum()) / n_err_eagle
+  pct_sw_s_e &lt;- (((df$switch_s ) &amp; (df$switch_e | df$flip_e)) %&gt;% sum()) / n_err_shapeit
+  pct_sw_s_b &lt;- (((df$switch_s ) &amp; (df$switch_b | df$flip_b)) %&gt;% sum()) / n_err_shapeit
+  
+  ## flips
+  pct_fl_b_e &lt;- (((df$flip_b ) &amp; (df$switch_e | df$flip_e)) %&gt;% sum()) / n_err_beagle
+  pct_fl_b_s &lt;- (((df$flip_b ) &amp; (df$switch_s | df$flip_s)) %&gt;% sum()) / n_err_beagle
+  pct_fl_e_b &lt;- (((df$flip_e ) &amp; (df$switch_b | df$flip_b)) %&gt;% sum()) / n_err_eagle
+  pct_fl_e_s &lt;- (((df$flip_e ) &amp; (df$switch_s | df$flip_s)) %&gt;% sum()) / n_err_eagle
+  pct_fl_s_e &lt;- (((df$flip_s ) &amp; (df$switch_e | df$flip_e)) %&gt;% sum()) / n_err_shapeit
+  pct_fl_s_b &lt;- (((df$flip_s ) &amp; (df$switch_b | df$flip_b)) %&gt;% sum()) / n_err_shapeit
+  
+  result &lt;- data.frame(n_het = n_het,
+                       n_cpg = n_cpg,
+                       n_pos = n_pos,
+                       median_maf = median_maf,
+                       mean_maf = mean_maf,
+                       n_err_beagle = n_err_beagle,
+                       n_err_eagle = n_err_eagle,
+                       n_err_shapeit = n_err_shapeit,
+                       n_err_beagle_cpg = n_err_beagle_cpg,
+                       n_err_eagle_cpg = n_err_eagle_cpg,
+                       n_err_shapeit_cpg = n_err_shapeit_cpg,
+                       med_maf_err_beagle = med_maf_err_beagle,
+                       med_maf_err_eagle = med_maf_err_eagle,
+                       med_maf_err_shapeit = med_maf_err_shapeit,
+                       mean_maf_err_beagle = mean_maf_err_beagle,
+                       mean_maf_err_eagle = mean_maf_err_eagle,
+                       mean_maf_err_shapeit = mean_maf_err_shapeit,
+                       n_switch_beagle = n_switch_beagle,
+                       n_switch_eagle = n_switch_eagle,
+                       n_switch_shapeit = n_switch_shapeit,
+                       n_switch_beagle_cpg = n_switch_beagle_cpg,
+                       n_switch_eagle_cpg = n_switch_eagle_cpg,
+                       n_switch_shapeit_cpg = n_switch_shapeit_cpg,
+                       med_maf_switch_beagle = med_maf_switch_beagle,
+                       med_maf_switch_eagle = med_maf_switch_eagle,
+                       med_maf_switch_shapeit = med_maf_switch_shapeit,
+                       mean_maf_switch_beagle = mean_maf_switch_beagle,
+                       mean_maf_switch_eagle = mean_maf_switch_eagle,
+                       mean_maf_switch_shapeit = mean_maf_switch_shapeit,
+                       n_flip_beagle = n_flip_beagle,
+                       n_flip_eagle = n_flip_eagle,
+                       n_flip_shapeit = n_flip_shapeit,
+                       n_flip_beagle_cpg = n_flip_beagle_cpg,
+                       n_flip_eagle_cpg = n_flip_eagle_cpg,
+                       n_flip_shapeit_cpg = n_flip_shapeit_cpg,
+                       med_maf_flip_beagle = med_maf_flip_beagle,
+                       med_maf_flip_eagle = med_maf_flip_eagle,
+                       med_maf_flip_shapeit = med_maf_flip_shapeit,
+                       mean_maf_flip_beagle = mean_maf_flip_beagle,
+                       mean_maf_flip_eagle = mean_maf_flip_eagle,
+                       mean_maf_flip_shapeit = mean_maf_flip_shapeit,
+                       pct_b_e = pct_b_e,
+                       pct_b_s = pct_b_s,
+                       pct_e_b = pct_e_b,
+                       pct_e_s = pct_e_s,
+                       pct_s_b = pct_s_b,
+                       pct_s_e = pct_s_e,
+                       pct_sw_b_e = pct_sw_b_e,
+                       pct_sw_b_s = pct_sw_b_s,
+                       pct_sw_e_b = pct_sw_e_b,
+                       pct_sw_e_s = pct_sw_e_s,
+                       pct_sw_s_b = pct_sw_s_b,
+                       pct_sw_s_e = pct_sw_s_e,
+                       pct_fl_b_e = pct_fl_b_e,
+                       pct_fl_b_s = pct_fl_b_s,
+                       pct_fl_e_b = pct_fl_e_b,
+                       pct_fl_e_s = pct_fl_e_s,
+                       pct_fl_s_b = pct_fl_s_b,
+                       pct_fl_s_e = pct_fl_s_e)
+  return(result)
+}</code></pre>
+<p>And now let’s load the basic summary statistics from all synthetic
+diploids:</p>
+<pre class="r"><code>results &lt;- vector(mode = &quot;list&quot;, length = 700)
+for(i in 1:700){
+  print(i)
+  results[[i]] &lt;- get_summary_stats(i, het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq)
+}</code></pre>
+<pre><code>[1] 1
+[1] 2
+[1] 3
+[1] 4
+[1] 5
+[1] 6
+[1] 7
+[1] 8
+[1] 9
+[1] 10
+[1] 11
+[1] 12
+[1] 13
+[1] 14
+[1] 15
+[1] 16
+[1] 17
+[1] 18
+[1] 19
+[1] 20
+[1] 21
+[1] 22
+[1] 23
+[1] 24
+[1] 25
+[1] 26
+[1] 27
+[1] 28
+[1] 29
+[1] 30
+[1] 31
+[1] 32
+[1] 33
+[1] 34
+[1] 35
+[1] 36
+[1] 37
+[1] 38
+[1] 39
+[1] 40
+[1] 41
+[1] 42
+[1] 43
+[1] 44
+[1] 45
+[1] 46
+[1] 47
+[1] 48
+[1] 49
+[1] 50
+[1] 51
+[1] 52
+[1] 53
+[1] 54
+[1] 55
+[1] 56
+[1] 57
+[1] 58
+[1] 59
+[1] 60
+[1] 61
+[1] 62
+[1] 63
+[1] 64
+[1] 65
+[1] 66
+[1] 67
+[1] 68
+[1] 69
+[1] 70
+[1] 71
+[1] 72
+[1] 73
+[1] 74
+[1] 75
+[1] 76
+[1] 77
+[1] 78
+[1] 79
+[1] 80
+[1] 81
+[1] 82
+[1] 83
+[1] 84
+[1] 85
+[1] 86
+[1] 87
+[1] 88
+[1] 89
+[1] 90
+[1] 91
+[1] 92
+[1] 93
+[1] 94
+[1] 95
+[1] 96
+[1] 97
+[1] 98
+[1] 99
+[1] 100
+[1] 101
+[1] 102
+[1] 103
+[1] 104
+[1] 105
+[1] 106
+[1] 107
+[1] 108
+[1] 109
+[1] 110
+[1] 111
+[1] 112
+[1] 113
+[1] 114
+[1] 115
+[1] 116
+[1] 117
+[1] 118
+[1] 119
+[1] 120
+[1] 121
+[1] 122
+[1] 123
+[1] 124
+[1] 125
+[1] 126
+[1] 127
+[1] 128
+[1] 129
+[1] 130
+[1] 131
+[1] 132
+[1] 133
+[1] 134
+[1] 135
+[1] 136
+[1] 137
+[1] 138
+[1] 139
+[1] 140
+[1] 141
+[1] 142
+[1] 143
+[1] 144
+[1] 145
+[1] 146
+[1] 147
+[1] 148
+[1] 149
+[1] 150
+[1] 151
+[1] 152
+[1] 153
+[1] 154
+[1] 155
+[1] 156
+[1] 157
+[1] 158
+[1] 159
+[1] 160
+[1] 161
+[1] 162
+[1] 163
+[1] 164
+[1] 165
+[1] 166
+[1] 167
+[1] 168
+[1] 169
+[1] 170
+[1] 171
+[1] 172
+[1] 173
+[1] 174
+[1] 175
+[1] 176
+[1] 177
+[1] 178
+[1] 179
+[1] 180
+[1] 181
+[1] 182
+[1] 183
+[1] 184
+[1] 185
+[1] 186
+[1] 187
+[1] 188
+[1] 189
+[1] 190
+[1] 191
+[1] 192
+[1] 193
+[1] 194
+[1] 195
+[1] 196
+[1] 197
+[1] 198
+[1] 199
+[1] 200
+[1] 201
+[1] 202
+[1] 203
+[1] 204
+[1] 205
+[1] 206
+[1] 207
+[1] 208
+[1] 209
+[1] 210
+[1] 211
+[1] 212
+[1] 213
+[1] 214
+[1] 215
+[1] 216
+[1] 217
+[1] 218
+[1] 219
+[1] 220
+[1] 221
+[1] 222
+[1] 223
+[1] 224
+[1] 225
+[1] 226
+[1] 227
+[1] 228
+[1] 229
+[1] 230
+[1] 231
+[1] 232
+[1] 233
+[1] 234
+[1] 235
+[1] 236
+[1] 237
+[1] 238
+[1] 239
+[1] 240
+[1] 241
+[1] 242
+[1] 243
+[1] 244
+[1] 245
+[1] 246
+[1] 247
+[1] 248
+[1] 249
+[1] 250
+[1] 251
+[1] 252
+[1] 253
+[1] 254
+[1] 255
+[1] 256
+[1] 257
+[1] 258
+[1] 259
+[1] 260
+[1] 261
+[1] 262
+[1] 263
+[1] 264
+[1] 265
+[1] 266
+[1] 267
+[1] 268
+[1] 269
+[1] 270
+[1] 271
+[1] 272
+[1] 273
+[1] 274
+[1] 275
+[1] 276
+[1] 277
+[1] 278
+[1] 279
+[1] 280
+[1] 281
+[1] 282
+[1] 283
+[1] 284
+[1] 285
+[1] 286
+[1] 287
+[1] 288
+[1] 289
+[1] 290
+[1] 291
+[1] 292
+[1] 293
+[1] 294
+[1] 295
+[1] 296
+[1] 297
+[1] 298
+[1] 299
+[1] 300
+[1] 301
+[1] 302
+[1] 303
+[1] 304
+[1] 305
+[1] 306
+[1] 307
+[1] 308
+[1] 309
+[1] 310
+[1] 311
+[1] 312
+[1] 313
+[1] 314
+[1] 315
+[1] 316
+[1] 317
+[1] 318
+[1] 319
+[1] 320
+[1] 321
+[1] 322
+[1] 323
+[1] 324
+[1] 325
+[1] 326
+[1] 327
+[1] 328
+[1] 329
+[1] 330
+[1] 331
+[1] 332
+[1] 333
+[1] 334
+[1] 335
+[1] 336
+[1] 337
+[1] 338
+[1] 339
+[1] 340
+[1] 341
+[1] 342
+[1] 343
+[1] 344
+[1] 345
+[1] 346
+[1] 347
+[1] 348
+[1] 349
+[1] 350
+[1] 351
+[1] 352
+[1] 353
+[1] 354
+[1] 355
+[1] 356
+[1] 357
+[1] 358
+[1] 359
+[1] 360
+[1] 361
+[1] 362
+[1] 363
+[1] 364
+[1] 365
+[1] 366
+[1] 367
+[1] 368
+[1] 369
+[1] 370
+[1] 371
+[1] 372
+[1] 373
+[1] 374
+[1] 375
+[1] 376
+[1] 377
+[1] 378
+[1] 379
+[1] 380
+[1] 381
+[1] 382
+[1] 383
+[1] 384
+[1] 385
+[1] 386
+[1] 387
+[1] 388
+[1] 389
+[1] 390
+[1] 391
+[1] 392
+[1] 393
+[1] 394
+[1] 395
+[1] 396
+[1] 397
+[1] 398
+[1] 399
+[1] 400
+[1] 401
+[1] 402
+[1] 403
+[1] 404
+[1] 405
+[1] 406
+[1] 407
+[1] 408
+[1] 409
+[1] 410
+[1] 411
+[1] 412
+[1] 413
+[1] 414
+[1] 415
+[1] 416
+[1] 417
+[1] 418
+[1] 419
+[1] 420
+[1] 421
+[1] 422
+[1] 423
+[1] 424
+[1] 425
+[1] 426
+[1] 427
+[1] 428
+[1] 429
+[1] 430
+[1] 431
+[1] 432
+[1] 433
+[1] 434
+[1] 435
+[1] 436
+[1] 437
+[1] 438
+[1] 439
+[1] 440
+[1] 441
+[1] 442
+[1] 443
+[1] 444
+[1] 445
+[1] 446
+[1] 447
+[1] 448
+[1] 449
+[1] 450
+[1] 451
+[1] 452
+[1] 453
+[1] 454
+[1] 455
+[1] 456
+[1] 457
+[1] 458
+[1] 459
+[1] 460
+[1] 461
+[1] 462
+[1] 463
+[1] 464
+[1] 465
+[1] 466
+[1] 467
+[1] 468
+[1] 469
+[1] 470
+[1] 471
+[1] 472
+[1] 473
+[1] 474
+[1] 475
+[1] 476
+[1] 477
+[1] 478
+[1] 479
+[1] 480
+[1] 481
+[1] 482
+[1] 483
+[1] 484
+[1] 485
+[1] 486
+[1] 487
+[1] 488
+[1] 489
+[1] 490
+[1] 491
+[1] 492
+[1] 493
+[1] 494
+[1] 495
+[1] 496
+[1] 497
+[1] 498
+[1] 499
+[1] 500
+[1] 501
+[1] 502
+[1] 503
+[1] 504
+[1] 505
+[1] 506
+[1] 507
+[1] 508
+[1] 509
+[1] 510
+[1] 511
+[1] 512
+[1] 513
+[1] 514
+[1] 515
+[1] 516
+[1] 517
+[1] 518
+[1] 519
+[1] 520
+[1] 521
+[1] 522
+[1] 523
+[1] 524
+[1] 525
+[1] 526
+[1] 527
+[1] 528
+[1] 529
+[1] 530
+[1] 531
+[1] 532
+[1] 533
+[1] 534
+[1] 535
+[1] 536
+[1] 537
+[1] 538
+[1] 539
+[1] 540
+[1] 541
+[1] 542
+[1] 543
+[1] 544
+[1] 545
+[1] 546
+[1] 547
+[1] 548
+[1] 549
+[1] 550
+[1] 551
+[1] 552
+[1] 553
+[1] 554
+[1] 555
+[1] 556
+[1] 557
+[1] 558
+[1] 559
+[1] 560
+[1] 561
+[1] 562
+[1] 563
+[1] 564
+[1] 565
+[1] 566
+[1] 567
+[1] 568
+[1] 569
+[1] 570
+[1] 571
+[1] 572
+[1] 573
+[1] 574
+[1] 575
+[1] 576
+[1] 577
+[1] 578
+[1] 579
+[1] 580
+[1] 581
+[1] 582
+[1] 583
+[1] 584
+[1] 585
+[1] 586
+[1] 587
+[1] 588
+[1] 589
+[1] 590
+[1] 591
+[1] 592
+[1] 593
+[1] 594
+[1] 595
+[1] 596
+[1] 597
+[1] 598
+[1] 599
+[1] 600
+[1] 601
+[1] 602
+[1] 603
+[1] 604
+[1] 605
+[1] 606
+[1] 607
+[1] 608
+[1] 609
+[1] 610
+[1] 611
+[1] 612
+[1] 613
+[1] 614
+[1] 615
+[1] 616
+[1] 617
+[1] 618
+[1] 619
+[1] 620
+[1] 621
+[1] 622
+[1] 623
+[1] 624
+[1] 625
+[1] 626
+[1] 627
+[1] 628
+[1] 629
+[1] 630
+[1] 631
+[1] 632
+[1] 633
+[1] 634
+[1] 635
+[1] 636
+[1] 637
+[1] 638
+[1] 639
+[1] 640
+[1] 641
+[1] 642
+[1] 643
+[1] 644
+[1] 645
+[1] 646
+[1] 647
+[1] 648
+[1] 649
+[1] 650
+[1] 651
+[1] 652
+[1] 653
+[1] 654
+[1] 655
+[1] 656
+[1] 657
+[1] 658
+[1] 659
+[1] 660
+[1] 661
+[1] 662
+[1] 663
+[1] 664
+[1] 665
+[1] 666
+[1] 667
+[1] 668
+[1] 669
+[1] 670
+[1] 671
+[1] 672
+[1] 673
+[1] 674
+[1] 675
+[1] 676
+[1] 677
+[1] 678
+[1] 679
+[1] 680
+[1] 681
+[1] 682
+[1] 683
+[1] 684
+[1] 685
+[1] 686
+[1] 687
+[1] 688
+[1] 689
+[1] 690
+[1] 691
+[1] 692
+[1] 693
+[1] 694
+[1] 695
+[1] 696
+[1] 697
+[1] 698
+[1] 699
+[1] 700</code></pre>
+<pre class="r"><code>results &lt;- bind_rows(results)
+results$pop &lt;- c(rep(&quot;EUR&quot;, 200), rep(&quot;AFR&quot;, 200), rep(&quot;AMR&quot;, 100), rep(&quot;EAS&quot;, 100), rep(&quot;SAS&quot;, 100))</code></pre>
+<p>And now… PLOTS!</p>
+</div>
+</div>
+</div>
+</div>
+<div id="errors-by-method" class="section level1">
+<h1>Errors by Method</h1>
+<div id="total-errors-per-mb" class="section level2">
+<h2>Total Errors per MB</h2>
+<pre class="r"><code>p1 &lt;- results %&gt;%
+  mutate(b_per_mb = (n_err_beagle / n_pos)*1000,
+         e_per_mb = (n_err_eagle / n_pos) * 1000) %&gt;%
+  ggplot(aes(x = b_per_mb, y = e_per_mb, color = pop)) +
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  xlab(&quot;Beagle&quot;) +
+  ylab(&quot;Eagle&quot;) +
+  theme_classic() +
+  scale_color_manual(values = cbPalette) +
+  guides(colour=&quot;none&quot;)
+
+ggMarginal(p1, groupColour = TRUE)</code></pre>
+<p><img src="figure/genomic_features.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>p1 &lt;- results %&gt;%
+  mutate(e_per_mb = (n_err_eagle / n_pos)*1000,
+         s_per_mb = (n_err_shapeit / n_pos) * 1000) %&gt;%
+  ggplot(aes(x = s_per_mb, y = e_per_mb, color = pop)) +
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  ylab(&quot;Eagle&quot;) +
+  xlab(&quot;SHAPEIT&quot;) +
+  theme_classic() +
+  scale_color_manual(values = cbPalette) +
+  guides(colour=&quot;none&quot;)
+
+ggMarginal(p1, groupColour = TRUE)</code></pre>
+<p><img src="figure/genomic_features.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>p1 &lt;- results %&gt;%
+  mutate(b_per_mb = (n_err_beagle / n_pos)*1000,
+         s_per_mb = (n_err_shapeit / n_pos) * 1000) %&gt;%
+  ggplot(aes(x = s_per_mb, y = b_per_mb, color = pop)) +
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  ylab(&quot;Beagle&quot;) +
+  xlab(&quot;SHAPEIT&quot;) +
+  theme_classic() +
+  scale_color_manual(values = cbPalette) +
+  guides(colour=&quot;none&quot;)
+
+ggMarginal(p1, groupColour = TRUE)</code></pre>
+<p><img src="figure/genomic_features.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="switches-per-mb" class="section level2">
+<h2>Switches per MB</h2>
+<pre class="r"><code>p1 &lt;- results %&gt;%
+  mutate(b_per_mb = (n_switch_beagle / n_pos)*1000,
+         e_per_mb = (n_switch_eagle / n_pos) * 1000) %&gt;%
+  ggplot(aes(x = b_per_mb, y = e_per_mb, color = pop)) +
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  ylab(&quot;Eagle&quot;) +
+  xlab(&quot;Beagle&quot;) +
+  theme_classic() +
+  scale_color_manual(values = cbPalette) +
+  guides(colour=&quot;none&quot;)
+
+ggMarginal(p1, groupColour = TRUE)</code></pre>
+<p><img src="figure/genomic_features.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>p1 &lt;- results %&gt;%
+  mutate(s_per_mb = (n_switch_shapeit / n_pos)*1000,
+         e_per_mb = (n_switch_eagle / n_pos) * 1000) %&gt;%
+  ggplot(aes(x = s_per_mb, y = e_per_mb, color = pop)) +
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  ylab(&quot;Eagle&quot;) +
+  xlab(&quot;SHAPEIT&quot;) +
+  theme_classic() +
+  scale_color_manual(values = cbPalette) +
+  guides(colour=&quot;none&quot;)
+
+ggMarginal(p1, groupColour = TRUE)</code></pre>
+<p><img src="figure/genomic_features.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>p1 &lt;- results %&gt;%
+  mutate(s_per_mb = (n_switch_shapeit / n_pos)*1000,
+         b_per_mb = (n_switch_beagle / n_pos) * 1000) %&gt;%
+  ggplot(aes(x = s_per_mb, y = b_per_mb, color = pop)) +
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  ylab(&quot;Beagle&quot;) +
+  xlab(&quot;SHAPEIT&quot;) +
+  theme_classic() +
+  scale_color_manual(values = cbPalette) +
+  guides(colour=&quot;none&quot;)
+
+ggMarginal(p1, groupColour = TRUE)</code></pre>
+<p><img src="figure/genomic_features.Rmd/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="flips-per-mb" class="section level2">
+<h2>Flips per MB</h2>
+<pre class="r"><code>p1 &lt;- results %&gt;%
+  mutate(b_per_mb = (n_flip_beagle / n_pos)*1000,
+         e_per_mb = (n_flip_eagle / n_pos) * 1000) %&gt;%
+  ggplot(aes(x = b_per_mb, y = e_per_mb, color = pop)) +
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  ylab(&quot;Eagle&quot;) +
+  xlab(&quot;Beagle&quot;) +
+  theme_classic() +
+  scale_color_manual(values = cbPalette) +
+  guides(colour=&quot;none&quot;)
+
+ggMarginal(p1, groupColour = TRUE)</code></pre>
+<p><img src="figure/genomic_features.Rmd/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>p1 &lt;- results %&gt;%
+  mutate(s_per_mb = (n_flip_shapeit / n_pos)*1000,
+         e_per_mb = (n_flip_eagle / n_pos) * 1000) %&gt;%
+  ggplot(aes(x = s_per_mb, y = e_per_mb, color = pop)) +
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  ylab(&quot;Eagle&quot;) +
+  xlab(&quot;SHAPEIT&quot;) +
+  theme_classic() +
+  scale_color_manual(values = cbPalette) +
+  guides(colour=&quot;none&quot;)
+
+ggMarginal(p1, groupColour = TRUE)</code></pre>
+<p><img src="figure/genomic_features.Rmd/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>p1 &lt;- results %&gt;%
+  mutate(s_per_mb = (n_flip_shapeit / n_pos)*1000,
+         b_per_mb = (n_flip_beagle / n_pos) * 1000) %&gt;%
+  ggplot(aes(x = s_per_mb, y = b_per_mb, color = pop)) +
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0) +
+  ylab(&quot;Beagle&quot;) +
+  xlab(&quot;SHAPEIT&quot;) +
+  theme_classic() +
+  scale_color_manual(values = cbPalette) +
+  guides(colour=&quot;none&quot;)
+
+ggMarginal(p1, groupColour = TRUE)</code></pre>
+<p><img src="figure/genomic_features.Rmd/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="cpg-enrichment-depletion" class="section level1">
+<h1>CpG Enrichment / Depletion</h1>
+<div id="total-errors" class="section level2">
+<h2>Total Errors</h2>
+<pre class="r"><code>results %&gt;%
+  mutate(b_pct_cpg = n_err_beagle_cpg / n_err_beagle,
+         e_pct_cpg = n_err_eagle_cpg / n_err_eagle,
+         s_pct_cpg = n_err_shapeit_cpg / n_err_shapeit,
+         pct_cpg = n_cpg / n_het) %&gt;%
+  mutate(beagle = b_pct_cpg / pct_cpg,
+         eagle = e_pct_cpg / pct_cpg,
+         shapeit = s_pct_cpg / pct_cpg) %&gt;%
+  select(beagle, eagle, shapeit) %&gt;%
+  pivot_longer(everything(), names_to = &quot;method&quot;, values_to = &quot;enrich&quot;) %&gt;%
+  ggplot(aes(x = method, y = enrich)) + 
+  geom_boxplot() +
+  xlab(&quot;Method&quot;) +
+  ylab(&quot;Enrichment&quot;) +
+  theme_classic() +
+  geom_hline(yintercept = 1)</code></pre>
+<p><img src="figure/genomic_features.Rmd/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>results %&gt;%
+  mutate(b_pct_cpg = n_err_beagle_cpg / n_err_beagle,
+         e_pct_cpg = n_err_eagle_cpg / n_err_eagle,
+         s_pct_cpg = n_err_shapeit_cpg / n_err_shapeit,
+         pct_cpg = n_cpg / n_het) %&gt;%
+  mutate(beagle = b_pct_cpg / pct_cpg,
+         eagle = e_pct_cpg / pct_cpg,
+         shapeit = s_pct_cpg / pct_cpg) %&gt;%
+  select(beagle, eagle, shapeit, pop) %&gt;%
+  pivot_longer(-pop, names_to = &quot;method&quot;, values_to = &quot;enrich&quot;) %&gt;%
+  ggplot(aes(x = method, y = enrich, color = pop)) + 
+  geom_boxplot() +
+  xlab(&quot;Method&quot;) +
+  ylab(&quot;Enrichment&quot;) +
+  theme_classic() +
+  scale_color_manual(values = cbPalette) +
+  geom_hline(yintercept = 1)</code></pre>
+<p><img src="figure/genomic_features.Rmd/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>results %&gt;%
+  mutate(b_pct_cpg = n_err_beagle_cpg / n_err_beagle,
+         e_pct_cpg = n_err_eagle_cpg / n_err_eagle,
+         s_pct_cpg = n_err_shapeit_cpg / n_err_shapeit,
+         pct_cpg = n_cpg / n_het) %&gt;%
+  mutate(beagle = b_pct_cpg / pct_cpg,
+         eagle = e_pct_cpg / pct_cpg,
+         shapeit = s_pct_cpg / pct_cpg) %&gt;%
+  pull(shapeit) %&gt;%
+  t.test(mu=1)</code></pre>
+<pre><code>
+    One Sample t-test
+
+data:  .
+t = 16.806, df = 699, p-value &lt; 2.2e-16
+alternative hypothesis: true mean is not equal to 1
+95 percent confidence interval:
+ 1.109649 1.138657
+sample estimates:
+mean of x 
+ 1.124153 </code></pre>
+<pre class="r"><code>results %&gt;%
+  mutate(b_pct_cpg = n_err_beagle_cpg / n_err_beagle,
+         e_pct_cpg = n_err_eagle_cpg / n_err_eagle,
+         s_pct_cpg = n_err_shapeit_cpg / n_err_shapeit,
+         pct_cpg = n_cpg / n_het) %&gt;%
+  mutate(beagle = b_pct_cpg / pct_cpg,
+         eagle = e_pct_cpg / pct_cpg,
+         shapeit = s_pct_cpg / pct_cpg) %&gt;%
+  {t.test(.$beagle, .$eagle)}</code></pre>
+<pre><code>
+    Welch Two Sample t-test
+
+data:  .$beagle and .$eagle
+t = -2.1022, df = 1387.2, p-value = 0.03571
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ -0.042181301 -0.001458917
+sample estimates:
+mean of x mean of y 
+ 1.210128  1.231948 </code></pre>
+</div>
+<div id="switches" class="section level2">
+<h2>Switches</h2>
+<pre class="r"><code>results %&gt;%
+  mutate(b_pct_cpg = n_switch_beagle_cpg / n_switch_beagle,
+         e_pct_cpg = n_switch_eagle_cpg / n_switch_eagle,
+         s_pct_cpg = n_switch_shapeit_cpg / n_switch_shapeit,
+         pct_cpg = n_cpg / n_het) %&gt;%
+  mutate(beagle = b_pct_cpg / pct_cpg,
+         eagle = e_pct_cpg / pct_cpg,
+         shapeit = s_pct_cpg / pct_cpg) %&gt;%
+  select(beagle, eagle, shapeit) %&gt;%
+  pivot_longer(everything(), names_to = &quot;method&quot;, values_to = &quot;enrich&quot;) %&gt;%
+  ggplot(aes(x = method, y = enrich)) + 
+  geom_boxplot() +
+  xlab(&quot;Method&quot;) +
+  ylab(&quot;Enrichment&quot;) +
+  theme_classic() +
+  geom_hline(yintercept = 1)</code></pre>
+<p><img src="figure/genomic_features.Rmd/unnamed-chunk-23-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>results %&gt;%
+  mutate(b_pct_cpg = n_switch_beagle_cpg / n_switch_beagle,
+         e_pct_cpg = n_switch_eagle_cpg / n_switch_eagle,
+         s_pct_cpg = n_switch_shapeit_cpg / n_switch_shapeit,
+         pct_cpg = n_cpg / n_het) %&gt;%
+  mutate(beagle = b_pct_cpg / pct_cpg,
+         eagle = e_pct_cpg / pct_cpg,
+         shapeit = s_pct_cpg / pct_cpg) %&gt;%
+  select(beagle, eagle, shapeit, pop) %&gt;%
+  pivot_longer(-pop, names_to = &quot;method&quot;, values_to = &quot;enrich&quot;) %&gt;%
+  ggplot(aes(x = method, y = enrich, color = pop)) + 
+  geom_boxplot() +
+  xlab(&quot;Method&quot;) +
+  ylab(&quot;Enrichment&quot;) +
+  theme_classic() +
+  scale_color_manual(values = cbPalette) +
+  geom_hline(yintercept = 1)</code></pre>
+<p><img src="figure/genomic_features.Rmd/unnamed-chunk-24-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>results %&gt;%
+   mutate(b_pct_cpg = n_switch_beagle_cpg / n_switch_beagle,
+         e_pct_cpg = n_switch_eagle_cpg / n_switch_eagle,
+         s_pct_cpg = n_switch_shapeit_cpg / n_switch_shapeit,
+         pct_cpg = n_cpg / n_het) %&gt;%
+  mutate(beagle = b_pct_cpg / pct_cpg,
+         eagle = e_pct_cpg / pct_cpg,
+         shapeit = s_pct_cpg / pct_cpg) %&gt;%
+  pull(shapeit) %&gt;%
+  t.test(mu=1)</code></pre>
+<pre><code>
+    One Sample t-test
+
+data:  .
+t = 11.36, df = 699, p-value &lt; 2.2e-16
+alternative hypothesis: true mean is not equal to 1
+95 percent confidence interval:
+ 1.104072 1.147561
+sample estimates:
+mean of x 
+ 1.125816 </code></pre>
+<pre class="r"><code>results %&gt;%
+   mutate(b_pct_cpg = n_switch_beagle_cpg / n_switch_beagle,
+         e_pct_cpg = n_switch_eagle_cpg / n_switch_eagle,
+         s_pct_cpg = n_switch_shapeit_cpg / n_switch_shapeit,
+         pct_cpg = n_cpg / n_het) %&gt;%
+  mutate(beagle = b_pct_cpg / pct_cpg,
+         eagle = e_pct_cpg / pct_cpg,
+         shapeit = s_pct_cpg / pct_cpg) %&gt;%
+  {t.test(.$beagle, .$eagle)}</code></pre>
+<pre><code>
+    Welch Two Sample t-test
+
+data:  .$beagle and .$eagle
+t = -4.6203, df = 1395.7, p-value = 4.185e-06
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ -0.09247027 -0.03735151
+sample estimates:
+mean of x mean of y 
+ 1.272703  1.337614 </code></pre>
+</div>
+<div id="flips" class="section level2">
+<h2>Flips</h2>
+<pre class="r"><code>results %&gt;%
+  mutate(b_pct_cpg = n_flip_beagle_cpg / n_flip_beagle,
+         e_pct_cpg = n_flip_eagle_cpg / n_flip_eagle,
+         s_pct_cpg = n_flip_shapeit_cpg / n_flip_shapeit,
+         pct_cpg = n_cpg / n_het) %&gt;%
+  mutate(beagle = b_pct_cpg / pct_cpg,
+         eagle = e_pct_cpg / pct_cpg,
+         shapeit = s_pct_cpg / pct_cpg) %&gt;%
+  select(beagle, eagle, shapeit, pop) %&gt;%
+  pivot_longer(-pop, names_to = &quot;method&quot;, values_to = &quot;enrich&quot;) %&gt;%
+  ggplot(aes(x = method, y = enrich)) + 
+  geom_boxplot() +
+  xlab(&quot;Method&quot;) +
+  ylab(&quot;Enrichment&quot;) +
+  theme_classic() +
+  geom_hline(yintercept = 1)</code></pre>
+<p><img src="figure/genomic_features.Rmd/unnamed-chunk-27-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>results %&gt;%
+  mutate(b_pct_cpg = n_flip_beagle_cpg / n_flip_beagle,
+         e_pct_cpg = n_flip_eagle_cpg / n_flip_eagle,
+         s_pct_cpg = n_flip_shapeit_cpg / n_flip_shapeit,
+         pct_cpg = n_cpg / n_het) %&gt;%
+  mutate(beagle = b_pct_cpg / pct_cpg,
+         eagle = e_pct_cpg / pct_cpg,
+         shapeit = s_pct_cpg / pct_cpg) %&gt;%
+  select(beagle, eagle, shapeit, pop) %&gt;%
+  pivot_longer(-pop, names_to = &quot;method&quot;, values_to = &quot;enrich&quot;) %&gt;%
+  ggplot(aes(x = method, y = enrich, color = pop)) + 
+  geom_boxplot() +
+  xlab(&quot;Method&quot;) +
+  ylab(&quot;Enrichment&quot;) +
+  theme_classic() +
+  scale_color_manual(values = cbPalette) +
+  geom_hline(yintercept = 1)</code></pre>
+<p><img src="figure/genomic_features.Rmd/unnamed-chunk-28-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>results %&gt;%
+  mutate(b_pct_cpg = n_flip_beagle_cpg / n_flip_beagle,
+         e_pct_cpg = n_flip_eagle_cpg / n_flip_eagle,
+         s_pct_cpg = n_flip_shapeit_cpg / n_flip_shapeit,
+         pct_cpg = n_cpg / n_het) %&gt;%
+  mutate(beagle = b_pct_cpg / pct_cpg,
+         eagle = e_pct_cpg / pct_cpg,
+         shapeit = s_pct_cpg / pct_cpg) %&gt;%
+  {t.test(.$eagle, mu = 1)}</code></pre>
+<pre><code>
+    One Sample t-test
+
+data:  .$eagle
+t = 7.2592, df = 699, p-value = 1.04e-12
+alternative hypothesis: true mean is not equal to 1
+95 percent confidence interval:
+ 1.052989 1.092279
+sample estimates:
+mean of x 
+ 1.072634 </code></pre>
+<pre class="r"><code>results %&gt;%
+  select(starts_with(c(&quot;pct_b_&quot;, &quot;pct_e_&quot;, &quot;pct_s_&quot;))) %&gt;%
+  pivot_longer(everything(),names_to = &quot;comp&quot;, values_to = &quot;pct&quot;) %&gt;%
+  ggplot(aes(x = comp, y= pct)) +
+  geom_boxplot()</code></pre>
+<p><img src="figure/genomic_features.Rmd/unnamed-chunk-30-1.png" width="672" style="display: block; margin: auto;" /></p>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.3.2 (2023-10-31)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 20.04.6 LTS
+
+Matrix products: default
+BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
+LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/liblapack.so.3;  LAPACK version 3.9.0
+
+locale:
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+ [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+
+time zone: America/New_York
+tzcode source: system (glibc)
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] ggExtra_0.10.1  lubridate_1.9.2 forcats_1.0.0   stringr_1.5.1  
+ [5] dplyr_1.1.4     purrr_1.0.2     readr_2.1.4     tidyr_1.3.0    
+ [9] tibble_3.2.1    ggplot2_3.4.4   tidyverse_2.0.0 workflowr_1.7.0
+
+loaded via a namespace (and not attached):
+ [1] gtable_0.3.4     xfun_0.39        bslib_0.5.0      processx_3.8.1  
+ [5] callr_3.7.3      tzdb_0.4.0       vctrs_0.6.5      tools_4.3.2     
+ [9] ps_1.7.5         generics_0.1.3   parallel_4.3.2   fansi_1.0.5     
+[13] highr_0.10       pkgconfig_2.0.3  lifecycle_1.0.4  farver_2.1.1    
+[17] compiler_4.3.2   git2r_0.32.0     munsell_0.5.0    getPass_0.2-2   
+[21] httpuv_1.6.11    htmltools_0.5.6  sass_0.4.6       yaml_2.3.7      
+[25] later_1.3.1      pillar_1.9.0     crayon_1.5.2     jquerylib_0.1.4 
+[29] whisker_0.4.1    ellipsis_0.3.2   cachem_1.0.8     mime_0.12       
+[33] tidyselect_1.2.0 digest_0.6.33    stringi_1.8.2    labeling_0.4.3  
+[37] rprojroot_2.0.3  fastmap_1.1.1    grid_4.3.2       archive_1.1.5   
+[41] colorspace_2.1-0 cli_3.6.1        magrittr_2.0.3   utf8_1.2.4      
+[45] withr_2.5.2      scales_1.3.0     promises_1.2.0.1 bit64_4.0.5     
+[49] timechange_0.2.0 rmarkdown_2.22   httr_1.4.6       bit_4.0.5       
+[53] hms_1.1.3        shiny_1.7.4      evaluate_0.21    knitr_1.42      
+[57] miniUI_0.1.1.1   rlang_1.1.2      Rcpp_1.0.11      xtable_1.8-4    
+[61] glue_1.6.2       rstudioapi_0.14  vroom_1.6.5      jsonlite_1.8.7  
+[65] R6_2.5.1         fs_1.6.2        </code></pre>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
