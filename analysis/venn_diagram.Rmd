@@ -439,6 +439,18 @@ df_eur %>%
   ggtitle("Switches per MB Bin", "EUR Synthetic Diploids")
 
 df_eur %>%
+  select(bin_id, beagle_s, eagle_s, shapeit_s) %>%
+  rename(Beagle = beagle_s, Eagle = eagle_s, SHAPEIT = shapeit_s) %>%
+  pivot_longer(-bin_id, names_to = "Method", values_to = "Switches") %>%
+  ggplot(aes(x = bin_id, y = Switches, color = Method )) +
+    geom_point() +
+    geom_line() +
+  geom_smooth() +
+    theme_classic() +
+    xlab("Bin") +
+  ggtitle("Switches per MB Bin", "EUR Synthetic Diploids")
+
+df_eur %>%
   select(beagle_s, eagle_s, shapeit_s) %>%
   cor(method = "pearson") %>%
   knitr::kable()
@@ -461,6 +473,18 @@ df_eur %>%
     geom_point() +
     geom_line() +
     theme_classic() +
+    xlab("Bin") +
+  ggtitle("Flips per MB Bin", "EUR Synthetic Diploids")
+
+df_eur %>%
+  select(bin_id, beagle_f, eagle_f, shapeit_f) %>%
+  rename(Beagle = beagle_f, Eagle = eagle_f, SHAPEIT = shapeit_f) %>%
+  pivot_longer(-bin_id, names_to = "Method", values_to = "Flips") %>%
+  ggplot(aes(x = bin_id, y = Flips, color = Method )) +
+    geom_point() +
+    geom_line() +
+    theme_classic() +
+  geom_smooth() +
     xlab("Bin") +
   ggtitle("Flips per MB Bin", "EUR Synthetic Diploids")
 
@@ -494,6 +518,18 @@ df_afr %>%
   ggtitle("Switches per MB Bin", "AFR Synthetic Diploids")
 
 df_afr %>%
+  select(bin_id, beagle_s, eagle_s, shapeit_s) %>%
+  rename(Beagle = beagle_s, Eagle = eagle_s, SHAPEIT = shapeit_s) %>%
+  pivot_longer(-bin_id, names_to = "Method", values_to = "Switches") %>%
+  ggplot(aes(x = bin_id, y = Switches, color = Method )) +
+    geom_point() +
+    geom_line() +
+    theme_classic() +
+    xlab("Bin") +
+  geom_smooth() +
+  ggtitle("Switches per MB Bin", "AFR Synthetic Diploids")
+
+df_afr %>%
   select(beagle_s, eagle_s, shapeit_s) %>%
   cor(method = "pearson") %>%
   knitr::kable()
@@ -517,6 +553,18 @@ df_afr %>%
     theme_classic() +
     xlab("Bin") +
   ggtitle("Flips per MB Bin", "AFR Synthetic Diploids")
+
+df_afr %>%
+  select(bin_id, beagle_f, eagle_f, shapeit_f) %>%
+  rename(Beagle = beagle_f, Eagle = eagle_f, SHAPEIT = shapeit_f) %>%
+  pivot_longer(-bin_id, names_to = "Method", values_to = "Flips") %>%
+  ggplot(aes(x = bin_id, y = Flips, color = Method )) +
+    geom_point() +
+    geom_line() +
+    theme_classic() +
+    xlab("Bin") +
+  ggtitle("Flips per MB Bin", "AFR Synthetic Diploids") +
+  geom_smooth()
 
 df_afr %>%
   select(beagle_f, eagle_f, shapeit_f) %>%
@@ -549,6 +597,18 @@ df_amr %>%
   ggtitle("Switches per MB Bin", "AMR Synthetic Diploids")
 
 df_amr %>%
+  select(bin_id, beagle_s, eagle_s, shapeit_s) %>%
+  rename(Beagle = beagle_s, Eagle = eagle_s, SHAPEIT = shapeit_s) %>%
+  pivot_longer(-bin_id, names_to = "Method", values_to = "Switches") %>%
+  ggplot(aes(x = bin_id, y = Switches, color = Method )) +
+    geom_point() +
+    geom_line() +
+    theme_classic() +
+    xlab("Bin") +
+  ggtitle("Switches per MB Bin", "AMR Synthetic Diploids") +
+  geom_smooth()
+
+df_amr %>%
   select(beagle_s, eagle_s, shapeit_s) %>%
   cor(method = "pearson") %>%
   knitr::kable()
@@ -572,6 +632,18 @@ df_amr %>%
     theme_classic() +
     xlab("Bin") +
   ggtitle("Flips per MB Bin", "AMR Synthetic Diploids")
+
+df_amr %>%
+  select(bin_id, beagle_f, eagle_f, shapeit_f) %>%
+  rename(Beagle = beagle_f, Eagle = eagle_f, SHAPEIT = shapeit_f) %>%
+  pivot_longer(-bin_id, names_to = "Method", values_to = "Flips") %>%
+  ggplot(aes(x = bin_id, y = Flips, color = Method )) +
+    geom_point() +
+    geom_line() +
+    theme_classic() +
+    xlab("Bin") +
+  ggtitle("Flips per MB Bin", "AMR Synthetic Diploids") +
+  geom_smooth()
 
 df_amr %>%
   select(beagle_f, eagle_f, shapeit_f) %>%
@@ -603,6 +675,18 @@ df_eas %>%
   ggtitle("Switches per MB Bin", "EAS Synthetic Diploids")
 
 df_eas %>%
+  select(bin_id, beagle_s, eagle_s, shapeit_s) %>%
+  rename(Beagle = beagle_s, Eagle = eagle_s, SHAPEIT = shapeit_s) %>%
+  pivot_longer(-bin_id, names_to = "Method", values_to = "Switches") %>%
+  ggplot(aes(x = bin_id, y = Switches, color = Method )) +
+    geom_point() +
+    geom_line() +
+    theme_classic() +
+    xlab("Bin") +
+  ggtitle("Switches per MB Bin", "EAS Synthetic Diploids") +
+  geom_smooth()
+
+df_eas %>%
   select(beagle_s, eagle_s, shapeit_s) %>%
   cor(method = "pearson") %>%
   knitr::kable()
@@ -626,6 +710,18 @@ df_eas %>%
     theme_classic() +
     xlab("Bin") +
   ggtitle("Flips per MB Bin", "EAS Synthetic Diploids")
+
+df_eas %>%
+  select(bin_id, beagle_f, eagle_f, shapeit_f) %>%
+  rename(Beagle = beagle_f, Eagle = eagle_f, SHAPEIT = shapeit_f) %>%
+  pivot_longer(-bin_id, names_to = "Method", values_to = "Flips") %>%
+  ggplot(aes(x = bin_id, y = Flips, color = Method )) +
+    geom_point() +
+    geom_line() +
+    theme_classic() +
+    xlab("Bin") +
+  ggtitle("Flips per MB Bin", "EAS Synthetic Diploids") +
+  geom_smooth()
 
 df_eas %>%
   select(beagle_f, eagle_f, shapeit_f) %>%
@@ -657,6 +753,18 @@ df_sas %>%
   ggtitle("Switches per MB Bin", "SAS Synthetic Diploids")
 
 df_sas %>%
+  select(bin_id, beagle_s, eagle_s, shapeit_s) %>%
+  rename(Beagle = beagle_s, Eagle = eagle_s, SHAPEIT = shapeit_s) %>%
+  pivot_longer(-bin_id, names_to = "Method", values_to = "Switches") %>%
+  ggplot(aes(x = bin_id, y = Switches, color = Method )) +
+    geom_point() +
+    geom_line() +
+    theme_classic() +
+    xlab("Bin") +
+  ggtitle("Switches per MB Bin", "SAS Synthetic Diploids") +
+  geom_smooth()
+
+df_sas %>%
   select(beagle_s, eagle_s, shapeit_s) %>%
   cor(method = "pearson") %>%
   knitr::kable()
@@ -680,6 +788,18 @@ df_sas %>%
     theme_classic() +
     xlab("Bin") +
   ggtitle("Flips per MB Bin", "SAS Synthetic Diploids")
+
+df_sas %>%
+  select(bin_id, beagle_f, eagle_f, shapeit_f) %>%
+  rename(Beagle = beagle_f, Eagle = eagle_f, SHAPEIT = shapeit_f) %>%
+  pivot_longer(-bin_id, names_to = "Method", values_to = "Flips") %>%
+  ggplot(aes(x = bin_id, y = Flips, color = Method )) +
+    geom_point() +
+    geom_line() +
+    theme_classic() +
+    xlab("Bin") +
+  ggtitle("Flips per MB Bin", "SAS Synthetic Diploids") +
+  geom_smooth()
 
 df_sas %>%
   select(beagle_f, eagle_f, shapeit_f) %>%
