@@ -343,7 +343,7 @@ results_sas[[2]] %>%
 To get the sense of how much the methods overlap in a larger scale, we'll look at the aggregate number of errors in bins across the genome for both switches and flips. First, let's take a look at what this overlap looks like within a single synthetic diploid:
 
 ```{r}
-bin_size <- 10000000 # try 1MB
+bin_size <- 1e6 # try 1MB
 df <- annotate_het_list(1, het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq) %>%
   mutate(bin_id = ceiling(pos / bin_size))
 ```
@@ -361,6 +361,335 @@ df %>%
   geom_point() +
   geom_line() +
   theme_classic()
+```
+
+Now let's lower our resolution and look at 10MB bins:
+
+```{r}
+bin_size <- 1e7
+df %>%
+  mutate(bin_id = ceiling(pos / bin_size)) %>%
+  group_by(bin_id) %>%
+  summarize(beagle = sum(switch_b),
+            eagle = sum(switch_e),
+            shapeit = sum(switch_s)) %>%
+  pivot_longer(-bin_id, names_to = "method", values_to = "switches") %>%
+  ggplot(aes(x = bin_id, y = switches, color = method)) +
+  geom_point() +
+  geom_line() +
+  theme_classic()
+```
+
+## EUR
+
+Now let's see what this distribution looks like across all EUR SDs. First, on the MB scale:
+
+### Switches
+
+```{r}
+get_errors_mb <- function(ids, bin_size, het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq){
+  
+  final_df <- annotate_het_list(ids[1], het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq) %>%
+    mutate(bin_id = ceiling(pos / bin_size)) %>%
+    group_by(bin_id) %>%
+    summarize(beagle_s = sum(switch_b),
+              eagle_s = sum(switch_e),
+              shapeit_s = sum(switch_s),
+              beagle_f = sum(flip_b),
+              eagle_f = sum(flip_e),
+              shapeit_f = sum(flip_s))
+  
+  for(i in 2:length(ids)){
+    df2 <- annotate_het_list(ids[i], het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq) %>%
+      mutate(bin_id = ceiling(pos / bin_size)) %>%
+      group_by(bin_id) %>%
+      summarize(beagle_s2 = sum(switch_b),
+                eagle_s2 = sum(switch_e),
+                shapeit_s2 = sum(switch_s),
+                beagle_f2 = sum(flip_b),
+              eagle_f2 = sum(flip_e),
+              shapeit_f2 = sum(flip_s))
+    final_df <- full_join(final_df, df2, by="bin_id") %>%
+      replace_na(list("beagle_s" = 0, "eagle_s" = 0, "shapeit_s" = 0,
+                      "beagle_s2" = 0, "eagle_s2" = 0, "shapeit_s2" = 0,
+                      "beagle_f" = 0, "eagle_f" = 0, "shapeit_f" = 0,
+                      "beagle_f2" = 0, "eagle_f2" = 0, "shapeit_f2" = 0)) %>%
+      mutate(beagle_s = beagle_s + beagle_s2,
+             eagle_s = eagle_s + eagle_s2,
+             shapeit_s = shapeit_s + shapeit_s2,
+             beagle_f = beagle_f + beagle_f2,
+             eagle_f = eagle_f + eagle_f2,
+             shapeit_f = shapeit_f + shapeit_f2) %>%
+      select(bin_id, beagle_s, eagle_s, shapeit_s, beagle_f, eagle_f, shapeit_f)
+  }
+  return(final_df)
+}
+
+df_eur <- get_errors_mb(1:200, 1e6, het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq)
+
+df_eur %>%
+  select(bin_id, beagle_s, eagle_s, shapeit_s) %>%
+  rename(Beagle = beagle_s, Eagle = eagle_s, SHAPEIT = shapeit_s) %>%
+  pivot_longer(-bin_id, names_to = "Method", values_to = "Switches") %>%
+  ggplot(aes(x = bin_id, y = Switches, color = Method )) +
+    geom_point() +
+    geom_line() +
+    theme_classic() +
+    xlab("Bin") +
+  ggtitle("Switches per MB Bin", "EUR Synthetic Diploids")
+
+df_eur %>%
+  select(beagle_s, eagle_s, shapeit_s) %>%
+  cor(method = "pearson") %>%
+  knitr::kable()
+
+df_eur %>%
+  select(beagle_s, eagle_s, shapeit_s) %>%
+  cor(method = "spearman") %>%
+  knitr::kable()
+
+```
+
+### Flips
+
+```{r}
+df_eur %>%
+  select(bin_id, beagle_f, eagle_f, shapeit_f) %>%
+  rename(Beagle = beagle_f, Eagle = eagle_f, SHAPEIT = shapeit_f) %>%
+  pivot_longer(-bin_id, names_to = "Method", values_to = "Flips") %>%
+  ggplot(aes(x = bin_id, y = Flips, color = Method )) +
+    geom_point() +
+    geom_line() +
+    theme_classic() +
+    xlab("Bin") +
+  ggtitle("Flips per MB Bin", "EUR Synthetic Diploids")
+
+df_eur %>%
+  select(beagle_f, eagle_f, shapeit_f) %>%
+  cor(method = "pearson") %>%
+  knitr::kable()
+
+df_eur %>%
+  select(beagle_f, eagle_f, shapeit_f) %>%
+  cor(method = "spearman") %>%
+  knitr::kable()
+```
+
+## AFR
+
+### Switches 
+
+```{r}
+df_afr <- get_errors_mb(201:400, 1e6, het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq)
+
+df_afr %>%
+  select(bin_id, beagle_s, eagle_s, shapeit_s) %>%
+  rename(Beagle = beagle_s, Eagle = eagle_s, SHAPEIT = shapeit_s) %>%
+  pivot_longer(-bin_id, names_to = "Method", values_to = "Switches") %>%
+  ggplot(aes(x = bin_id, y = Switches, color = Method )) +
+    geom_point() +
+    geom_line() +
+    theme_classic() +
+    xlab("Bin") +
+  ggtitle("Switches per MB Bin", "AFR Synthetic Diploids")
+
+df_afr %>%
+  select(beagle_s, eagle_s, shapeit_s) %>%
+  cor(method = "pearson") %>%
+  knitr::kable()
+
+df_afr %>%
+  select(beagle_s, eagle_s, shapeit_s) %>%
+  cor(method = "spearman") %>%
+  knitr::kable()
+```
+
+### Flips
+
+```{r}
+df_afr %>%
+  select(bin_id, beagle_f, eagle_f, shapeit_f) %>%
+  rename(Beagle = beagle_f, Eagle = eagle_f, SHAPEIT = shapeit_f) %>%
+  pivot_longer(-bin_id, names_to = "Method", values_to = "Flips") %>%
+  ggplot(aes(x = bin_id, y = Flips, color = Method )) +
+    geom_point() +
+    geom_line() +
+    theme_classic() +
+    xlab("Bin") +
+  ggtitle("Flips per MB Bin", "AFR Synthetic Diploids")
+
+df_afr %>%
+  select(beagle_f, eagle_f, shapeit_f) %>%
+  cor(method = "pearson") %>%
+  knitr::kable()
+
+df_afr %>%
+  select(beagle_f, eagle_f, shapeit_f) %>%
+  cor(method = "spearman") %>%
+  knitr::kable()
+```
+
+
+## AMR
+
+### Switches
+
+```{r}
+df_amr <- get_errors_mb(401:500, 1e6, het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq)
+
+df_amr %>%
+  select(bin_id, beagle_s, eagle_s, shapeit_s) %>%
+  rename(Beagle = beagle_s, Eagle = eagle_s, SHAPEIT = shapeit_s) %>%
+  pivot_longer(-bin_id, names_to = "Method", values_to = "Switches") %>%
+  ggplot(aes(x = bin_id, y = Switches, color = Method )) +
+    geom_point() +
+    geom_line() +
+    theme_classic() +
+    xlab("Bin") +
+  ggtitle("Switches per MB Bin", "AMR Synthetic Diploids")
+
+df_amr %>%
+  select(beagle_s, eagle_s, shapeit_s) %>%
+  cor(method = "pearson") %>%
+  knitr::kable()
+
+df_amr %>%
+  select(beagle_s, eagle_s, shapeit_s) %>%
+  cor(method = "spearman") %>%
+  knitr::kable()
+```
+
+### Flips
+
+```{r}
+df_amr %>%
+  select(bin_id, beagle_f, eagle_f, shapeit_f) %>%
+  rename(Beagle = beagle_f, Eagle = eagle_f, SHAPEIT = shapeit_f) %>%
+  pivot_longer(-bin_id, names_to = "Method", values_to = "Flips") %>%
+  ggplot(aes(x = bin_id, y = Flips, color = Method )) +
+    geom_point() +
+    geom_line() +
+    theme_classic() +
+    xlab("Bin") +
+  ggtitle("Flips per MB Bin", "AMR Synthetic Diploids")
+
+df_amr %>%
+  select(beagle_f, eagle_f, shapeit_f) %>%
+  cor(method = "pearson") %>%
+  knitr::kable()
+
+df_amr %>%
+  select(beagle_f, eagle_f, shapeit_f) %>%
+  cor(method = "spearman") %>%
+  knitr::kable()
+```
+
+## EAS
+
+### Switches
+
+```{r}
+df_eas <- get_errors_mb(501:600, 1e6, het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq)
+
+df_eas %>%
+  select(bin_id, beagle_s, eagle_s, shapeit_s) %>%
+  rename(Beagle = beagle_s, Eagle = eagle_s, SHAPEIT = shapeit_s) %>%
+  pivot_longer(-bin_id, names_to = "Method", values_to = "Switches") %>%
+  ggplot(aes(x = bin_id, y = Switches, color = Method )) +
+    geom_point() +
+    geom_line() +
+    theme_classic() +
+    xlab("Bin") +
+  ggtitle("Switches per MB Bin", "EAS Synthetic Diploids")
+
+df_eas %>%
+  select(beagle_s, eagle_s, shapeit_s) %>%
+  cor(method = "pearson") %>%
+  knitr::kable()
+
+df_eas %>%
+  select(beagle_s, eagle_s, shapeit_s) %>%
+  cor(method = "spearman") %>%
+  knitr::kable()
+```
+
+### Flips
+
+```{r}
+df_eas %>%
+  select(bin_id, beagle_f, eagle_f, shapeit_f) %>%
+  rename(Beagle = beagle_f, Eagle = eagle_f, SHAPEIT = shapeit_f) %>%
+  pivot_longer(-bin_id, names_to = "Method", values_to = "Flips") %>%
+  ggplot(aes(x = bin_id, y = Flips, color = Method )) +
+    geom_point() +
+    geom_line() +
+    theme_classic() +
+    xlab("Bin") +
+  ggtitle("Flips per MB Bin", "EAS Synthetic Diploids")
+
+df_eas %>%
+  select(beagle_f, eagle_f, shapeit_f) %>%
+  cor(method = "pearson") %>%
+  knitr::kable()
+
+df_eas %>%
+  select(beagle_f, eagle_f, shapeit_f) %>%
+  cor(method = "spearman") %>%
+  knitr::kable()
+```
+
+## SAS
+
+### Switches
+
+```{r}
+df_sas <- get_errors_mb(601:700, 1e6, het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq)
+
+df_sas %>%
+  select(bin_id, beagle_s, eagle_s, shapeit_s) %>%
+  rename(Beagle = beagle_s, Eagle = eagle_s, SHAPEIT = shapeit_s) %>%
+  pivot_longer(-bin_id, names_to = "Method", values_to = "Switches") %>%
+  ggplot(aes(x = bin_id, y = Switches, color = Method )) +
+    geom_point() +
+    geom_line() +
+    theme_classic() +
+    xlab("Bin") +
+  ggtitle("Switches per MB Bin", "SAS Synthetic Diploids")
+
+df_sas %>%
+  select(beagle_s, eagle_s, shapeit_s) %>%
+  cor(method = "pearson") %>%
+  knitr::kable()
+
+df_sas %>%
+  select(beagle_s, eagle_s, shapeit_s) %>%
+  cor(method = "spearman") %>%
+  knitr::kable()
+```
+
+### Flips
+
+```{r}
+df_sas %>%
+  select(bin_id, beagle_f, eagle_f, shapeit_f) %>%
+  rename(Beagle = beagle_f, Eagle = eagle_f, SHAPEIT = shapeit_f) %>%
+  pivot_longer(-bin_id, names_to = "Method", values_to = "Flips") %>%
+  ggplot(aes(x = bin_id, y = Flips, color = Method )) +
+    geom_point() +
+    geom_line() +
+    theme_classic() +
+    xlab("Bin") +
+  ggtitle("Flips per MB Bin", "SAS Synthetic Diploids")
+
+df_sas %>%
+  select(beagle_f, eagle_f, shapeit_f) %>%
+  cor(method = "pearson") %>%
+  knitr::kable()
+
+df_sas %>%
+  select(beagle_f, eagle_f, shapeit_f) %>%
+  cor(method = "spearman") %>%
+  knitr::kable()
 ```
 
 
