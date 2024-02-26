@@ -595,15 +595,15 @@ output/chrX_maf_simple.tsv
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomtheandybphasingtree90db32ba0dbf9e5c53d4b0b6626ecf5bcb5d907atargetblank90db32ba">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomtheandybphasingtreefb807145a1fdde6932ecc9e2dce8dfc1cb97fb7ftargetblankfb80714a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/theandyb/phasing/tree/90db32ba0dbf9e5c53d4b0b6626ecf5bcb5d907a" target="_blank">90db32b</a>
+<a href="https://github.com/theandyb/phasing/tree/fb807145a1fdde6932ecc9e2dce8dfc1cb97fb7f" target="_blank">fb80714</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomtheandybphasingtree90db32ba0dbf9e5c53d4b0b6626ecf5bcb5d907atargetblank90db32ba"
+id="strongRepositoryversionstrongahrefhttpsgithubcomtheandybphasingtreefb807145a1fdde6932ecc9e2dce8dfc1cb97fb7ftargetblankfb80714a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -613,7 +613,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/theandyb/phasing/tree/90db32ba0dbf9e5c53d4b0b6626ecf5bcb5d907a" target="_blank">90db32b</a>.
+<a href="https://github.com/theandyb/phasing/tree/fb807145a1fdde6932ecc9e2dce8dfc1cb97fb7f" target="_blank">fb80714</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -704,6 +704,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/fb807145a1fdde6932ecc9e2dce8dfc1cb97fb7f/analysis/venn_diagram.Rmd" target="_blank">fb80714</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-26
+</td>
+<td>
+wflow_publish("analysis/venn_diagram.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/theandyb/phasing/459bd1f610609a0d7abc60bdd312e670b295fd4f/docs/venn_diagram.html" target="_blank">459bd1f</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-26
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1729,7 +1763,8 @@ First, on the MB scale:</p>
               shapeit_s = sum(switch_s),
               beagle_f = sum(flip_b),
               eagle_f = sum(flip_e),
-              shapeit_f = sum(flip_s))
+              shapeit_f = sum(flip_s),
+              hets = n())
   
   for(i in 2:length(ids)){
     df2 &lt;- annotate_het_list(ids[i], het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq) %&gt;%
@@ -1740,19 +1775,22 @@ First, on the MB scale:</p>
                 shapeit_s2 = sum(switch_s),
                 beagle_f2 = sum(flip_b),
               eagle_f2 = sum(flip_e),
-              shapeit_f2 = sum(flip_s))
+              shapeit_f2 = sum(flip_s),
+              hets2 = n())
     final_df &lt;- full_join(final_df, df2, by=&quot;bin_id&quot;) %&gt;%
       replace_na(list(&quot;beagle_s&quot; = 0, &quot;eagle_s&quot; = 0, &quot;shapeit_s&quot; = 0,
                       &quot;beagle_s2&quot; = 0, &quot;eagle_s2&quot; = 0, &quot;shapeit_s2&quot; = 0,
                       &quot;beagle_f&quot; = 0, &quot;eagle_f&quot; = 0, &quot;shapeit_f&quot; = 0,
-                      &quot;beagle_f2&quot; = 0, &quot;eagle_f2&quot; = 0, &quot;shapeit_f2&quot; = 0)) %&gt;%
+                      &quot;beagle_f2&quot; = 0, &quot;eagle_f2&quot; = 0, &quot;shapeit_f2&quot; = 0,
+                      &quot;hets&quot; = 0, &quot;hets2&quot; = 0)) %&gt;%
       mutate(beagle_s = beagle_s + beagle_s2,
              eagle_s = eagle_s + eagle_s2,
              shapeit_s = shapeit_s + shapeit_s2,
              beagle_f = beagle_f + beagle_f2,
              eagle_f = eagle_f + eagle_f2,
-             shapeit_f = shapeit_f + shapeit_f2) %&gt;%
-      select(bin_id, beagle_s, eagle_s, shapeit_s, beagle_f, eagle_f, shapeit_f)
+             shapeit_f = shapeit_f + shapeit_f2,
+             hets = hets + hets2) %&gt;%
+      select(bin_id, beagle_s, eagle_s, shapeit_s, beagle_f, eagle_f, shapeit_f, hets)
   }
   return(final_df)
 }
@@ -1760,15 +1798,13 @@ First, on the MB scale:</p>
 df_eur &lt;- get_errors_mb(1:200, 1e6, het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq)
 
 df_eur %&gt;%
-  select(bin_id, beagle_s, eagle_s, shapeit_s) %&gt;%
-  rename(Beagle = beagle_s, Eagle = eagle_s, SHAPEIT = shapeit_s) %&gt;%
-  pivot_longer(-bin_id, names_to = &quot;Method&quot;, values_to = &quot;Switches&quot;) %&gt;%
-  ggplot(aes(x = bin_id, y = Switches, color = Method )) +
-    geom_point() +
-    geom_line() +
-    theme_classic() +
-    xlab(&quot;Bin&quot;) +
-  ggtitle(&quot;Switches per MB Bin&quot;, &quot;EUR Synthetic Diploids&quot;)</code></pre>
+  ggplot(aes(x = bin_id, y = hets)) +
+  geom_point() +
+  geom_line() +
+  ggtitle(&quot;Aggregated Heterozygous Sites per Bin&quot;, &quot;EUR Synthetic Diploids&quot;) +
+  xlab(&quot;Bin&quot;) +
+  ylab(&quot;Heterozygous Sites&quot;) +
+  theme_classic()</code></pre>
 <p><img src="figure/venn_diagram.Rmd/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-17-1">
@@ -1814,12 +1850,60 @@ Andy Beck
   ggplot(aes(x = bin_id, y = Switches, color = Method )) +
     geom_point() +
     geom_line() +
+    theme_classic() +
+    xlab(&quot;Bin&quot;) +
+  ggtitle(&quot;Switches per MB Bin&quot;, &quot;EUR Synthetic Diploids&quot;)</code></pre>
+<p><img src="figure/venn_diagram.Rmd/unnamed-chunk-17-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-17-2">
+Past versions of unnamed-chunk-17-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-17-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/459bd1f610609a0d7abc60bdd312e670b295fd4f/docs/figure/venn_diagram.Rmd/unnamed-chunk-17-2.png" target="_blank">459bd1f</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>df_eur %&gt;%
+  select(bin_id, beagle_s, eagle_s, shapeit_s) %&gt;%
+  rename(Beagle = beagle_s, Eagle = eagle_s, SHAPEIT = shapeit_s) %&gt;%
+  pivot_longer(-bin_id, names_to = &quot;Method&quot;, values_to = &quot;Switches&quot;) %&gt;%
+  ggplot(aes(x = bin_id, y = Switches, color = Method )) +
+    geom_point() +
+    geom_line() +
   geom_smooth() +
     theme_classic() +
     xlab(&quot;Bin&quot;) +
   ggtitle(&quot;Switches per MB Bin&quot;, &quot;EUR Synthetic Diploids&quot;)</code></pre>
 <pre><code>`geom_smooth()` using method = &#39;loess&#39; and formula = &#39;y ~ x&#39;</code></pre>
-<p><img src="figure/venn_diagram.Rmd/unnamed-chunk-17-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/venn_diagram.Rmd/unnamed-chunk-17-3.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>df_eur %&gt;%
   select(beagle_s, eagle_s, shapeit_s) %&gt;%
   cor(method = &quot;pearson&quot;) %&gt;%
@@ -1952,6 +2036,43 @@ Andy Beck
   ggtitle(&quot;Flips per MB Bin&quot;, &quot;EUR Synthetic Diploids&quot;)</code></pre>
 <pre><code>`geom_smooth()` using method = &#39;loess&#39; and formula = &#39;y ~ x&#39;</code></pre>
 <p><img src="figure/venn_diagram.Rmd/unnamed-chunk-18-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-18-2">
+Past versions of unnamed-chunk-18-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-18-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/459bd1f610609a0d7abc60bdd312e670b295fd4f/docs/figure/venn_diagram.Rmd/unnamed-chunk-18-2.png" target="_blank">459bd1f</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>df_eur %&gt;%
   select(beagle_f, eagle_f, shapeit_f) %&gt;%
   cor(method = &quot;pearson&quot;) %&gt;%
@@ -2021,23 +2142,18 @@ Andy Beck
 </tbody>
 </table>
 </div>
-</div>
-<div id="afr-1" class="section level2">
-<h2>AFR</h2>
-<div id="switches-1" class="section level3">
-<h3>Switches</h3>
-<pre class="r"><code>df_afr &lt;- get_errors_mb(201:400, 1e6, het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq)
+<div id="higher-resolution" class="section level3">
+<h3>Higher Resolution</h3>
+<pre class="r"><code>df_eur &lt;- get_errors_mb(1:200, 1e5, het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq)
 
-df_afr %&gt;%
-  select(bin_id, beagle_s, eagle_s, shapeit_s) %&gt;%
-  rename(Beagle = beagle_s, Eagle = eagle_s, SHAPEIT = shapeit_s) %&gt;%
-  pivot_longer(-bin_id, names_to = &quot;Method&quot;, values_to = &quot;Switches&quot;) %&gt;%
-  ggplot(aes(x = bin_id, y = Switches, color = Method )) +
-    geom_point() +
-    geom_line() +
-    theme_classic() +
-    xlab(&quot;Bin&quot;) +
-  ggtitle(&quot;Switches per MB Bin&quot;, &quot;AFR Synthetic Diploids&quot;)</code></pre>
+df_eur %&gt;%
+  ggplot(aes(x = bin_id, y = hets)) +
+  geom_point() +
+  geom_line() +
+  ggtitle(&quot;Aggregated Heterozygous Sites per Bin&quot;, &quot;EUR Synthetic Diploids&quot;) +
+  xlab(&quot;Bin&quot;) +
+  ylab(&quot;Heterozygous Sites&quot;) +
+  theme_classic()</code></pre>
 <p><img src="figure/venn_diagram.Rmd/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-19-1">
@@ -2076,6 +2192,183 @@ Andy Beck
 </table>
 </div>
 </div>
+<pre class="r"><code>df_eur %&gt;%
+  select(bin_id, beagle_s, eagle_s, shapeit_s) %&gt;%
+  rename(Beagle = beagle_s, Eagle = eagle_s, SHAPEIT = shapeit_s) %&gt;%
+  pivot_longer(-bin_id, names_to = &quot;Method&quot;, values_to = &quot;Switches&quot;) %&gt;%
+  ggplot(aes(x = bin_id, y = Switches, color = Method )) +
+    geom_point() +
+    geom_line() +
+    theme_classic() +
+    xlab(&quot;Bin&quot;) +
+  ggtitle(&quot;Switches per 100KB Bin&quot;, &quot;EUR Synthetic Diploids&quot;)</code></pre>
+<p><img src="figure/venn_diagram.Rmd/unnamed-chunk-19-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-19-2">
+Past versions of unnamed-chunk-19-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-19-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/459bd1f610609a0d7abc60bdd312e670b295fd4f/docs/figure/venn_diagram.Rmd/unnamed-chunk-19-2.png" target="_blank">459bd1f</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>df_eur %&gt;%
+  mutate(eagle_beagle = eagle_s - beagle_s,
+         eagle_shapeit = eagle_s - shapeit_s) %&gt;%
+  select(bin_id, eagle_beagle, eagle_shapeit) %&gt;%
+  pivot_longer(-bin_id, names_to = &quot;Comparison&quot;, values_to = &quot;Difference&quot;) %&gt;%
+  ggplot(aes(x = bin_id, y = Difference, color = Comparison, group = Comparison)) +
+    geom_point() +
+    theme_classic() +
+    xlab(&quot;Bin&quot;) +
+  geom_hline(yintercept = 0) +
+  ggtitle(&quot;Difference in Switches per 100KB Bin&quot;, &quot;EUR Synthetic Diploids&quot;) +
+  geom_smooth(linewidth = 2.5, color = &quot;black&quot;, se = FALSE)+
+  geom_smooth()</code></pre>
+<pre><code>`geom_smooth()` using method = &#39;gam&#39; and formula = &#39;y ~ s(x, bs = &quot;cs&quot;)&#39;
+`geom_smooth()` using method = &#39;gam&#39; and formula = &#39;y ~ s(x, bs = &quot;cs&quot;)&#39;</code></pre>
+<p><img src="figure/venn_diagram.Rmd/unnamed-chunk-19-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>df_eur %&gt;%
+  select(bin_id, beagle_f, eagle_f, shapeit_f) %&gt;%
+  rename(Beagle = beagle_f, Eagle = eagle_f, SHAPEIT = shapeit_f) %&gt;%
+  pivot_longer(-bin_id, names_to = &quot;Method&quot;, values_to = &quot;Flips&quot;) %&gt;%
+  ggplot(aes(x = bin_id, y = Flips, color = Method )) +
+    geom_point() +
+    geom_line() +
+    theme_classic() +
+    xlab(&quot;Bin&quot;) +
+  ggtitle(&quot;Flips per 100KB Bin&quot;, &quot;EUR Synthetic Diploids&quot;)</code></pre>
+<p><img src="figure/venn_diagram.Rmd/unnamed-chunk-19-4.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="afr-1" class="section level2">
+<h2>AFR</h2>
+<div id="switches-1" class="section level3">
+<h3>Switches</h3>
+<pre class="r"><code>df_afr &lt;- get_errors_mb(201:400, 1e6, het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq)
+
+df_afr %&gt;%
+  ggplot(aes(x = bin_id, y = hets)) +
+  geom_point() +
+  geom_line() +
+  ggtitle(&quot;Aggregated Heterozygous Sites per Bin&quot;, &quot;AFR Synthetic Diploids&quot;) +
+  xlab(&quot;Bin&quot;) +
+  ylab(&quot;Heterozygous Sites&quot;) +
+  theme_classic()</code></pre>
+<p><img src="figure/venn_diagram.Rmd/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-20-1">
+Past versions of unnamed-chunk-20-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-20-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/c5dd38b4b843ac81aac0662cb9ea6f6cfe04ca52/docs/figure/venn_diagram.Rmd/unnamed-chunk-20-1.png" target="_blank">c5dd38b</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>df_afr %&gt;%
+  select(bin_id, beagle_s, eagle_s, shapeit_s) %&gt;%
+  rename(Beagle = beagle_s, Eagle = eagle_s, SHAPEIT = shapeit_s) %&gt;%
+  pivot_longer(-bin_id, names_to = &quot;Method&quot;, values_to = &quot;Switches&quot;) %&gt;%
+  ggplot(aes(x = bin_id, y = Switches, color = Method )) +
+    geom_point() +
+    geom_line() +
+    theme_classic() +
+    xlab(&quot;Bin&quot;) +
+  ggtitle(&quot;Switches per MB Bin&quot;, &quot;AFR Synthetic Diploids&quot;)</code></pre>
+<p><img src="figure/venn_diagram.Rmd/unnamed-chunk-20-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-20-2">
+Past versions of unnamed-chunk-20-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-20-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/459bd1f610609a0d7abc60bdd312e670b295fd4f/docs/figure/venn_diagram.Rmd/unnamed-chunk-20-2.png" target="_blank">459bd1f</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>df_afr %&gt;%
   select(bin_id, beagle_s, eagle_s, shapeit_s) %&gt;%
   rename(Beagle = beagle_s, Eagle = eagle_s, SHAPEIT = shapeit_s) %&gt;%
@@ -2088,7 +2381,7 @@ Andy Beck
   geom_smooth() +
   ggtitle(&quot;Switches per MB Bin&quot;, &quot;AFR Synthetic Diploids&quot;)</code></pre>
 <pre><code>`geom_smooth()` using method = &#39;loess&#39; and formula = &#39;y ~ x&#39;</code></pre>
-<p><img src="figure/venn_diagram.Rmd/unnamed-chunk-19-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/venn_diagram.Rmd/unnamed-chunk-20-3.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>df_afr %&gt;%
   select(beagle_s, eagle_s, shapeit_s) %&gt;%
   cor(method = &quot;pearson&quot;) %&gt;%
@@ -2170,13 +2463,13 @@ Andy Beck
     theme_classic() +
     xlab(&quot;Bin&quot;) +
   ggtitle(&quot;Flips per MB Bin&quot;, &quot;AFR Synthetic Diploids&quot;)</code></pre>
-<p><img src="figure/venn_diagram.Rmd/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/venn_diagram.Rmd/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-20-1">
-Past versions of unnamed-chunk-20-1.png
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-21-1">
+Past versions of unnamed-chunk-21-1.png
 </button>
 </p>
-<div id="fig-unnamed-chunk-20-1" class="collapse">
+<div id="fig-unnamed-chunk-21-1" class="collapse">
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
 <thead>
@@ -2195,7 +2488,7 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/theandyb/phasing/blob/c5dd38b4b843ac81aac0662cb9ea6f6cfe04ca52/docs/figure/venn_diagram.Rmd/unnamed-chunk-20-1.png" target="_blank">c5dd38b</a>
+<a href="https://github.com/theandyb/phasing/blob/c5dd38b4b843ac81aac0662cb9ea6f6cfe04ca52/docs/figure/venn_diagram.Rmd/unnamed-chunk-21-1.png" target="_blank">c5dd38b</a>
 </td>
 <td>
 Andy Beck
@@ -2220,7 +2513,44 @@ Andy Beck
   ggtitle(&quot;Flips per MB Bin&quot;, &quot;AFR Synthetic Diploids&quot;) +
   geom_smooth()</code></pre>
 <pre><code>`geom_smooth()` using method = &#39;loess&#39; and formula = &#39;y ~ x&#39;</code></pre>
-<p><img src="figure/venn_diagram.Rmd/unnamed-chunk-20-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/venn_diagram.Rmd/unnamed-chunk-21-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-21-2">
+Past versions of unnamed-chunk-21-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-21-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/459bd1f610609a0d7abc60bdd312e670b295fd4f/docs/figure/venn_diagram.Rmd/unnamed-chunk-21-2.png" target="_blank">459bd1f</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>df_afr %&gt;%
   select(beagle_f, eagle_f, shapeit_f) %&gt;%
   cor(method = &quot;pearson&quot;) %&gt;%
@@ -2298,22 +2628,20 @@ Andy Beck
 <pre class="r"><code>df_amr &lt;- get_errors_mb(401:500, 1e6, het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq)
 
 df_amr %&gt;%
-  select(bin_id, beagle_s, eagle_s, shapeit_s) %&gt;%
-  rename(Beagle = beagle_s, Eagle = eagle_s, SHAPEIT = shapeit_s) %&gt;%
-  pivot_longer(-bin_id, names_to = &quot;Method&quot;, values_to = &quot;Switches&quot;) %&gt;%
-  ggplot(aes(x = bin_id, y = Switches, color = Method )) +
-    geom_point() +
-    geom_line() +
-    theme_classic() +
-    xlab(&quot;Bin&quot;) +
-  ggtitle(&quot;Switches per MB Bin&quot;, &quot;AMR Synthetic Diploids&quot;)</code></pre>
-<p><img src="figure/venn_diagram.Rmd/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;" /></p>
+  ggplot(aes(x = bin_id, y = hets)) +
+  geom_point() +
+  geom_line() +
+  ggtitle(&quot;Aggregated Heterozygous Sites per Bin&quot;, &quot;AMR Synthetic Diploids&quot;) +
+  xlab(&quot;Bin&quot;) +
+  ylab(&quot;Heterozygous Sites&quot;) +
+  theme_classic()</code></pre>
+<p><img src="figure/venn_diagram.Rmd/unnamed-chunk-22-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-21-1">
-Past versions of unnamed-chunk-21-1.png
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-22-1">
+Past versions of unnamed-chunk-22-1.png
 </button>
 </p>
-<div id="fig-unnamed-chunk-21-1" class="collapse">
+<div id="fig-unnamed-chunk-22-1" class="collapse">
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
 <thead>
@@ -2332,7 +2660,55 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/theandyb/phasing/blob/c5dd38b4b843ac81aac0662cb9ea6f6cfe04ca52/docs/figure/venn_diagram.Rmd/unnamed-chunk-21-1.png" target="_blank">c5dd38b</a>
+<a href="https://github.com/theandyb/phasing/blob/c5dd38b4b843ac81aac0662cb9ea6f6cfe04ca52/docs/figure/venn_diagram.Rmd/unnamed-chunk-22-1.png" target="_blank">c5dd38b</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>df_amr %&gt;%
+  select(bin_id, beagle_s, eagle_s, shapeit_s) %&gt;%
+  rename(Beagle = beagle_s, Eagle = eagle_s, SHAPEIT = shapeit_s) %&gt;%
+  pivot_longer(-bin_id, names_to = &quot;Method&quot;, values_to = &quot;Switches&quot;) %&gt;%
+  ggplot(aes(x = bin_id, y = Switches, color = Method )) +
+    geom_point() +
+    geom_line() +
+    theme_classic() +
+    xlab(&quot;Bin&quot;) +
+  ggtitle(&quot;Switches per MB Bin&quot;, &quot;AMR Synthetic Diploids&quot;)</code></pre>
+<p><img src="figure/venn_diagram.Rmd/unnamed-chunk-22-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-22-2">
+Past versions of unnamed-chunk-22-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-22-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/459bd1f610609a0d7abc60bdd312e670b295fd4f/docs/figure/venn_diagram.Rmd/unnamed-chunk-22-2.png" target="_blank">459bd1f</a>
 </td>
 <td>
 Andy Beck
@@ -2357,7 +2733,7 @@ Andy Beck
   ggtitle(&quot;Switches per MB Bin&quot;, &quot;AMR Synthetic Diploids&quot;) +
   geom_smooth()</code></pre>
 <pre><code>`geom_smooth()` using method = &#39;loess&#39; and formula = &#39;y ~ x&#39;</code></pre>
-<p><img src="figure/venn_diagram.Rmd/unnamed-chunk-21-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/venn_diagram.Rmd/unnamed-chunk-22-3.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>df_amr %&gt;%
   select(beagle_s, eagle_s, shapeit_s) %&gt;%
   cor(method = &quot;pearson&quot;) %&gt;%
@@ -2439,13 +2815,13 @@ Andy Beck
     theme_classic() +
     xlab(&quot;Bin&quot;) +
   ggtitle(&quot;Flips per MB Bin&quot;, &quot;AMR Synthetic Diploids&quot;)</code></pre>
-<p><img src="figure/venn_diagram.Rmd/unnamed-chunk-22-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/venn_diagram.Rmd/unnamed-chunk-23-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-22-1">
-Past versions of unnamed-chunk-22-1.png
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-23-1">
+Past versions of unnamed-chunk-23-1.png
 </button>
 </p>
-<div id="fig-unnamed-chunk-22-1" class="collapse">
+<div id="fig-unnamed-chunk-23-1" class="collapse">
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
 <thead>
@@ -2464,7 +2840,7 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/theandyb/phasing/blob/c5dd38b4b843ac81aac0662cb9ea6f6cfe04ca52/docs/figure/venn_diagram.Rmd/unnamed-chunk-22-1.png" target="_blank">c5dd38b</a>
+<a href="https://github.com/theandyb/phasing/blob/c5dd38b4b843ac81aac0662cb9ea6f6cfe04ca52/docs/figure/venn_diagram.Rmd/unnamed-chunk-23-1.png" target="_blank">c5dd38b</a>
 </td>
 <td>
 Andy Beck
@@ -2489,7 +2865,44 @@ Andy Beck
   ggtitle(&quot;Flips per MB Bin&quot;, &quot;AMR Synthetic Diploids&quot;) +
   geom_smooth()</code></pre>
 <pre><code>`geom_smooth()` using method = &#39;loess&#39; and formula = &#39;y ~ x&#39;</code></pre>
-<p><img src="figure/venn_diagram.Rmd/unnamed-chunk-22-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/venn_diagram.Rmd/unnamed-chunk-23-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-23-2">
+Past versions of unnamed-chunk-23-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-23-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/459bd1f610609a0d7abc60bdd312e670b295fd4f/docs/figure/venn_diagram.Rmd/unnamed-chunk-23-2.png" target="_blank">459bd1f</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>df_amr %&gt;%
   select(beagle_f, eagle_f, shapeit_f) %&gt;%
   cor(method = &quot;pearson&quot;) %&gt;%
@@ -2567,22 +2980,20 @@ Andy Beck
 <pre class="r"><code>df_eas &lt;- get_errors_mb(501:600, 1e6, het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq)
 
 df_eas %&gt;%
-  select(bin_id, beagle_s, eagle_s, shapeit_s) %&gt;%
-  rename(Beagle = beagle_s, Eagle = eagle_s, SHAPEIT = shapeit_s) %&gt;%
-  pivot_longer(-bin_id, names_to = &quot;Method&quot;, values_to = &quot;Switches&quot;) %&gt;%
-  ggplot(aes(x = bin_id, y = Switches, color = Method )) +
-    geom_point() +
-    geom_line() +
-    theme_classic() +
-    xlab(&quot;Bin&quot;) +
-  ggtitle(&quot;Switches per MB Bin&quot;, &quot;EAS Synthetic Diploids&quot;)</code></pre>
-<p><img src="figure/venn_diagram.Rmd/unnamed-chunk-23-1.png" width="672" style="display: block; margin: auto;" /></p>
+  ggplot(aes(x = bin_id, y = hets)) +
+  geom_point() +
+  geom_line() +
+  ggtitle(&quot;Aggregated Heterozygous Sites per Bin&quot;, &quot;EAS Synthetic Diploids&quot;) +
+  xlab(&quot;Bin&quot;) +
+  ylab(&quot;Heterozygous Sites&quot;) +
+  theme_classic()</code></pre>
+<p><img src="figure/venn_diagram.Rmd/unnamed-chunk-24-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-23-1">
-Past versions of unnamed-chunk-23-1.png
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-24-1">
+Past versions of unnamed-chunk-24-1.png
 </button>
 </p>
-<div id="fig-unnamed-chunk-23-1" class="collapse">
+<div id="fig-unnamed-chunk-24-1" class="collapse">
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
 <thead>
@@ -2601,7 +3012,55 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/theandyb/phasing/blob/c5dd38b4b843ac81aac0662cb9ea6f6cfe04ca52/docs/figure/venn_diagram.Rmd/unnamed-chunk-23-1.png" target="_blank">c5dd38b</a>
+<a href="https://github.com/theandyb/phasing/blob/c5dd38b4b843ac81aac0662cb9ea6f6cfe04ca52/docs/figure/venn_diagram.Rmd/unnamed-chunk-24-1.png" target="_blank">c5dd38b</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>df_eas %&gt;%
+  select(bin_id, beagle_s, eagle_s, shapeit_s) %&gt;%
+  rename(Beagle = beagle_s, Eagle = eagle_s, SHAPEIT = shapeit_s) %&gt;%
+  pivot_longer(-bin_id, names_to = &quot;Method&quot;, values_to = &quot;Switches&quot;) %&gt;%
+  ggplot(aes(x = bin_id, y = Switches, color = Method )) +
+    geom_point() +
+    geom_line() +
+    theme_classic() +
+    xlab(&quot;Bin&quot;) +
+  ggtitle(&quot;Switches per MB Bin&quot;, &quot;EAS Synthetic Diploids&quot;)</code></pre>
+<p><img src="figure/venn_diagram.Rmd/unnamed-chunk-24-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-24-2">
+Past versions of unnamed-chunk-24-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-24-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/459bd1f610609a0d7abc60bdd312e670b295fd4f/docs/figure/venn_diagram.Rmd/unnamed-chunk-24-2.png" target="_blank">459bd1f</a>
 </td>
 <td>
 Andy Beck
@@ -2626,7 +3085,7 @@ Andy Beck
   ggtitle(&quot;Switches per MB Bin&quot;, &quot;EAS Synthetic Diploids&quot;) +
   geom_smooth()</code></pre>
 <pre><code>`geom_smooth()` using method = &#39;loess&#39; and formula = &#39;y ~ x&#39;</code></pre>
-<p><img src="figure/venn_diagram.Rmd/unnamed-chunk-23-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/venn_diagram.Rmd/unnamed-chunk-24-3.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>df_eas %&gt;%
   select(beagle_s, eagle_s, shapeit_s) %&gt;%
   cor(method = &quot;pearson&quot;) %&gt;%
@@ -2708,13 +3167,13 @@ Andy Beck
     theme_classic() +
     xlab(&quot;Bin&quot;) +
   ggtitle(&quot;Flips per MB Bin&quot;, &quot;EAS Synthetic Diploids&quot;)</code></pre>
-<p><img src="figure/venn_diagram.Rmd/unnamed-chunk-24-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/venn_diagram.Rmd/unnamed-chunk-25-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-24-1">
-Past versions of unnamed-chunk-24-1.png
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-25-1">
+Past versions of unnamed-chunk-25-1.png
 </button>
 </p>
-<div id="fig-unnamed-chunk-24-1" class="collapse">
+<div id="fig-unnamed-chunk-25-1" class="collapse">
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
 <thead>
@@ -2733,7 +3192,7 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/theandyb/phasing/blob/c5dd38b4b843ac81aac0662cb9ea6f6cfe04ca52/docs/figure/venn_diagram.Rmd/unnamed-chunk-24-1.png" target="_blank">c5dd38b</a>
+<a href="https://github.com/theandyb/phasing/blob/c5dd38b4b843ac81aac0662cb9ea6f6cfe04ca52/docs/figure/venn_diagram.Rmd/unnamed-chunk-25-1.png" target="_blank">c5dd38b</a>
 </td>
 <td>
 Andy Beck
@@ -2758,7 +3217,44 @@ Andy Beck
   ggtitle(&quot;Flips per MB Bin&quot;, &quot;EAS Synthetic Diploids&quot;) +
   geom_smooth()</code></pre>
 <pre><code>`geom_smooth()` using method = &#39;loess&#39; and formula = &#39;y ~ x&#39;</code></pre>
-<p><img src="figure/venn_diagram.Rmd/unnamed-chunk-24-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/venn_diagram.Rmd/unnamed-chunk-25-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-25-2">
+Past versions of unnamed-chunk-25-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-25-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/459bd1f610609a0d7abc60bdd312e670b295fd4f/docs/figure/venn_diagram.Rmd/unnamed-chunk-25-2.png" target="_blank">459bd1f</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>df_eas %&gt;%
   select(beagle_f, eagle_f, shapeit_f) %&gt;%
   cor(method = &quot;pearson&quot;) %&gt;%
@@ -2836,22 +3332,20 @@ Andy Beck
 <pre class="r"><code>df_sas &lt;- get_errors_mb(601:700, 1e6, het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq)
 
 df_sas %&gt;%
-  select(bin_id, beagle_s, eagle_s, shapeit_s) %&gt;%
-  rename(Beagle = beagle_s, Eagle = eagle_s, SHAPEIT = shapeit_s) %&gt;%
-  pivot_longer(-bin_id, names_to = &quot;Method&quot;, values_to = &quot;Switches&quot;) %&gt;%
-  ggplot(aes(x = bin_id, y = Switches, color = Method )) +
-    geom_point() +
-    geom_line() +
-    theme_classic() +
-    xlab(&quot;Bin&quot;) +
-  ggtitle(&quot;Switches per MB Bin&quot;, &quot;SAS Synthetic Diploids&quot;)</code></pre>
-<p><img src="figure/venn_diagram.Rmd/unnamed-chunk-25-1.png" width="672" style="display: block; margin: auto;" /></p>
+  ggplot(aes(x = bin_id, y = hets)) +
+  geom_point() +
+  geom_line() +
+  ggtitle(&quot;Aggregated Heterozygous Sites per Bin&quot;, &quot;SAS Synthetic Diploids&quot;) +
+  xlab(&quot;Bin&quot;) +
+  ylab(&quot;Heterozygous Sites&quot;) +
+  theme_classic()</code></pre>
+<p><img src="figure/venn_diagram.Rmd/unnamed-chunk-26-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-25-1">
-Past versions of unnamed-chunk-25-1.png
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-26-1">
+Past versions of unnamed-chunk-26-1.png
 </button>
 </p>
-<div id="fig-unnamed-chunk-25-1" class="collapse">
+<div id="fig-unnamed-chunk-26-1" class="collapse">
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
 <thead>
@@ -2870,7 +3364,55 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/theandyb/phasing/blob/c5dd38b4b843ac81aac0662cb9ea6f6cfe04ca52/docs/figure/venn_diagram.Rmd/unnamed-chunk-25-1.png" target="_blank">c5dd38b</a>
+<a href="https://github.com/theandyb/phasing/blob/c5dd38b4b843ac81aac0662cb9ea6f6cfe04ca52/docs/figure/venn_diagram.Rmd/unnamed-chunk-26-1.png" target="_blank">c5dd38b</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>df_sas %&gt;%
+  select(bin_id, beagle_s, eagle_s, shapeit_s) %&gt;%
+  rename(Beagle = beagle_s, Eagle = eagle_s, SHAPEIT = shapeit_s) %&gt;%
+  pivot_longer(-bin_id, names_to = &quot;Method&quot;, values_to = &quot;Switches&quot;) %&gt;%
+  ggplot(aes(x = bin_id, y = Switches, color = Method )) +
+    geom_point() +
+    geom_line() +
+    theme_classic() +
+    xlab(&quot;Bin&quot;) +
+  ggtitle(&quot;Switches per MB Bin&quot;, &quot;SAS Synthetic Diploids&quot;)</code></pre>
+<p><img src="figure/venn_diagram.Rmd/unnamed-chunk-26-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-26-2">
+Past versions of unnamed-chunk-26-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-26-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/459bd1f610609a0d7abc60bdd312e670b295fd4f/docs/figure/venn_diagram.Rmd/unnamed-chunk-26-2.png" target="_blank">459bd1f</a>
 </td>
 <td>
 Andy Beck
@@ -2895,7 +3437,7 @@ Andy Beck
   ggtitle(&quot;Switches per MB Bin&quot;, &quot;SAS Synthetic Diploids&quot;) +
   geom_smooth()</code></pre>
 <pre><code>`geom_smooth()` using method = &#39;loess&#39; and formula = &#39;y ~ x&#39;</code></pre>
-<p><img src="figure/venn_diagram.Rmd/unnamed-chunk-25-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/venn_diagram.Rmd/unnamed-chunk-26-3.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>df_sas %&gt;%
   select(beagle_s, eagle_s, shapeit_s) %&gt;%
   cor(method = &quot;pearson&quot;) %&gt;%
@@ -2977,44 +3519,7 @@ Andy Beck
     theme_classic() +
     xlab(&quot;Bin&quot;) +
   ggtitle(&quot;Flips per MB Bin&quot;, &quot;SAS Synthetic Diploids&quot;)</code></pre>
-<p><img src="figure/venn_diagram.Rmd/unnamed-chunk-26-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-26-1">
-Past versions of unnamed-chunk-26-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-26-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/theandyb/phasing/blob/c5dd38b4b843ac81aac0662cb9ea6f6cfe04ca52/docs/figure/venn_diagram.Rmd/unnamed-chunk-26-1.png" target="_blank">c5dd38b</a>
-</td>
-<td>
-Andy Beck
-</td>
-<td>
-2024-02-26
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/venn_diagram.Rmd/unnamed-chunk-27-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>df_sas %&gt;%
   select(bin_id, beagle_f, eagle_f, shapeit_f) %&gt;%
   rename(Beagle = beagle_f, Eagle = eagle_f, SHAPEIT = shapeit_f) %&gt;%
@@ -3027,7 +3532,7 @@ Andy Beck
   ggtitle(&quot;Flips per MB Bin&quot;, &quot;SAS Synthetic Diploids&quot;) +
   geom_smooth()</code></pre>
 <pre><code>`geom_smooth()` using method = &#39;loess&#39; and formula = &#39;y ~ x&#39;</code></pre>
-<p><img src="figure/venn_diagram.Rmd/unnamed-chunk-26-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/venn_diagram.Rmd/unnamed-chunk-27-2.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>df_sas %&gt;%
   select(beagle_f, eagle_f, shapeit_f) %&gt;%
   cor(method = &quot;pearson&quot;) %&gt;%
