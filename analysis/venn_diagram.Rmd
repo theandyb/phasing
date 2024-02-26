@@ -1,0 +1,366 @@
+---
+title: "venn_diagram"
+author: "Andy Beck"
+date: "2024-02-20"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+```{r, include=FALSE}
+library(tidyverse)
+library(ggExtra)
+library(ggVennDiagram)
+source("code/common_functions.R")
+'%!in%' <- function(x,y)!('%in%'(x,y))
+cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+eagle_switch_dir <-   "/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/switch_errors/eagle/annotated/"
+shapeit_switch_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/switch_errors/shapeit/annotated/"
+beagle_switch_dir <-  "/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/switch_errors/beagle/annotated/"
+num_sites_dir <-      "/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/vcf_n_sites/"
+whatshap_dir <-       "/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/whatshap/"
+het_loc_dir <-        "/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/het_loc/annotated/"
+pair_info_df <- read_delim("data/sample_pairs_9aug2023.csv", col_names = c("POP", "ID1", "ID2"))
+pair_info_df$SP <- c(rep("EUR", 200), rep("AFR", 200), rep("AMR", 100), rep("EAS", 100), rep("SAS", 100))
+df_freq <- read_tsv("/net/snowwhite/home/beckandy/research/phasing/output/chrX_maf_simple.tsv")
+```
+
+## Introduction
+
+In this document we will explore the construction of a "venn diagram" of the overlap of phasing errors across three methods over 700 synthetic diploids. Intuitively, this makes sense for a single synthetic diploid: we partition all errors into categories determined by which method(s) produced the error. The potential complication is if we wish to look only at particular classes of errors, e.g. switches or flips. For an example of what can happen, suppose a heterozygous location is the site of a switch in Beagle. That same position could be the location of a switch in Eagle or SHAPEIT, or it may have been correctly phased. Those are not exhaustive, however; another potential outcome is that same location is the latter half of a flip error in either Eagle or SHAPEIT. Is this still considered an overlapping switch?
+
+For a first pass, I'll be a bit exhaustive in terms of the categories of overlap for the errors in a single synthetic diploid.
+
+```{r}
+load_het_pos <- function(id, het_loc_dir){
+  fname <- paste0(het_loc_dir, "pair_", id, ".csv")
+  return(read_csv(fname, show_col_types = FALSE))
+}
+
+load_switch_df <- function(id, switch_dir){
+  fname <- paste0(switch_dir, "switch_", id, ".csv")
+  results <- read_csv(fname, show_col_types = FALSE)
+  flip_loc <- get_flip_pos(results)
+  results$is_flip <- (results$pos_start %in% flip_loc) | (results$pos_end %in% flip_loc)
+  results$flip <- results$pos_end %in% flip_loc
+  # results <- results %>%
+  #   filter(flip | (!is_flip & !flip))
+  # return(results %>% select(-is_flip))
+  return(results)
+}
+
+annotate_het_list <- function(id, het_loc_dir, beagle_dir, eagle_dir, shapeit_dir, df_freq){
+  result <- load_het_pos(id, het_loc_dir)
+  df_b <- load_switch_df(id, beagle_dir)
+  df_e <- load_switch_df(id, eagle_dir)
+  df_s <- load_switch_df(id, shapeit_dir)
+  
+  result$switch_b <- result$pos %in% {df_b %>% filter(!is_flip) %>% pull(pos_start)}
+  result$flip_b <- result$pos %in% {df_b %>% filter(flip) %>% pull(pos_start)}
+  result$flip2_b <- result$pos %in% {df_b %>% filter(is_flip & !flip) %>% pull(pos_start)}
+  
+  result$switch_e <- result$pos %in% {df_e %>% filter(!is_flip) %>% pull(pos_start)}
+  result$flip_e <- result$pos %in% {df_e %>% filter(flip) %>% pull(pos_start)}
+  result$flip2_e <- result$pos %in% {df_e %>% filter(is_flip & !flip) %>% pull(pos_start)}
+  
+  result$switch_s <- result$pos %in% {df_s %>% filter(!is_flip) %>% pull(pos_start)}
+  result$flip_s <- result$pos %in% {df_s %>% filter(flip) %>% pull(pos_start)}
+  result$flip2_s <- result$pos %in% {df_s %>% filter(is_flip & !flip) %>% pull(pos_start)}
+  
+  result <- left_join(result,
+                       {df_freq %>%
+                           select(POS, maf)},
+                       by = c("pos" = "POS"))
+  
+  return(result)
+}
+
+df <- annotate_het_list(1, het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq)
+```
+
+For the `ggVennDiagram` library, we will want lists of positions for each error type (note that here we "double count" flips by including the positions of both involved heterozygous sites):
+
+```{r}
+x <- list(beagle = {df %>% filter(switch_b | flip_b | flip2_b) %>% pull(pos)},
+          eagle = {df %>% filter(switch_e | flip_e | flip2_e) %>% pull(pos)},
+          shapeit = {df %>% filter(switch_s | flip_s | flip2_s) %>% pull(pos)})
+ggVennDiagram(x) + scale_fill_gradient(low="grey90",high = "red")
+```
+
+I want to be a bit more rigorous in counting overlaps; for each method, I only want start sites to overlap errors of other methods, i.e. I don't want to double count flips in method A, but would count as overlap if same position were the second-half of a flip in method B.
+
+```{r}
+# Get flip and switch positions
+b_flip_pos <- {df %>% filter(flip_b) %>% pull(pos)}
+e_flip_pos <- {df %>% filter(flip_e) %>% pull(pos)}
+s_flip_pos <- {df %>% filter(flip_s) %>% pull(pos)}
+b_switch_pos <- {df %>% filter(switch_b) %>% pull(pos)}
+e_switch_pos <- {df %>% filter(switch_e) %>% pull(pos)}
+s_switch_pos <- {df %>% filter(switch_s) %>% pull(pos)}
+b_flip2_pos <- {df %>% filter(flip2_b) %>% pull(pos)}
+e_flip2_pos <- {df %>% filter(flip2_e) %>% pull(pos)}
+s_flip2_pos <- {df %>% filter(flip2_s) %>% pull(pos)}
+
+# Beagle overlap
+b_switch_unique <- b_switch_pos[b_switch_pos %!in% c(e_flip_pos, s_flip_pos, e_switch_pos, s_switch_pos, e_flip2_pos, s_flip2_pos)]
+b_switch_e <- b_switch_pos[(b_switch_pos %in% c(e_flip_pos, e_switch_pos, e_flip2_pos)) & b_switch_pos %!in% c(s_flip_pos, s_switch_pos, s_flip2_pos)]
+b_switch_s <- b_switch_pos[(b_switch_pos %in% c(s_flip_pos, s_switch_pos, s_flip2_pos)) & b_switch_pos %!in% c(e_flip_pos, e_switch_pos, e_flip2_pos)]
+b_switch_e_s <- b_switch_pos[b_switch_pos %in% c(s_flip_pos, s_switch_pos, s_flip2_pos) & b_switch_pos %in% c(e_flip_pos, e_switch_pos, e_flip2_pos)]
+
+b_flip_unique <- b_flip_pos[b_flip_pos %!in% c(e_flip_pos, s_flip_pos, e_switch_pos, s_switch_pos, e_flip2_pos, s_flip2_pos)]
+b_flip_e <- b_flip_pos[(b_flip_pos %in% c(e_flip_pos, e_switch_pos, e_flip2_pos)) & b_flip_pos %!in% c(s_flip_pos, s_switch_pos, s_flip2_pos)]
+b_flip_s <- b_flip_pos[(b_flip_pos %in% c(s_flip_pos, s_switch_pos, s_flip2_pos)) & b_flip_pos %!in% c(e_flip_pos, e_switch_pos, e_flip2_pos)]
+b_flip_e_s <- b_flip_pos[b_flip_pos %in% c(s_flip_pos, s_switch_pos, s_flip2_pos) & b_flip_pos %in% c(e_flip_pos, e_switch_pos, e_flip2_pos)]
+
+# Eagle Overlap
+e_switch_unique <- e_switch_pos[e_switch_pos %!in% c(b_flip_pos, s_flip_pos, b_switch_pos, s_switch_pos, b_flip2_pos, s_flip2_pos)]
+e_switch_b <- e_switch_pos[(e_switch_pos %in% c(b_flip_pos, b_switch_pos, b_flip2_pos)) & e_switch_pos %!in% c(s_flip_pos, s_switch_pos, s_flip2_pos)]
+e_switch_s <- e_switch_pos[(e_switch_pos %in% c(s_flip_pos, s_switch_pos, s_flip2_pos)) & e_switch_pos %!in% c(b_flip_pos, b_switch_pos, b_flip2_pos)]
+e_switch_b_s <- e_switch_pos[e_switch_pos %in% c(s_flip_pos, s_switch_pos, s_flip2_pos) & e_switch_pos %in% c(b_flip_pos, b_switch_pos, b_flip2_pos)]
+
+e_flip_unique <- e_flip_pos[e_flip_pos %!in% c(b_flip_pos, s_flip_pos, b_switch_pos, s_switch_pos, b_flip2_pos, s_flip2_pos)]
+e_flip_b <- e_flip_pos[(e_flip_pos %in% c(b_flip_pos, b_switch_pos, b_flip2_pos)) & e_flip_pos %!in% c(s_flip_pos, s_switch_pos, s_flip2_pos)]
+e_flip_s <- e_flip_pos[(e_flip_pos %in% c(s_flip_pos, s_switch_pos, s_flip2_pos)) & e_flip_pos %!in% c(b_flip_pos, b_switch_pos, b_flip2_pos)]
+e_flip_b_s <- e_flip_pos[e_flip_pos %in% c(s_flip_pos, s_switch_pos, s_flip2_pos) & e_flip_pos %in% c(b_flip_pos, b_switch_pos, b_flip2_pos)]
+
+# SHAPEIT Overlap
+s_switch_unique <- s_switch_pos[s_switch_pos %!in% c(b_flip_pos, e_flip_pos, b_switch_pos, e_switch_pos, b_flip2_pos, e_flip2_pos)]
+s_switch_b <- s_switch_pos[(s_switch_pos %in% c(b_flip_pos, b_switch_pos, b_flip2_pos)) & s_switch_pos %!in% c(e_flip_pos, e_switch_pos, e_flip2_pos)]
+s_switch_e <- s_switch_pos[(s_switch_pos %in% c(e_flip_pos, e_switch_pos, e_flip2_pos)) & s_switch_pos %!in% c(b_flip_pos, b_switch_pos, b_flip2_pos)]
+s_switch_b_e <- s_switch_pos[s_switch_pos %in% c(e_flip_pos, e_switch_pos, e_flip2_pos) & s_switch_pos %in% c(b_flip_pos, b_switch_pos, b_flip2_pos)]
+
+s_flip_unique <- s_flip_pos[s_flip_pos %!in% c(e_flip_pos, b_flip_pos, e_switch_pos, b_switch_pos, e_flip2_pos, b_flip2_pos)]
+s_flip_b <- s_flip_pos[(s_flip_pos %in% c(b_flip_pos, b_switch_pos, b_flip2_pos)) & s_flip_pos %!in% c(e_flip_pos, e_switch_pos, e_flip2_pos)]
+s_flip_e <- s_flip_pos[(s_flip_pos %in% c(e_flip_pos, e_switch_pos, e_flip2_pos)) & s_flip_pos %!in% c(b_flip_pos, b_switch_pos, b_flip2_pos)]
+s_flip_b_e <- s_flip_pos[s_flip_pos %in% c(e_flip_pos, e_switch_pos, e_flip2_pos) & s_flip_pos %in% c(b_flip_pos, b_switch_pos, b_flip2_pos)]
+
+# Get counts
+```
+
+I think I have to double count flips for this analysis, since we'd want to identify cases where the latter half of a flip is also the location of either a switch or the start of a flip in another method.
+
+1. Switches: get list of which ones do or do not appear in the error lists for the other methods
+2. Flips: identify overlaps, subsetting list to begin position
+
+What's missing from above code is checking if flip2 overlaps an error in the other methods
+
+
+Or, hear me out: we say nuts to the above, and just do the very simple criteria of:
+
+1. Switches are shared only with switches that occur at the same position
+2. Flips are shared only with flips that start at the same position
+3. Everything else is distinct as far as we care
+
+So for each SD we get two venn diagrams with 3 circles.
+
+```{r}
+x <- list(beagle = {df %>% filter(switch_b) %>% pull(pos)},
+          eagle = {df %>% filter(switch_e) %>% pull(pos)},
+          shapeit = {df %>% filter(switch_s) %>% pull(pos)})
+p1 <- ggVennDiagram(x, label = "count") + 
+  scale_fill_gradient(low="grey90",high = "green") + 
+  ggtitle("Switches") + 
+  theme(plot.title = element_text(hjust = 0.5))
+
+x <- list(beagle = {df %>% filter(flip_b) %>% pull(pos)},
+          eagle = {df %>% filter(flip_e) %>% pull(pos)},
+          shapeit = {df %>% filter(flip_s) %>% pull(pos)})
+p2 <- ggVennDiagram(x, label="count") + 
+  scale_fill_gradient(low="grey90",high = "blue") + 
+  ggtitle("Flips") + 
+  theme(plot.title = element_text(hjust = 0.5))
+
+gridExtra::grid.arrange(p1,p2,ncol=2)
+```
+
+Naturally, we may ask how many intersections of errors do we miss by considering only matching error types and, in the case of flips, only matching directly overlapping errors. First, we look at how many switches from eagle overlap flips from the other two methods:
+
+```{r}
+x <- list(beagle = {df %>% filter(switch_b | flip_b | flip2_b) %>% pull(pos)},
+          eagle = {df %>% filter(switch_e) %>% pull(pos)},
+          shapeit = {df %>% filter(switch_s | flip_s | flip2_s) %>% pull(pos)})
+ggVennDiagram(x) + scale_fill_gradient(low="grey90",high = "orange") + ggtitle("Switches") + theme(plot.title = element_text(hjust = 0.5))
+```
+
+
+So, if we wanted to aggregate these counts across multiple SDs, we'd have to generate 14 numbers per SD. Is there a quick way of doing this?
+
+```{r}
+df_switch <- df %>%
+  filter(switch_b | switch_e | switch_s) %>%
+  mutate(beagle = ifelse(switch_b, "Y", "N"),
+         eagle = ifelse(switch_e, "Y", "N"),
+         shapeit = ifelse(switch_s, "Y", "N")) %>%
+  mutate(count_cat = paste(beagle, eagle, shapeit, sep="_")) %>%
+  pull(count_cat) %>%
+  table() %>%
+  as.data.frame() %>%
+  rename(count_cat = ".")
+
+df_flip <- df %>%
+  filter(flip_b | flip_e | flip_s) %>%
+  mutate(beagle = ifelse(flip_b, "Y", "N"),
+         eagle = ifelse(flip_e, "Y", "N"),
+         shapeit = ifelse(flip_s, "Y", "N")) %>%
+  mutate(count_cat = paste(beagle, eagle, shapeit, sep="_")) %>%
+  pull(count_cat) %>%
+  table() %>%
+  as.data.frame() %>%
+  rename(count_cat = ".")
+```
+
+And let's get this for all EUR SDs:
+
+## Simple Overlap
+
+```{r}
+# Version which only does exact matches of flips and switches
+get_error_counts <- function(ids, het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq){
+  n <- length(ids)
+  results <- vector(mode = "list", length = 2)
+  
+  df <- annotate_het_list(ids[1], het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq)
+  df_switch <- df %>%
+    filter(switch_b | switch_e | switch_s) %>%
+    mutate(beagle = ifelse(switch_b, "Y", "N"),
+           eagle = ifelse(switch_e, "Y", "N"),
+           shapeit = ifelse(switch_s, "Y", "N")) %>%
+    mutate(count_cat = paste(beagle, eagle, shapeit, sep="_")) %>%
+    pull(count_cat) %>%
+    table() %>%
+    as.data.frame() %>%
+    rename(count_cat = ".")
+  
+  df_flip <- df %>%
+    filter(flip_b | flip_e | flip_s) %>%
+    mutate(beagle = ifelse(flip_b, "Y", "N"),
+           eagle = ifelse(flip_e, "Y", "N"),
+           shapeit = ifelse(flip_s, "Y", "N")) %>%
+    mutate(count_cat = paste(beagle, eagle, shapeit, sep="_")) %>%
+    pull(count_cat) %>%
+    table() %>%
+    as.data.frame() %>%
+    rename(count_cat = ".")
+  
+  for(i in 2:n){
+    df <- annotate_het_list(ids[i], het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq)
+    df_switch2 <- df %>%
+      filter(switch_b | switch_e | switch_s) %>%
+      mutate(beagle = ifelse(switch_b, "Y", "N"),
+             eagle = ifelse(switch_e, "Y", "N"),
+             shapeit = ifelse(switch_s, "Y", "N")) %>%
+      mutate(count_cat = paste(beagle, eagle, shapeit, sep="_")) %>%
+      pull(count_cat) %>%
+      table() %>%
+      as.data.frame() %>%
+      rename(count_cat = ".", Freq2 = Freq)
+    
+    df_switch <- df_switch %>%
+      left_join(df_switch2, by="count_cat") %>%
+      mutate(Freq = Freq + Freq2) %>%
+      select(-Freq2)
+      
+    
+    df_flip2 <- df %>%
+      filter(flip_b | flip_e | flip_s) %>%
+      mutate(beagle = ifelse(flip_b, "Y", "N"),
+             eagle = ifelse(flip_e, "Y", "N"),
+             shapeit = ifelse(flip_s, "Y", "N")) %>%
+      mutate(count_cat = paste(beagle, eagle, shapeit, sep="_")) %>%
+      pull(count_cat) %>%
+      table() %>%
+      as.data.frame() %>%
+      rename(count_cat = ".", Freq2 = Freq)
+    
+    df_flip <- df_flip %>%
+      left_join(df_flip2, by="count_cat") %>%
+      mutate(Freq = Freq + Freq2) %>%
+      select(-Freq2)
+  }
+  results[[1]] <- df_switch
+  results[[2]] <- df_flip
+  return(results)
+}
+```
+
+### EUR
+
+```{r}
+results_eur <- get_error_counts(1:200, het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq)
+
+results_eur[[1]] %>%
+  knitr::kable()
+results_eur[[2]] %>%
+  knitr::kable()
+```
+
+### AFR
+
+```{r}
+results_afr <- get_error_counts(201:400, het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq)
+
+results_afr[[1]] %>%
+  knitr::kable()
+results_afr[[2]] %>%
+  knitr::kable()
+```
+
+### AMR
+
+```{r}
+results_amr <- get_error_counts(401:500, het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq)
+
+results_amr[[1]] %>%
+  knitr::kable()
+results_amr[[2]] %>%
+  knitr::kable()
+```
+
+### EAS
+
+```{r}
+results_eas <- get_error_counts(501:600, het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq)
+
+results_eas[[1]] %>%
+  knitr::kable()
+results_eas[[2]] %>%
+  knitr::kable()
+```
+
+### SAS
+
+```{r}
+results_sas <- get_error_counts(601:700, het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq)
+
+results_sas[[1]] %>%
+  knitr::kable()
+results_sas[[2]] %>%
+  knitr::kable()
+```
+
+# Errors in Bins
+
+To get the sense of how much the methods overlap in a larger scale, we'll look at the aggregate number of errors in bins across the genome for both switches and flips. First, let's take a look at what this overlap looks like within a single synthetic diploid:
+
+```{r}
+bin_size <- 10000000 # try 1MB
+df <- annotate_het_list(1, het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq) %>%
+  mutate(bin_id = ceiling(pos / bin_size))
+```
+
+Let's first look at switches across bins
+
+```{r}
+df %>%
+  group_by(bin_id) %>%
+  summarize(beagle = sum(switch_b),
+            eagle = sum(switch_e),
+            shapeit = sum(switch_s)) %>%
+  pivot_longer(-bin_id, names_to = "method", values_to = "switches") %>%
+  ggplot(aes(x = bin_id, y = switches, color = method)) +
+  geom_point() +
+  geom_line() +
+  theme_classic()
+```
+
+
