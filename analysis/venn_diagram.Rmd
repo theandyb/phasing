@@ -397,7 +397,8 @@ get_errors_mb <- function(ids, bin_size, het_loc_dir, beagle_switch_dir, eagle_s
               shapeit_s = sum(switch_s),
               beagle_f = sum(flip_b),
               eagle_f = sum(flip_e),
-              shapeit_f = sum(flip_s))
+              shapeit_f = sum(flip_s),
+              hets = n())
   
   for(i in 2:length(ids)){
     df2 <- annotate_het_list(ids[i], het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq) %>%
@@ -408,24 +409,36 @@ get_errors_mb <- function(ids, bin_size, het_loc_dir, beagle_switch_dir, eagle_s
                 shapeit_s2 = sum(switch_s),
                 beagle_f2 = sum(flip_b),
               eagle_f2 = sum(flip_e),
-              shapeit_f2 = sum(flip_s))
+              shapeit_f2 = sum(flip_s),
+              hets2 = n())
     final_df <- full_join(final_df, df2, by="bin_id") %>%
       replace_na(list("beagle_s" = 0, "eagle_s" = 0, "shapeit_s" = 0,
                       "beagle_s2" = 0, "eagle_s2" = 0, "shapeit_s2" = 0,
                       "beagle_f" = 0, "eagle_f" = 0, "shapeit_f" = 0,
-                      "beagle_f2" = 0, "eagle_f2" = 0, "shapeit_f2" = 0)) %>%
+                      "beagle_f2" = 0, "eagle_f2" = 0, "shapeit_f2" = 0,
+                      "hets" = 0, "hets2" = 0)) %>%
       mutate(beagle_s = beagle_s + beagle_s2,
              eagle_s = eagle_s + eagle_s2,
              shapeit_s = shapeit_s + shapeit_s2,
              beagle_f = beagle_f + beagle_f2,
              eagle_f = eagle_f + eagle_f2,
-             shapeit_f = shapeit_f + shapeit_f2) %>%
-      select(bin_id, beagle_s, eagle_s, shapeit_s, beagle_f, eagle_f, shapeit_f)
+             shapeit_f = shapeit_f + shapeit_f2,
+             hets = hets + hets2) %>%
+      select(bin_id, beagle_s, eagle_s, shapeit_s, beagle_f, eagle_f, shapeit_f, hets)
   }
   return(final_df)
 }
 
 df_eur <- get_errors_mb(1:200, 1e6, het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq)
+
+df_eur %>%
+  ggplot(aes(x = bin_id, y = hets)) +
+  geom_point() +
+  geom_line() +
+  ggtitle("Aggregated Heterozygous Sites per Bin", "EUR Synthetic Diploids") +
+  xlab("Bin") +
+  ylab("Heterozygous Sites") +
+  theme_classic()
 
 df_eur %>%
   select(bin_id, beagle_s, eagle_s, shapeit_s) %>%
@@ -499,12 +512,73 @@ df_eur %>%
   knitr::kable()
 ```
 
+### Higher Resolution
+
+```{r}
+df_eur <- get_errors_mb(1:200, 1e5, het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq)
+
+df_eur %>%
+  ggplot(aes(x = bin_id, y = hets)) +
+  geom_point() +
+  geom_line() +
+  ggtitle("Aggregated Heterozygous Sites per Bin", "EUR Synthetic Diploids") +
+  xlab("Bin") +
+  ylab("Heterozygous Sites") +
+  theme_classic()
+
+df_eur %>%
+  select(bin_id, beagle_s, eagle_s, shapeit_s) %>%
+  rename(Beagle = beagle_s, Eagle = eagle_s, SHAPEIT = shapeit_s) %>%
+  pivot_longer(-bin_id, names_to = "Method", values_to = "Switches") %>%
+  ggplot(aes(x = bin_id, y = Switches, color = Method )) +
+    geom_point() +
+    geom_line() +
+    theme_classic() +
+    xlab("Bin") +
+  ggtitle("Switches per 100KB Bin", "EUR Synthetic Diploids")
+
+df_eur %>%
+  mutate(eagle_beagle = eagle_s - beagle_s,
+         eagle_shapeit = eagle_s - shapeit_s) %>%
+  select(bin_id, eagle_beagle, eagle_shapeit) %>%
+  pivot_longer(-bin_id, names_to = "Comparison", values_to = "Difference") %>%
+  ggplot(aes(x = bin_id, y = Difference, color = Comparison, group = Comparison)) +
+    geom_point() +
+    theme_classic() +
+    xlab("Bin") +
+  geom_hline(yintercept = 0) +
+  ggtitle("Difference in Switches per 100KB Bin", "EUR Synthetic Diploids") +
+  geom_smooth(linewidth = 2.5, color = "black", se = FALSE)+
+  geom_smooth()
+  
+df_eur %>%
+  select(bin_id, beagle_f, eagle_f, shapeit_f) %>%
+  rename(Beagle = beagle_f, Eagle = eagle_f, SHAPEIT = shapeit_f) %>%
+  pivot_longer(-bin_id, names_to = "Method", values_to = "Flips") %>%
+  ggplot(aes(x = bin_id, y = Flips, color = Method )) +
+    geom_point() +
+    geom_line() +
+    theme_classic() +
+    xlab("Bin") +
+  ggtitle("Flips per 100KB Bin", "EUR Synthetic Diploids")
+```
+
+
 ## AFR
 
 ### Switches 
 
 ```{r}
 df_afr <- get_errors_mb(201:400, 1e6, het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq)
+
+df_afr %>%
+  ggplot(aes(x = bin_id, y = hets)) +
+  geom_point() +
+  geom_line() +
+  ggtitle("Aggregated Heterozygous Sites per Bin", "AFR Synthetic Diploids") +
+  xlab("Bin") +
+  ylab("Heterozygous Sites") +
+  theme_classic()
 
 df_afr %>%
   select(bin_id, beagle_s, eagle_s, shapeit_s) %>%
@@ -586,6 +660,15 @@ df_afr %>%
 df_amr <- get_errors_mb(401:500, 1e6, het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq)
 
 df_amr %>%
+  ggplot(aes(x = bin_id, y = hets)) +
+  geom_point() +
+  geom_line() +
+  ggtitle("Aggregated Heterozygous Sites per Bin", "AMR Synthetic Diploids") +
+  xlab("Bin") +
+  ylab("Heterozygous Sites") +
+  theme_classic()
+
+df_amr %>%
   select(bin_id, beagle_s, eagle_s, shapeit_s) %>%
   rename(Beagle = beagle_s, Eagle = eagle_s, SHAPEIT = shapeit_s) %>%
   pivot_longer(-bin_id, names_to = "Method", values_to = "Switches") %>%
@@ -664,6 +747,15 @@ df_amr %>%
 df_eas <- get_errors_mb(501:600, 1e6, het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq)
 
 df_eas %>%
+  ggplot(aes(x = bin_id, y = hets)) +
+  geom_point() +
+  geom_line() +
+  ggtitle("Aggregated Heterozygous Sites per Bin", "EAS Synthetic Diploids") +
+  xlab("Bin") +
+  ylab("Heterozygous Sites") +
+  theme_classic()
+
+df_eas %>%
   select(bin_id, beagle_s, eagle_s, shapeit_s) %>%
   rename(Beagle = beagle_s, Eagle = eagle_s, SHAPEIT = shapeit_s) %>%
   pivot_longer(-bin_id, names_to = "Method", values_to = "Switches") %>%
@@ -740,6 +832,15 @@ df_eas %>%
 
 ```{r}
 df_sas <- get_errors_mb(601:700, 1e6, het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq)
+
+df_sas %>%
+  ggplot(aes(x = bin_id, y = hets)) +
+  geom_point() +
+  geom_line() +
+  ggtitle("Aggregated Heterozygous Sites per Bin", "SAS Synthetic Diploids") +
+  xlab("Bin") +
+  ylab("Heterozygous Sites") +
+  theme_classic()
 
 df_sas %>%
   select(bin_id, beagle_s, eagle_s, shapeit_s) %>%
