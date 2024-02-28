@@ -1858,4 +1858,24 @@ df %>%
   knitr::kable()
 ```
 
+# Recombination Rate
+
+```{r}
+rr_df_hapmap <- rr_df_hapmap %>%
+  mutate(bin_id =  ceiling(pos / 1e6))
+
+df_eur %>%
+  left_join({rr_df_hapmap %>% 
+      select(bin_id, combined) %>% 
+      group_by(bin_id) %>% 
+      summarise(rr = mean(combined, na.rm = T))},
+      by = "bin_id") %>%
+  ggplot(aes(x = bin_id, y = rr)) +
+  geom_point() + 
+  geom_line() +
+  theme_classic() +
+  xlab("Bin") +
+  ylab("HapMap Recombination Rate")
+```
+
 
