@@ -595,15 +595,15 @@ output/chrX_maf_simple.tsv
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomtheandybphasingtreea4d384451389c400db63a309c16007a495f9aecftargetblanka4d3844a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomtheandybphasingtreef4efee5b4a12f27096879de5c3f24998682973batargetblankf4efee5a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/theandyb/phasing/tree/a4d384451389c400db63a309c16007a495f9aecf" target="_blank">a4d3844</a>
+<a href="https://github.com/theandyb/phasing/tree/f4efee5b4a12f27096879de5c3f24998682973ba" target="_blank">f4efee5</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomtheandybphasingtreea4d384451389c400db63a309c16007a495f9aecftargetblanka4d3844a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomtheandybphasingtreef4efee5b4a12f27096879de5c3f24998682973batargetblankf4efee5a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -613,7 +613,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/theandyb/phasing/tree/a4d384451389c400db63a309c16007a495f9aecf" target="_blank">a4d3844</a>.
+<a href="https://github.com/theandyb/phasing/tree/f4efee5b4a12f27096879de5c3f24998682973ba" target="_blank">f4efee5</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -704,6 +704,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/f4efee5b4a12f27096879de5c3f24998682973ba/analysis/venn_diagram.Rmd" target="_blank">f4efee5</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-28
+</td>
+<td>
+wflow_publish("analysis/venn_diagram.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/theandyb/phasing/b290d9a2d50bed3d52d953305488137605068206/docs/venn_diagram.html" target="_blank">b290d9a</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-28
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1370,6 +1404,17 @@ df_flip &lt;- df %&gt;%
   pull(count_cat) %&gt;%
   table() %&gt;%
   as.data.frame() %&gt;%
+  rename(count_cat = &quot;.&quot;)
+
+df_switch_noflip &lt;- df %&gt;%
+  filter((switch_b | switch_e | switch_s) &amp; !(flip_b | flip2_b | flip_e | flip2_e | flip_s | flip2_s)) %&gt;%
+  mutate(beagle = ifelse(switch_b, &quot;Y&quot;, &quot;N&quot;),
+         eagle = ifelse(switch_e, &quot;Y&quot;, &quot;N&quot;),
+         shapeit = ifelse(switch_s, &quot;Y&quot;, &quot;N&quot;)) %&gt;%
+  mutate(count_cat = paste(beagle, eagle, shapeit, sep=&quot;_&quot;)) %&gt;%
+  pull(count_cat) %&gt;%
+  table() %&gt;%
+  as.data.frame() %&gt;%
   rename(count_cat = &quot;.&quot;)</code></pre>
 </div>
 <div id="simple-overlap" class="section level2">
@@ -1396,6 +1441,17 @@ get_error_counts &lt;- function(ids, het_loc_dir, beagle_switch_dir, eagle_switc
     mutate(beagle = ifelse(flip_b, &quot;Y&quot;, &quot;N&quot;),
            eagle = ifelse(flip_e, &quot;Y&quot;, &quot;N&quot;),
            shapeit = ifelse(flip_s, &quot;Y&quot;, &quot;N&quot;)) %&gt;%
+    mutate(count_cat = paste(beagle, eagle, shapeit, sep=&quot;_&quot;)) %&gt;%
+    pull(count_cat) %&gt;%
+    table() %&gt;%
+    as.data.frame() %&gt;%
+    rename(count_cat = &quot;.&quot;)
+  
+  df_switch_noflip &lt;- df %&gt;%
+    filter((switch_b | switch_e | switch_s) &amp; !(flip_b | flip2_b | flip_e | flip2_e | flip_s | flip2_s)) %&gt;%
+    mutate(beagle = ifelse(switch_b, &quot;Y&quot;, &quot;N&quot;),
+           eagle = ifelse(switch_e, &quot;Y&quot;, &quot;N&quot;),
+           shapeit = ifelse(switch_s, &quot;Y&quot;, &quot;N&quot;)) %&gt;%
     mutate(count_cat = paste(beagle, eagle, shapeit, sep=&quot;_&quot;)) %&gt;%
     pull(count_cat) %&gt;%
     table() %&gt;%
@@ -1438,9 +1494,27 @@ get_error_counts &lt;- function(ids, het_loc_dir, beagle_switch_dir, eagle_switc
       replace_na(list(&quot;Freq&quot; = 0, &quot;Freq2&quot; = 0)) %&gt;%
       mutate(Freq = Freq + Freq2) %&gt;%
       select(-Freq2)
+    
+    df_switch_noflip2 &lt;- df %&gt;%
+      filter((switch_b | switch_e | switch_s) &amp; !(flip_b | flip2_b | flip_e | flip2_e | flip_s | flip2_s)) %&gt;%
+      mutate(beagle = ifelse(switch_b, &quot;Y&quot;, &quot;N&quot;),
+             eagle = ifelse(switch_e, &quot;Y&quot;, &quot;N&quot;),
+             shapeit = ifelse(switch_s, &quot;Y&quot;, &quot;N&quot;)) %&gt;%
+      mutate(count_cat = paste(beagle, eagle, shapeit, sep=&quot;_&quot;)) %&gt;%
+      pull(count_cat) %&gt;%
+      table() %&gt;%
+      as.data.frame() %&gt;%
+      rename(count_cat = &quot;.&quot;, Freq2 = Freq)
+    
+    df_switch_noflip &lt;- df_switch_noflip %&gt;%
+      full_join(df_switch_noflip2, by=&quot;count_cat&quot;) %&gt;%
+      replace_na(list(&quot;Freq&quot; = 0, &quot;Freq2&quot; = 0)) %&gt;%
+      mutate(Freq = Freq + Freq2) %&gt;%
+      select(-Freq2)
   }
   results[[1]] &lt;- df_switch
   results[[2]] &lt;- df_flip
+  results[[3]] &lt;- df_switch_noflip
   return(results)
 }</code></pre>
 <div id="eur" class="section level3">
@@ -1524,6 +1598,46 @@ results_eur[[1]] %&gt;%
 <tr class="odd">
 <td align="left">Y_Y_Y</td>
 <td align="right">5082</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>results_eur[[3]] %&gt;%
+  knitr::kable()</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">count_cat</th>
+<th align="right">Freq</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">N_N_Y</td>
+<td align="right">6708</td>
+</tr>
+<tr class="even">
+<td align="left">N_Y_N</td>
+<td align="right">10173</td>
+</tr>
+<tr class="odd">
+<td align="left">N_Y_Y</td>
+<td align="right">2464</td>
+</tr>
+<tr class="even">
+<td align="left">Y_N_N</td>
+<td align="right">7813</td>
+</tr>
+<tr class="odd">
+<td align="left">Y_N_Y</td>
+<td align="right">2727</td>
+</tr>
+<tr class="even">
+<td align="left">Y_Y_N</td>
+<td align="right">2996</td>
+</tr>
+<tr class="odd">
+<td align="left">Y_Y_Y</td>
+<td align="right">7250</td>
 </tr>
 </tbody>
 </table>
@@ -1630,6 +1744,9 @@ Andy Beck
 </div>
 </div>
 <pre><code>NULL</code></pre>
+<pre class="r"><code>count_to_ven(results_eur[[3]])</code></pre>
+<p><img src="figure/venn_diagram.Rmd/unnamed-chunk-12-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>NULL</code></pre>
 </div>
 <div id="afr" class="section level3">
 <h3>AFR</h3>
@@ -1715,6 +1832,46 @@ results_afr[[1]] %&gt;%
 </tr>
 </tbody>
 </table>
+<pre class="r"><code>results_afr[[3]] %&gt;%
+  knitr::kable()</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">count_cat</th>
+<th align="right">Freq</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">N_N_Y</td>
+<td align="right">5333</td>
+</tr>
+<tr class="even">
+<td align="left">N_Y_N</td>
+<td align="right">13080</td>
+</tr>
+<tr class="odd">
+<td align="left">N_Y_Y</td>
+<td align="right">2109</td>
+</tr>
+<tr class="even">
+<td align="left">Y_N_N</td>
+<td align="right">10333</td>
+</tr>
+<tr class="odd">
+<td align="left">Y_N_Y</td>
+<td align="right">2641</td>
+</tr>
+<tr class="even">
+<td align="left">Y_Y_N</td>
+<td align="right">2612</td>
+</tr>
+<tr class="odd">
+<td align="left">Y_Y_Y</td>
+<td align="right">6506</td>
+</tr>
+</tbody>
+</table>
 <pre class="r"><code>count_to_ven(results_afr[[1]])</code></pre>
 <p><img src="figure/venn_diagram.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
@@ -1794,6 +1951,9 @@ Andy Beck
 </table>
 </div>
 </div>
+<pre><code>NULL</code></pre>
+<pre class="r"><code>count_to_ven(results_afr[[3]])</code></pre>
+<p><img src="figure/venn_diagram.Rmd/unnamed-chunk-13-3.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>NULL</code></pre>
 </div>
 <div id="amr" class="section level3">
@@ -1880,6 +2040,46 @@ results_amr[[1]] %&gt;%
 </tr>
 </tbody>
 </table>
+<pre class="r"><code>results_amr[[3]] %&gt;%
+  knitr::kable()</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">count_cat</th>
+<th align="right">Freq</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">N_N_Y</td>
+<td align="right">2513</td>
+</tr>
+<tr class="even">
+<td align="left">N_Y_N</td>
+<td align="right">4319</td>
+</tr>
+<tr class="odd">
+<td align="left">N_Y_Y</td>
+<td align="right">907</td>
+</tr>
+<tr class="even">
+<td align="left">Y_N_N</td>
+<td align="right">2925</td>
+</tr>
+<tr class="odd">
+<td align="left">Y_N_Y</td>
+<td align="right">1158</td>
+</tr>
+<tr class="even">
+<td align="left">Y_Y_N</td>
+<td align="right">1122</td>
+</tr>
+<tr class="odd">
+<td align="left">Y_Y_Y</td>
+<td align="right">2698</td>
+</tr>
+</tbody>
+</table>
 <pre class="r"><code>count_to_ven(results_amr[[1]])</code></pre>
 <p><img src="figure/venn_diagram.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
@@ -1959,6 +2159,9 @@ Andy Beck
 </table>
 </div>
 </div>
+<pre><code>NULL</code></pre>
+<pre class="r"><code>count_to_ven(results_amr[[3]])</code></pre>
+<p><img src="figure/venn_diagram.Rmd/unnamed-chunk-14-3.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>NULL</code></pre>
 </div>
 <div id="eas" class="section level3">
@@ -2042,6 +2245,46 @@ results_eas[[1]] %&gt;%
 <tr class="odd">
 <td align="left">Y_Y_Y</td>
 <td align="right">3222</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>results_eas[[3]] %&gt;%
+  knitr::kable()</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">count_cat</th>
+<th align="right">Freq</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">N_N_Y</td>
+<td align="right">5500</td>
+</tr>
+<tr class="even">
+<td align="left">N_Y_N</td>
+<td align="right">7567</td>
+</tr>
+<tr class="odd">
+<td align="left">N_Y_Y</td>
+<td align="right">2023</td>
+</tr>
+<tr class="even">
+<td align="left">Y_N_N</td>
+<td align="right">5641</td>
+</tr>
+<tr class="odd">
+<td align="left">Y_N_Y</td>
+<td align="right">2294</td>
+</tr>
+<tr class="even">
+<td align="left">Y_Y_N</td>
+<td align="right">2464</td>
+</tr>
+<tr class="odd">
+<td align="left">Y_Y_Y</td>
+<td align="right">5464</td>
 </tr>
 </tbody>
 </table>
@@ -2147,6 +2390,9 @@ Andy Beck
 </div>
 </div>
 <pre><code>NULL</code></pre>
+<pre class="r"><code>count_to_ven(results_eas[[3]])</code></pre>
+<p><img src="figure/venn_diagram.Rmd/unnamed-chunk-15-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>NULL</code></pre>
 </div>
 <div id="sas" class="section level3">
 <h3>SAS</h3>
@@ -2229,6 +2475,46 @@ results_sas[[1]] %&gt;%
 <tr class="odd">
 <td align="left">Y_Y_Y</td>
 <td align="right">3117</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>results_sas[[3]] %&gt;%
+  knitr::kable()</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">count_cat</th>
+<th align="right">Freq</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">N_N_Y</td>
+<td align="right">4196</td>
+</tr>
+<tr class="even">
+<td align="left">N_Y_N</td>
+<td align="right">6461</td>
+</tr>
+<tr class="odd">
+<td align="left">N_Y_Y</td>
+<td align="right">1550</td>
+</tr>
+<tr class="even">
+<td align="left">Y_N_N</td>
+<td align="right">5154</td>
+</tr>
+<tr class="odd">
+<td align="left">Y_N_Y</td>
+<td align="right">1718</td>
+</tr>
+<tr class="even">
+<td align="left">Y_Y_N</td>
+<td align="right">1967</td>
+</tr>
+<tr class="odd">
+<td align="left">Y_Y_Y</td>
+<td align="right">4347</td>
 </tr>
 </tbody>
 </table>
@@ -2322,6 +2608,9 @@ Andy Beck
 </table>
 </div>
 </div>
+<pre><code>NULL</code></pre>
+<pre class="r"><code>count_to_ven(results_sas[[3]])</code></pre>
+<p><img src="figure/venn_diagram.Rmd/unnamed-chunk-16-3.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>NULL</code></pre>
 </div>
 </div>
@@ -2929,6 +3218,92 @@ Andy Beck
   mutate(beagle = beagle_s / hets,
          eagle = eagle_s / hets,
          shapeit = shapeit_s / hets) %&gt;%
+  select(bin_id, beagle, eagle, shapeit) %&gt;%
+  rename(Beagle = beagle, Eagle = eagle, SHAPEIT = shapeit) %&gt;%
+  pivot_longer(-bin_id, names_to = &quot;Method&quot;, values_to = &quot;Switches&quot;) %&gt;%
+  ggplot(aes(x = bin_id, y = Switches, color = Method )) +
+    geom_point() +
+    geom_line() +
+    theme_classic() +
+    xlab(&quot;Bin&quot;) +
+  ggtitle(&quot;Switches per Heterozygous Site per MB Bin&quot;, &quot;EUR Synthetic Diploids&quot;) +
+  geom_smooth()</code></pre>
+<pre><code>`geom_smooth()` using method = &#39;loess&#39; and formula = &#39;y ~ x&#39;</code></pre>
+<p><img src="figure/venn_diagram.Rmd/unnamed-chunk-21-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-21-2">
+Past versions of unnamed-chunk-21-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-21-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/502273bcf6edaca8c681ab1cfa7a4a39b64cfff5/docs/figure/venn_diagram.Rmd/unnamed-chunk-21-2.png" target="_blank">502273b</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-27
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/ed62da22707097bd3c0551c99e9cf0fa9f95d3ed/docs/figure/venn_diagram.Rmd/unnamed-chunk-21-2.png" target="_blank">ed62da2</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-26
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/a4b738cb0b558eea21a450a9bbca1cfacbe7f5bf/docs/figure/venn_diagram.Rmd/unnamed-chunk-21-2.png" target="_blank">a4b738c</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-26
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/459bd1f610609a0d7abc60bdd312e670b295fd4f/docs/figure/venn_diagram.Rmd/unnamed-chunk-21-2.png" target="_blank">459bd1f</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>df_eur %&gt;%
+  mutate(beagle = beagle_s / hets,
+         eagle = eagle_s / hets,
+         shapeit = shapeit_s / hets) %&gt;%
   select(beagle, eagle, shapeit) %&gt;%
   cor() %&gt;%
   knitr::kable()</code></pre>
@@ -3168,6 +3543,80 @@ Andy Beck
 </div>
 </div>
 <pre class="r"><code>df_eur %&gt;%
+  select(bin_id, beagle_f, eagle_f, shapeit_f) %&gt;%
+  rename(Beagle = beagle_f, Eagle = eagle_f, SHAPEIT = shapeit_f) %&gt;%
+  pivot_longer(-bin_id, names_to = &quot;Method&quot;, values_to = &quot;Flips&quot;) %&gt;%
+  ggplot(aes(x = bin_id, y = Flips, color = Method )) +
+    geom_point() +
+    geom_line() +
+    theme_classic() +
+  geom_smooth() +
+    xlab(&quot;Bin&quot;) +
+  ggtitle(&quot;Flips per MB Bin&quot;, &quot;EUR Synthetic Diploids&quot;) +
+  geom_smooth()</code></pre>
+<pre><code>`geom_smooth()` using method = &#39;loess&#39; and formula = &#39;y ~ x&#39;
+`geom_smooth()` using method = &#39;loess&#39; and formula = &#39;y ~ x&#39;</code></pre>
+<p><img src="figure/venn_diagram.Rmd/unnamed-chunk-22-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-22-3">
+Past versions of unnamed-chunk-22-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-22-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/502273bcf6edaca8c681ab1cfa7a4a39b64cfff5/docs/figure/venn_diagram.Rmd/unnamed-chunk-22-3.png" target="_blank">502273b</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-27
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/ed62da22707097bd3c0551c99e9cf0fa9f95d3ed/docs/figure/venn_diagram.Rmd/unnamed-chunk-22-3.png" target="_blank">ed62da2</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-26
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/a4b738cb0b558eea21a450a9bbca1cfacbe7f5bf/docs/figure/venn_diagram.Rmd/unnamed-chunk-22-3.png" target="_blank">a4b738c</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>df_eur %&gt;%
   select(beagle_f, eagle_f, shapeit_f) %&gt;%
   cor(method = &quot;pearson&quot;) %&gt;%
   knitr::kable()</code></pre>
@@ -3309,6 +3758,81 @@ Andy Beck
 <tr>
 <td>
 <a href="https://github.com/theandyb/phasing/blob/c5dd38b4b843ac81aac0662cb9ea6f6cfe04ca52/docs/figure/venn_diagram.Rmd/unnamed-chunk-23-1.png" target="_blank">c5dd38b</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>df_eur %&gt;%
+  mutate(beagle = beagle_f / hets,
+         eagle = eagle_f / hets,
+         shapeit = shapeit_f / hets) %&gt;%
+  select(bin_id, beagle, eagle, shapeit) %&gt;%
+  rename(Beagle = beagle, Eagle = eagle, SHAPEIT = shapeit) %&gt;%
+  pivot_longer(-bin_id, names_to = &quot;Method&quot;, values_to = &quot;Flips&quot;) %&gt;%
+  ggplot(aes(x = bin_id, y = Flips, color = Method )) +
+    geom_point() +
+    geom_line() +
+    theme_classic() +
+    xlab(&quot;Bin&quot;) +
+  ggtitle(&quot;Flips per Heterozygous Site per MB Bin&quot;, &quot;EUR Synthetic Diploids&quot;) +
+  geom_smooth()</code></pre>
+<pre><code>`geom_smooth()` using method = &#39;loess&#39; and formula = &#39;y ~ x&#39;</code></pre>
+<p><img src="figure/venn_diagram.Rmd/unnamed-chunk-23-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-23-2">
+Past versions of unnamed-chunk-23-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-23-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/ed62da22707097bd3c0551c99e9cf0fa9f95d3ed/docs/figure/venn_diagram.Rmd/unnamed-chunk-23-2.png" target="_blank">ed62da2</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-26
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/a4b738cb0b558eea21a450a9bbca1cfacbe7f5bf/docs/figure/venn_diagram.Rmd/unnamed-chunk-23-2.png" target="_blank">a4b738c</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-02-26
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/459bd1f610609a0d7abc60bdd312e670b295fd4f/docs/figure/venn_diagram.Rmd/unnamed-chunk-23-2.png" target="_blank">459bd1f</a>
 </td>
 <td>
 Andy Beck
