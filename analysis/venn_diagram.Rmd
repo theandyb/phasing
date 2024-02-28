@@ -24,6 +24,9 @@ het_loc_dir <-        "/net/snowwhite/home/beckandy/research/phasing/output/fina
 pair_info_df <- read_delim("data/sample_pairs_9aug2023.csv", col_names = c("POP", "ID1", "ID2"))
 pair_info_df$SP <- c(rep("EUR", 200), rep("AFR", 200), rep("AMR", 100), rep("EAS", 100), rep("SAS", 100))
 df_freq <- read_tsv("/net/snowwhite/home/beckandy/research/phasing/output/chrX_maf_simple.tsv")
+
+rr_df_hapmap <- read_delim("data/recomb/genetic_map_X.txt",delim = " ", col_names = c("chr", "pos", "combined", "rr")) %>%
+  mutate(pos_n = lead(pos))
 ```
 
 ## Introduction
@@ -255,6 +258,17 @@ df_flip <- df %>%
   table() %>%
   as.data.frame() %>%
   rename(count_cat = ".")
+
+df_switch_noflip <- df %>%
+  filter((switch_b | switch_e | switch_s) & !(flip_b | flip2_b | flip_e | flip2_e | flip_s | flip2_s)) %>%
+  mutate(beagle = ifelse(switch_b, "Y", "N"),
+         eagle = ifelse(switch_e, "Y", "N"),
+         shapeit = ifelse(switch_s, "Y", "N")) %>%
+  mutate(count_cat = paste(beagle, eagle, shapeit, sep="_")) %>%
+  pull(count_cat) %>%
+  table() %>%
+  as.data.frame() %>%
+  rename(count_cat = ".")
 ```
 
 
@@ -284,6 +298,17 @@ get_error_counts <- function(ids, het_loc_dir, beagle_switch_dir, eagle_switch_d
     mutate(beagle = ifelse(flip_b, "Y", "N"),
            eagle = ifelse(flip_e, "Y", "N"),
            shapeit = ifelse(flip_s, "Y", "N")) %>%
+    mutate(count_cat = paste(beagle, eagle, shapeit, sep="_")) %>%
+    pull(count_cat) %>%
+    table() %>%
+    as.data.frame() %>%
+    rename(count_cat = ".")
+  
+  df_switch_noflip <- df %>%
+    filter((switch_b | switch_e | switch_s) & !(flip_b | flip2_b | flip_e | flip2_e | flip_s | flip2_s)) %>%
+    mutate(beagle = ifelse(switch_b, "Y", "N"),
+           eagle = ifelse(switch_e, "Y", "N"),
+           shapeit = ifelse(switch_s, "Y", "N")) %>%
     mutate(count_cat = paste(beagle, eagle, shapeit, sep="_")) %>%
     pull(count_cat) %>%
     table() %>%
@@ -326,9 +351,27 @@ get_error_counts <- function(ids, het_loc_dir, beagle_switch_dir, eagle_switch_d
       replace_na(list("Freq" = 0, "Freq2" = 0)) %>%
       mutate(Freq = Freq + Freq2) %>%
       select(-Freq2)
+    
+    df_switch_noflip2 <- df %>%
+      filter((switch_b | switch_e | switch_s) & !(flip_b | flip2_b | flip_e | flip2_e | flip_s | flip2_s)) %>%
+      mutate(beagle = ifelse(switch_b, "Y", "N"),
+             eagle = ifelse(switch_e, "Y", "N"),
+             shapeit = ifelse(switch_s, "Y", "N")) %>%
+      mutate(count_cat = paste(beagle, eagle, shapeit, sep="_")) %>%
+      pull(count_cat) %>%
+      table() %>%
+      as.data.frame() %>%
+      rename(count_cat = ".", Freq2 = Freq)
+    
+    df_switch_noflip <- df_switch_noflip %>%
+      full_join(df_switch_noflip2, by="count_cat") %>%
+      replace_na(list("Freq" = 0, "Freq2" = 0)) %>%
+      mutate(Freq = Freq + Freq2) %>%
+      select(-Freq2)
   }
   results[[1]] <- df_switch
   results[[2]] <- df_flip
+  results[[3]] <- df_switch_noflip
   return(results)
 }
 ```
@@ -341,6 +384,8 @@ results_eur <- get_error_counts(1:200, het_loc_dir, beagle_switch_dir, eagle_swi
 results_eur[[1]] %>%
   knitr::kable()
 results_eur[[2]] %>%
+  knitr::kable()
+results_eur[[3]] %>%
   knitr::kable()
 ```
 
@@ -370,6 +415,7 @@ count_to_ven <- function(x){
 
 count_to_ven(results_eur[[1]])
 count_to_ven(results_eur[[2]])
+count_to_ven(results_eur[[3]])
 ```
 
 
@@ -382,9 +428,12 @@ results_afr[[1]] %>%
   knitr::kable()
 results_afr[[2]] %>%
   knitr::kable()
+results_afr[[3]] %>%
+  knitr::kable()
 
 count_to_ven(results_afr[[1]])
 count_to_ven(results_afr[[2]])
+count_to_ven(results_afr[[3]])
 ```
 
 ### AMR
@@ -396,9 +445,12 @@ results_amr[[1]] %>%
   knitr::kable()
 results_amr[[2]] %>%
   knitr::kable()
+results_amr[[3]] %>%
+  knitr::kable()
 
 count_to_ven(results_amr[[1]])
 count_to_ven(results_amr[[2]])
+count_to_ven(results_amr[[3]])
 ```
 
 ### EAS
@@ -410,9 +462,12 @@ results_eas[[1]] %>%
   knitr::kable()
 results_eas[[2]] %>%
   knitr::kable()
+results_eas[[3]] %>%
+  knitr::kable()
 
 count_to_ven(results_eas[[1]])
 count_to_ven(results_eas[[2]])
+count_to_ven(results_eas[[3]])
 ```
 
 ### SAS
@@ -424,9 +479,12 @@ results_sas[[1]] %>%
   knitr::kable()
 results_sas[[2]] %>%
   knitr::kable()
+results_sas[[3]] %>%
+  knitr::kable()
 
 count_to_ven(results_sas[[1]])
 count_to_ven(results_sas[[2]])
+count_to_ven(results_sas[[3]])
 ```
 
 # Errors in Bins
@@ -587,6 +645,21 @@ df_eur %>%
   mutate(beagle = beagle_s / hets,
          eagle = eagle_s / hets,
          shapeit = shapeit_s / hets) %>%
+  select(bin_id, beagle, eagle, shapeit) %>%
+  rename(Beagle = beagle, Eagle = eagle, SHAPEIT = shapeit) %>%
+  pivot_longer(-bin_id, names_to = "Method", values_to = "Switches") %>%
+  ggplot(aes(x = bin_id, y = Switches, color = Method )) +
+    geom_point() +
+    geom_line() +
+    theme_classic() +
+    xlab("Bin") +
+  ggtitle("Switches per Heterozygous Site per MB Bin", "EUR Synthetic Diploids") +
+  geom_smooth()
+
+df_eur %>%
+  mutate(beagle = beagle_s / hets,
+         eagle = eagle_s / hets,
+         shapeit = shapeit_s / hets) %>%
   select(beagle, eagle, shapeit) %>%
   cor() %>%
   knitr::kable()
@@ -628,6 +701,19 @@ df_eur %>%
   ggtitle("Flips per MB Bin", "EUR Synthetic Diploids")
 
 df_eur %>%
+  select(bin_id, beagle_f, eagle_f, shapeit_f) %>%
+  rename(Beagle = beagle_f, Eagle = eagle_f, SHAPEIT = shapeit_f) %>%
+  pivot_longer(-bin_id, names_to = "Method", values_to = "Flips") %>%
+  ggplot(aes(x = bin_id, y = Flips, color = Method )) +
+    geom_point() +
+    geom_line() +
+    theme_classic() +
+  geom_smooth() +
+    xlab("Bin") +
+  ggtitle("Flips per MB Bin", "EUR Synthetic Diploids") +
+  geom_smooth()
+
+df_eur %>%
   select(beagle_f, eagle_f, shapeit_f) %>%
   cor(method = "pearson") %>%
   knitr::kable()
@@ -654,6 +740,21 @@ df_eur %>%
     theme_classic() +
     xlab("Bin") +
   ggtitle("Flips per Heterozygous Site per MB Bin", "EUR Synthetic Diploids")
+
+df_eur %>%
+  mutate(beagle = beagle_f / hets,
+         eagle = eagle_f / hets,
+         shapeit = shapeit_f / hets) %>%
+  select(bin_id, beagle, eagle, shapeit) %>%
+  rename(Beagle = beagle, Eagle = eagle, SHAPEIT = shapeit) %>%
+  pivot_longer(-bin_id, names_to = "Method", values_to = "Flips") %>%
+  ggplot(aes(x = bin_id, y = Flips, color = Method )) +
+    geom_point() +
+    geom_line() +
+    theme_classic() +
+    xlab("Bin") +
+  ggtitle("Flips per Heterozygous Site per MB Bin", "EUR Synthetic Diploids") +
+  geom_smooth()
 
 df_eur %>%
   mutate(beagle = beagle_f / hets,
