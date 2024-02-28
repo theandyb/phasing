@@ -822,6 +822,221 @@ df_eur %>%
     theme_classic() +
     xlab("Bin") +
   ggtitle("Flips per 100KB Bin", "EUR Synthetic Diploids")
+
+df_eur %>%
+  mutate(beagle = beagle_s / hets,
+         eagle = eagle_s / hets,
+         shapeit = shapeit_s / hets) %>%
+  select(bin_id, beagle, eagle, shapeit) %>%
+  rename(Beagle = beagle, Eagle = eagle, SHAPEIT = shapeit) %>%
+  pivot_longer(-bin_id, names_to = "Method", values_to = "Switches") %>%
+  ggplot(aes(x = bin_id, y = Switches, color = Method )) +
+    geom_point() +
+    geom_line() +
+    theme_classic() +
+    xlab("Bin") +
+  ggtitle("Switches per Heterozygous Site per 100KB Bin", "EUR Synthetic Diploids")
+
+df_eur %>%
+  mutate(beagle = beagle_s / hets,
+         eagle = eagle_s / hets,
+         shapeit = shapeit_s / hets) %>%
+  select(bin_id, beagle, eagle, shapeit) %>%
+  rename(Beagle = beagle, Eagle = eagle, SHAPEIT = shapeit) %>%
+  pivot_longer(-bin_id, names_to = "Method", values_to = "Switches") %>%
+  ggplot(aes(x = bin_id, y = Switches, color = Method )) +
+    geom_point() +
+    geom_line() +
+    theme_classic() +
+    xlab("Bin") +
+  ggtitle("Switches per Heterozygous Site per 100KB Bin", "EUR Synthetic Diploids") +
+  geom_smooth()
+
+df_eur %>%
+  mutate(beagle = beagle_s / hets,
+         eagle = eagle_s / hets,
+         shapeit = shapeit_s / hets) %>%
+  select(beagle, eagle, shapeit) %>%
+  cor() %>%
+  knitr::kable()
+
+df_eur %>%
+  mutate(beagle = beagle_s / hets,
+         eagle = eagle_s / hets,
+         shapeit = shapeit_s / hets) %>%
+  select(beagle, eagle, shapeit) %>%
+  cor(method = "spearman") %>%
+  knitr::kable()
+
+df_eur %>%
+  mutate(beagle = beagle_f / hets,
+         eagle = eagle_f / hets,
+         shapeit = shapeit_f / hets) %>%
+  select(bin_id, beagle, eagle, shapeit) %>%
+  rename(Beagle = beagle, Eagle = eagle, SHAPEIT = shapeit) %>%
+  pivot_longer(-bin_id, names_to = "Method", values_to = "Flips") %>%
+  ggplot(aes(x = bin_id, y = Flips, color = Method )) +
+    geom_point() +
+    geom_line() +
+    theme_classic() +
+    xlab("Bin") +
+  ggtitle("Flips per Heterozygous Site per 100KB Bin", "EUR Synthetic Diploids")
+
+df_eur %>%
+  mutate(beagle = beagle_f / hets,
+         eagle = eagle_f / hets,
+         shapeit = shapeit_f / hets) %>%
+  select(bin_id, beagle, eagle, shapeit) %>%
+  rename(Beagle = beagle, Eagle = eagle, SHAPEIT = shapeit) %>%
+  pivot_longer(-bin_id, names_to = "Method", values_to = "Flips") %>%
+  ggplot(aes(x = bin_id, y = Flips, color = Method )) +
+    geom_point() +
+    geom_line() +
+    theme_classic() +
+    xlab("Bin") +
+  ggtitle("Flips per Heterozygous Site per 100KB Bin", "EUR Synthetic Diploids") +
+  geom_smooth()
+
+df_eur %>%
+  mutate(beagle = beagle_f / hets,
+         eagle = eagle_f / hets,
+         shapeit = shapeit_f / hets) %>%
+  select(beagle, eagle, shapeit) %>%
+  cor() %>%
+  knitr::kable()
+
+df_eur %>%
+  mutate(beagle = beagle_f / hets,
+         eagle = eagle_f / hets,
+         shapeit = shapeit_f / hets) %>%
+  select(beagle, eagle, shapeit) %>%
+  cor(method = "spearman") %>%
+  knitr::kable()
+```
+
+### Lower Resolution
+
+```{r}
+df_eur <- get_errors_mb(1:200, 1e7, het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq)
+
+df_eur %>%
+  ggplot(aes(x = bin_id, y = hets)) +
+  geom_point() +
+  geom_line() +
+  ggtitle("Aggregated Heterozygous Sites per Bin", "EUR Synthetic Diploids") +
+  xlab("Bin") +
+  ylab("Heterozygous Sites") +
+  theme_classic()
+
+df_eur %>%
+  select(bin_id, beagle_s, eagle_s, shapeit_s) %>%
+  rename(Beagle = beagle_s, Eagle = eagle_s, SHAPEIT = shapeit_s) %>%
+  pivot_longer(-bin_id, names_to = "Method", values_to = "Switches") %>%
+  ggplot(aes(x = bin_id, y = Switches, color = Method )) +
+    geom_point() +
+    geom_line() +
+    theme_classic() +
+    xlab("Bin") +
+  ggtitle("Switches per 10MB Bin", "EUR Synthetic Diploids")
+
+df_eur %>%
+  mutate(eagle_beagle = eagle_s - beagle_s,
+         eagle_shapeit = eagle_s - shapeit_s) %>%
+  select(bin_id, eagle_beagle, eagle_shapeit) %>%
+  pivot_longer(-bin_id, names_to = "Comparison", values_to = "Difference") %>%
+  ggplot(aes(x = bin_id, y = Difference, color = Comparison, group = Comparison)) +
+    geom_point() +
+    theme_classic() +
+    xlab("Bin") +
+  geom_hline(yintercept = 0) +
+  ggtitle("Difference in Switches per 10MB Bin", "EUR Synthetic Diploids") +
+  geom_smooth(linewidth = 2.5, color = "black", se = FALSE)+
+  geom_smooth()
+
+df_eur %>%
+  mutate(beagle = beagle_s / hets,
+         eagle = eagle_s / hets,
+         shapeit = shapeit_s / hets) %>%
+  select(bin_id, beagle, eagle, shapeit) %>%
+  rename(Beagle = beagle, Eagle = eagle, SHAPEIT = shapeit) %>%
+  pivot_longer(-bin_id, names_to = "Method", values_to = "Switches") %>%
+  ggplot(aes(x = bin_id, y = Switches, color = Method )) +
+    geom_point() +
+    geom_line() +
+    theme_classic() +
+    xlab("Bin") +
+  ggtitle("Switches per Heterozygous Site per 10MB Bin", "EUR Synthetic Diploids")
+
+df_eur %>%
+  mutate(beagle = beagle_s / hets,
+         eagle = eagle_s / hets,
+         shapeit = shapeit_s / hets) %>%
+  select(bin_id, beagle, eagle, shapeit) %>%
+  rename(Beagle = beagle, Eagle = eagle, SHAPEIT = shapeit) %>%
+  pivot_longer(-bin_id, names_to = "Method", values_to = "Switches") %>%
+  ggplot(aes(x = bin_id, y = Switches, color = Method )) +
+    geom_point() +
+    geom_line() +
+    theme_classic() +
+    xlab("Bin") +
+  ggtitle("Switches per Heterozygous Site per 10MB Bin", "EUR Synthetic Diploids") +
+  geom_smooth()
+  
+df_eur %>%
+  select(bin_id, beagle_f, eagle_f, shapeit_f) %>%
+  rename(Beagle = beagle_f, Eagle = eagle_f, SHAPEIT = shapeit_f) %>%
+  pivot_longer(-bin_id, names_to = "Method", values_to = "Flips") %>%
+  ggplot(aes(x = bin_id, y = Flips, color = Method )) +
+    geom_point() +
+    geom_line() +
+    theme_classic() +
+    xlab("Bin") +
+  ggtitle("Flips per 10MB Bin", "EUR Synthetic Diploids")
+
+df_eur %>%
+  mutate(beagle = beagle_f / hets,
+         eagle = eagle_f / hets,
+         shapeit = shapeit_f / hets) %>%
+  select(bin_id, beagle, eagle, shapeit) %>%
+  rename(Beagle = beagle, Eagle = eagle, SHAPEIT = shapeit) %>%
+  pivot_longer(-bin_id, names_to = "Method", values_to = "Flips") %>%
+  ggplot(aes(x = bin_id, y = Flips, color = Method )) +
+    geom_point() +
+    geom_line() +
+    theme_classic() +
+    xlab("Bin") +
+  ggtitle("Flips per Heterozygous Site per 10MB Bin", "EUR Synthetic Diploids")
+
+df_eur %>%
+  mutate(beagle = beagle_f / hets,
+         eagle = eagle_f / hets,
+         shapeit = shapeit_f / hets) %>%
+  select(bin_id, beagle, eagle, shapeit) %>%
+  rename(Beagle = beagle, Eagle = eagle, SHAPEIT = shapeit) %>%
+  pivot_longer(-bin_id, names_to = "Method", values_to = "Flips") %>%
+  ggplot(aes(x = bin_id, y = Flips, color = Method )) +
+    geom_point() +
+    geom_line() +
+    theme_classic() +
+    xlab("Bin") +
+  ggtitle("Flips per Heterozygous Site per 10MB Bin", "EUR Synthetic Diploids") +
+  geom_smooth()
+
+df_eur %>%
+  mutate(beagle = beagle_f / hets,
+         eagle = eagle_f / hets,
+         shapeit = shapeit_f / hets) %>%
+  select(beagle, eagle, shapeit) %>%
+  cor() %>%
+  knitr::kable()
+
+df_eur %>%
+  mutate(beagle = beagle_f / hets,
+         eagle = eagle_f / hets,
+         shapeit = shapeit_f / hets) %>%
+  select(beagle, eagle, shapeit) %>%
+  cor(method = "spearman") %>%
+  knitr::kable()
 ```
 
 
