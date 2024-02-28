@@ -11,6 +11,7 @@ editor_options:
 library(tidyverse)
 library(ggExtra)
 library(ggVennDiagram)
+library(limma)
 source("code/common_functions.R")
 '%!in%' <- function(x,y)!('%in%'(x,y))
 cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
@@ -84,7 +85,7 @@ For the `ggVennDiagram` library, we will want lists of positions for each error 
 x <- list(beagle = {df %>% filter(switch_b | flip_b | flip2_b) %>% pull(pos)},
           eagle = {df %>% filter(switch_e | flip_e | flip2_e) %>% pull(pos)},
           shapeit = {df %>% filter(switch_s | flip_s | flip2_s) %>% pull(pos)})
-ggVennDiagram(x) + scale_fill_gradient(low="grey90",high = "red")
+ggVennDiagram(x, label = "count") + scale_fill_gradient(low="grey90",high = "red")
 ```
 
 I want to be a bit more rigorous in counting overlaps; for each method, I only want start sites to overlap errors of other methods, i.e. I don't want to double count flips in method A, but would count as overlap if same position were the second-half of a flip in method B.
@@ -173,13 +174,60 @@ p2 <- ggVennDiagram(x, label="count") +
 gridExtra::grid.arrange(p1,p2,ncol=2)
 ```
 
-Naturally, we may ask how many intersections of errors do we miss by considering only matching error types and, in the case of flips, only matching directly overlapping errors. First, we look at how many switches from eagle overlap flips from the other two methods:
+Naturally, we may ask how many intersections of errors do we miss by considering only matching error types and, in the case of flips, only matching directly overlapping errors. First, we look at how many switches from each method overlap flips from the other two methods:
 
 ```{r}
-x <- list(beagle = {df %>% filter(switch_b | flip_b | flip2_b) %>% pull(pos)},
+x <- list(beagle = {df %>% filter(switch_b) %>% pull(pos)},
+          eagle_flip = {df %>% filter(flip_e | flip2_e) %>% pull(pos)},
+          eagle_switch = {df %>% filter(switch_e) %>% pull(pos)},
+          shapeit_switch = {df %>% filter(switch_s) %>% pull(pos)},
+          shapeit_flip = {df %>% filter(flip_s | flip2_s) %>% pull(pos)})
+p1 <- ggVennDiagram(x, label = "count") + scale_fill_gradient(low="grey90",high = "purple") + 
+  theme(plot.title = element_text(hjust = 0.5))
+
+x <- list(beagle = {df %>% filter(switch_b) %>% pull(pos)},
+          eagle_flip = {df %>% filter(flip_e | flip2_e) %>% pull(pos)},
+          shapeit_flip = {df %>% filter(flip_s | flip2_s) %>% pull(pos)})
+p2 <- ggVennDiagram(x, label = "count") + scale_fill_gradient(low="grey90",high = "darkgreen") + 
+  theme(plot.title = element_text(hjust = 0.5))
+
+gridExtra::grid.arrange(p1,p2,ncol=2)
+```
+
+```{r}
+x <- list(beagle_flip = {df %>% filter(flip_b | flip2_b) %>% pull(pos)},
+          beagle_switch = {df %>% filter(switch_b) %>% pull(pos)},
           eagle = {df %>% filter(switch_e) %>% pull(pos)},
-          shapeit = {df %>% filter(switch_s | flip_s | flip2_s) %>% pull(pos)})
-ggVennDiagram(x) + scale_fill_gradient(low="grey90",high = "orange") + ggtitle("Switches") + theme(plot.title = element_text(hjust = 0.5))
+          shapeit_switch = {df %>% filter(switch_s) %>% pull(pos)},
+          shapeit_flip = {df %>% filter(flip_s | flip2_s) %>% pull(pos)})
+p1 <- ggVennDiagram(x, label = "count") + scale_fill_gradient(low="grey90",high = "purple") + 
+  theme(plot.title = element_text(hjust = 0.5))
+
+x <- list(beagle_flip = {df %>% filter(flip_b | flip2_b) %>% pull(pos)},
+          eagle = {df %>% filter(switch_e) %>% pull(pos)},
+          shapeit_flip = {df %>% filter(flip_s | flip2_s) %>% pull(pos)})
+p2 <- ggVennDiagram(x, label = "count") + scale_fill_gradient(low="grey90",high = "darkgreen") + 
+  theme(plot.title = element_text(hjust = 0.5))
+
+gridExtra::grid.arrange(p1,p2,ncol=2)
+```
+
+```{r}
+x <- list(beagle_flip = {df %>% filter(flip_b | flip2_b) %>% pull(pos)},
+          beagle_switch = {df %>% filter(switch_b) %>% pull(pos)},
+          eagle_switch = {df %>% filter(switch_e) %>% pull(pos)},
+          eagle_flip = {df %>% filter(flip_e | flip2_e) %>% pull(pos)},
+          shapeit = {df %>% filter(switch_s) %>% pull(pos)})
+p1 <- ggVennDiagram(x, label = "count") + scale_fill_gradient(low="grey90",high = "purple") + 
+  theme(plot.title = element_text(hjust = 0.5))
+
+x <- list(beagle_flip = {df %>% filter(flip_b | flip2_b) %>% pull(pos)},
+          eagle_flip = {df %>% filter(flip_e | flip2_e) %>% pull(pos)},
+          shapeit = {df %>% filter(switch_s) %>% pull(pos)})
+p2 <- ggVennDiagram(x, label = "count") + scale_fill_gradient(low="grey90",high = "darkgreen") + 
+  theme(plot.title = element_text(hjust = 0.5))
+
+gridExtra::grid.arrange(p1,p2,ncol=2)
 ```
 
 
@@ -209,7 +257,7 @@ df_flip <- df %>%
   rename(count_cat = ".")
 ```
 
-And let's get this for all EUR SDs:
+
 
 ## Simple Overlap
 
@@ -256,7 +304,8 @@ get_error_counts <- function(ids, het_loc_dir, beagle_switch_dir, eagle_switch_d
       rename(count_cat = ".", Freq2 = Freq)
     
     df_switch <- df_switch %>%
-      left_join(df_switch2, by="count_cat") %>%
+      full_join(df_switch2, by="count_cat") %>%
+      replace_na(list("Freq" = 0, "Freq2" = 0)) %>%
       mutate(Freq = Freq + Freq2) %>%
       select(-Freq2)
       
@@ -273,7 +322,8 @@ get_error_counts <- function(ids, het_loc_dir, beagle_switch_dir, eagle_switch_d
       rename(count_cat = ".", Freq2 = Freq)
     
     df_flip <- df_flip %>%
-      left_join(df_flip2, by="count_cat") %>%
+      full_join(df_flip2, by="count_cat") %>%
+      replace_na(list("Freq" = 0, "Freq2" = 0)) %>%
       mutate(Freq = Freq + Freq2) %>%
       select(-Freq2)
   }
@@ -294,6 +344,35 @@ results_eur[[2]] %>%
   knitr::kable()
 ```
 
+```{r}
+count_to_ven <- function(x){
+  df <- x %>%
+    mutate(beagle = ifelse(str_sub(count_cat, 1, 1)=="Y", 1, 0),
+           eagle = ifelse(str_sub(count_cat, 3, 3)=="Y", 1, 0),
+           shapeit = ifelse(str_sub(count_cat, 5, 5)== "Y", 1, 0)) %>%
+    select(beagle, eagle, shapeit, Freq)
+  
+  n_b <- df %>% filter(beagle == 1, eagle == 0, shapeit == 0) %>% pull(Freq)
+  n_e <- df %>% filter(beagle == 0, eagle == 1, shapeit == 0) %>% pull(Freq)
+  n_s <- df %>% filter(beagle == 0, eagle == 0, shapeit == 1) %>% pull(Freq)
+  n_b_e <- df %>% filter(beagle == 1, eagle == 1, shapeit == 0) %>% pull(Freq)
+  n_b_s <- df %>% filter(beagle == 1, eagle == 0, shapeit == 1) %>% pull(Freq)
+  n_e_s <- df %>% filter(beagle == 0, eagle == 1, shapeit == 1) %>% pull(Freq)
+  n_b_e_s <- df %>% filter(beagle == 1, eagle == 1, shapeit == 1) %>% pull(Freq)
+  
+  data.frame(beagle = c(rep(TRUE, n_b), rep(FALSE, n_e),rep(FALSE, n_s), rep(TRUE, n_b_e), rep(TRUE, n_b_s), rep(FALSE, n_e_s) , rep(TRUE, n_b_e_s)),
+             eagle = c(rep(FALSE, n_b), rep(TRUE, n_e),rep(FALSE, n_s), rep(TRUE, n_b_e), rep(FALSE, n_b_s), rep(TRUE, n_e_s) , rep(TRUE, n_b_e_s)),
+             shapeit = c(rep(FALSE, n_b), rep(FALSE, n_e), rep(TRUE, n_s), rep(FALSE, n_b_e), rep(TRUE, n_b_s), rep(TRUE, n_e_s) , rep(TRUE, n_b_e_s)) 
+             ) %>%
+    vennCounts() %>%
+    vennDiagram() %>% print()
+}
+
+count_to_ven(results_eur[[1]])
+count_to_ven(results_eur[[2]])
+```
+
+
 ### AFR
 
 ```{r}
@@ -303,6 +382,9 @@ results_afr[[1]] %>%
   knitr::kable()
 results_afr[[2]] %>%
   knitr::kable()
+
+count_to_ven(results_afr[[1]])
+count_to_ven(results_afr[[2]])
 ```
 
 ### AMR
@@ -314,6 +396,9 @@ results_amr[[1]] %>%
   knitr::kable()
 results_amr[[2]] %>%
   knitr::kable()
+
+count_to_ven(results_amr[[1]])
+count_to_ven(results_amr[[2]])
 ```
 
 ### EAS
@@ -325,6 +410,9 @@ results_eas[[1]] %>%
   knitr::kable()
 results_eas[[2]] %>%
   knitr::kable()
+
+count_to_ven(results_eas[[1]])
+count_to_ven(results_eas[[2]])
 ```
 
 ### SAS
@@ -336,6 +424,9 @@ results_sas[[1]] %>%
   knitr::kable()
 results_sas[[2]] %>%
   knitr::kable()
+
+count_to_ven(results_sas[[1]])
+count_to_ven(results_sas[[2]])
 ```
 
 # Errors in Bins
