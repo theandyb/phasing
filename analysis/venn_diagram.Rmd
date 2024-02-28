@@ -29,7 +29,7 @@ rr_df_hapmap <- read_delim("data/recomb/genetic_map_X.txt",delim = " ", col_name
   mutate(pos_n = lead(pos))
 ```
 
-## Introduction
+# Introduction
 
 In this document we will explore the construction of a "venn diagram" of the overlap of phasing errors across three methods over 700 synthetic diploids. Intuitively, this makes sense for a single synthetic diploid: we partition all errors into categories determined by which method(s) produced the error. The potential complication is if we wish to look only at particular classes of errors, e.g. switches or flips. For an example of what can happen, suppose a heterozygous location is the site of a switch in Beagle. That same position could be the location of a switch in Eagle or SHAPEIT, or it may have been correctly phased. Those are not exhaustive, however; another potential outcome is that same location is the latter half of a flip error in either Eagle or SHAPEIT. Is this still considered an overlapping switch?
 
@@ -273,7 +273,7 @@ df_switch_noflip <- df %>%
 
 
 
-## Simple Overlap
+# Simple Overlap
 
 ```{r}
 # Version which only does exact matches of flips and switches
@@ -376,7 +376,7 @@ get_error_counts <- function(ids, het_loc_dir, beagle_switch_dir, eagle_switch_d
 }
 ```
 
-### EUR
+## EUR
 
 ```{r}
 results_eur <- get_error_counts(1:200, het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq)
@@ -419,7 +419,7 @@ count_to_ven(results_eur[[3]])
 ```
 
 
-### AFR
+## AFR
 
 ```{r}
 results_afr <- get_error_counts(201:400, het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq)
@@ -436,7 +436,7 @@ count_to_ven(results_afr[[2]])
 count_to_ven(results_afr[[3]])
 ```
 
-### AMR
+## AMR
 
 ```{r}
 results_amr <- get_error_counts(401:500, het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq)
@@ -453,7 +453,7 @@ count_to_ven(results_amr[[2]])
 count_to_ven(results_amr[[3]])
 ```
 
-### EAS
+## EAS
 
 ```{r}
 results_eas <- get_error_counts(501:600, het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq)
@@ -470,7 +470,7 @@ count_to_ven(results_eas[[2]])
 count_to_ven(results_eas[[3]])
 ```
 
-### SAS
+## SAS
 
 ```{r}
 results_sas <- get_error_counts(601:700, het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq)
@@ -575,7 +575,7 @@ get_errors_mb <- function(ids, bin_size, het_loc_dir, beagle_switch_dir, eagle_s
              hets = hets + hets2) %>%
       select(bin_id, beagle_s, eagle_s, shapeit_s, beagle_f, eagle_f, shapeit_f, hets)
   }
-  return(final_df)
+  return(final_df %>% arrange(bin_id))
 }
 
 df_eur <- get_errors_mb(1:200, 1e6, het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq)
@@ -1045,7 +1045,8 @@ df_eur %>%
 ### Switches 
 
 ```{r}
-df_afr <- get_errors_mb(201:400, 1e6, het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq)
+df_afr <- get_errors_mb(201:400, 1e6, het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq) %>%
+  arrange(bin_id)
 
 df_afr %>%
   ggplot(aes(x = bin_id, y = hets)) +
@@ -1200,7 +1201,8 @@ df_afr %>%
 ### Switches
 
 ```{r}
-df_amr <- get_errors_mb(401:500, 1e6, het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq)
+df_amr <- get_errors_mb(401:500, 1e6, het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq) %>%
+  arrange(bin_id)
 
 df_amr %>%
   ggplot(aes(x = bin_id, y = hets)) +
@@ -1659,4 +1661,201 @@ df_sas %>%
   cor(method = "spearman") %>%
   knitr::kable()
 ```
+
+# Population Comparisons
+
+```{r}
+df_eur <- get_errors_mb(1:200, 1e6, het_loc_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq)
+```
+
+## Switches
+
+### Beagle
+
+```{r}
+df <- data.frame(bin_id = df_eur$bin_id,
+                 AFR = df_afr$beagle_s / df_afr$hets,
+                 AMR = df_amr$beagle_s / df_amr$hets,
+                 EAS = df_eas$beagle_s / df_eas$hets,
+                 EUR = df_eur$beagle_s / df_eur$hets,
+                 SAS = df_sas$beagle_s / df_sas$hets)
+
+df %>%
+  pivot_longer(-bin_id, names_to = "Population", values_to = "Switches") %>%
+  ggplot(aes(x = bin_id, y = Switches, color = Population)) +
+  geom_point() +
+  geom_line() +
+  ggtitle("Beagle Switch Rate per MB Bin") + 
+  xlab("Bin") +
+  theme_classic() +
+  scale_color_manual(values = cbPalette)
+
+df %>%
+  select(-bin_id) %>% 
+  cor() %>%
+  knitr::kable()
+
+df %>%
+  select(-bin_id) %>% 
+  cor(method = "spearman") %>%
+  knitr::kable()
+```
+
+### Eagle
+
+```{r}
+df <- data.frame(bin_id = df_eur$bin_id,
+                 AFR = df_afr$eagle_s / df_afr$hets,
+                 AMR = df_amr$eagle_s / df_amr$hets,
+                 EAS = df_eas$eagle_s / df_eas$hets,
+                 EUR = df_eur$eagle_s / df_eur$hets,
+                 SAS = df_sas$eagle_s / df_sas$hets)
+
+df %>%
+  pivot_longer(-bin_id, names_to = "Population", values_to = "Switches") %>%
+  ggplot(aes(x = bin_id, y = Switches, color = Population)) +
+  geom_point() +
+  geom_line() +
+  ggtitle("Eagle Switch Rate per MB Bin") + 
+  xlab("Bin") +
+  theme_classic() +
+  scale_color_manual(values = cbPalette)
+
+df %>%
+  select(-bin_id) %>% 
+  cor() %>%
+  knitr::kable()
+
+df %>%
+  select(-bin_id) %>% 
+  cor(method = "spearman") %>%
+  knitr::kable()
+```
+
+### SHAPEIT
+
+```{r}
+df <- data.frame(bin_id = df_eur$bin_id,
+                 AFR = df_afr$shapeit_s / df_afr$hets,
+                 AMR = df_amr$shapeit_s / df_amr$hets,
+                 EAS = df_eas$shapeit_s / df_eas$hets,
+                 EUR = df_eur$shapeit_s / df_eur$hets,
+                 SAS = df_sas$shapeit_s / df_sas$hets)
+
+df %>%
+  pivot_longer(-bin_id, names_to = "Population", values_to = "Switches") %>%
+  ggplot(aes(x = bin_id, y = Switches, color = Population)) +
+  geom_point() +
+  geom_line() +
+  ggtitle("SHAPEIT Switch Rate per MB Bin") + 
+  xlab("Bin") +
+  theme_classic() +
+  scale_color_manual(values = cbPalette)
+
+df %>%
+  select(-bin_id) %>% 
+  cor() %>%
+  knitr::kable()
+
+df %>%
+  select(-bin_id) %>% 
+  cor(method = "spearman") %>%
+  knitr::kable()
+```
+
+## Flips
+
+### Beagle
+
+```{r}
+df <- data.frame(bin_id = df_eur$bin_id,
+                 AFR = df_afr$beagle_f / df_afr$hets,
+                 AMR = df_amr$beagle_f / df_amr$hets,
+                 EAS = df_eas$beagle_f / df_eas$hets,
+                 EUR = df_eur$beagle_f / df_eur$hets,
+                 SAS = df_sas$beagle_f / df_sas$hets)
+
+df %>%
+  pivot_longer(-bin_id, names_to = "Population", values_to = "Flips") %>%
+  ggplot(aes(x = bin_id, y = Flips, color = Population)) +
+  geom_point() +
+  geom_line() +
+  ggtitle("Beagle Flip Rate per MB Bin") + 
+  xlab("Bin") +
+  theme_classic() +
+  scale_color_manual(values = cbPalette)
+
+df %>%
+  select(-bin_id) %>% 
+  cor() %>%
+  knitr::kable()
+
+df %>%
+  select(-bin_id) %>% 
+  cor(method = "spearman") %>%
+  knitr::kable()
+```
+
+### Eagle
+
+```{r}
+df <- data.frame(bin_id = df_eur$bin_id,
+                 AFR = df_afr$eagle_f / df_afr$hets,
+                 AMR = df_amr$eagle_f / df_amr$hets,
+                 EAS = df_eas$eagle_f / df_eas$hets,
+                 EUR = df_eur$eagle_f / df_eur$hets,
+                 SAS = df_sas$eagle_f / df_sas$hets)
+
+df %>%
+  pivot_longer(-bin_id, names_to = "Population", values_to = "Flips") %>%
+  ggplot(aes(x = bin_id, y = Flips, color = Population)) +
+  geom_point() +
+  geom_line() +
+  ggtitle("Eagle Flip Rate per MB Bin") + 
+  xlab("Bin") +
+  theme_classic() +
+  scale_color_manual(values = cbPalette)
+
+df %>%
+  select(-bin_id) %>% 
+  cor() %>%
+  knitr::kable()
+
+df %>%
+  select(-bin_id) %>% 
+  cor(method = "spearman") %>%
+  knitr::kable()
+```
+
+### SHAPEIT
+
+```{r}
+df <- data.frame(bin_id = df_eur$bin_id,
+                 AFR = df_afr$shapeit_f / df_afr$hets,
+                 AMR = df_amr$shapeit_f / df_amr$hets,
+                 EAS = df_eas$shapeit_f / df_eas$hets,
+                 EUR = df_eur$shapeit_f / df_eur$hets,
+                 SAS = df_sas$shapeit_f / df_sas$hets)
+
+df %>%
+  pivot_longer(-bin_id, names_to = "Population", values_to = "Flips") %>%
+  ggplot(aes(x = bin_id, y = Flips, color = Population)) +
+  geom_point() +
+  geom_line() +
+  ggtitle("SHAPEIT Flip Rate per MB Bin") + 
+  xlab("Bin") +
+  theme_classic() +
+  scale_color_manual(values = cbPalette)
+
+df %>%
+  select(-bin_id) %>% 
+  cor() %>%
+  knitr::kable()
+
+df %>%
+  select(-bin_id) %>% 
+  cor(method = "spearman") %>%
+  knitr::kable()
+```
+
 
