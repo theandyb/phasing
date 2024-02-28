@@ -582,6 +582,22 @@ df_eur %>%
     theme_classic() +
     xlab("Bin") +
   ggtitle("Switches per Heterozygous Site per MB Bin", "EUR Synthetic Diploids")
+
+df_eur %>%
+  mutate(beagle = beagle_s / hets,
+         eagle = eagle_s / hets,
+         shapeit = shapeit_s / hets) %>%
+  select(beagle, eagle, shapeit) %>%
+  cor() %>%
+  knitr::kable()
+
+df_eur %>%
+  mutate(beagle = beagle_s / hets,
+         eagle = eagle_s / hets,
+         shapeit = shapeit_s / hets) %>%
+  select(beagle, eagle, shapeit) %>%
+  cor(method = "spearman") %>%
+  knitr::kable()
 ```
 
 
@@ -638,6 +654,22 @@ df_eur %>%
     theme_classic() +
     xlab("Bin") +
   ggtitle("Flips per Heterozygous Site per MB Bin", "EUR Synthetic Diploids")
+
+df_eur %>%
+  mutate(beagle = beagle_f / hets,
+         eagle = eagle_f / hets,
+         shapeit = shapeit_f / hets) %>%
+  select(beagle, eagle, shapeit) %>%
+  cor() %>%
+  knitr::kable()
+
+df_eur %>%
+  mutate(beagle = beagle_f / hets,
+         eagle = eagle_f / hets,
+         shapeit = shapeit_f / hets) %>%
+  select(beagle, eagle, shapeit) %>%
+  cor(method = "spearman") %>%
+  knitr::kable()
 ```
 
 ### Higher Resolution
@@ -758,6 +790,22 @@ df_afr %>%
     theme_classic() +
     xlab("Bin") +
   ggtitle("Switches per Heterozygous Site per MB Bin", "AFR Synthetic Diploids")
+
+df_afr %>%
+  mutate(beagle = beagle_s / hets,
+         eagle = eagle_s / hets,
+         shapeit = shapeit_s / hets) %>%
+  select(beagle, eagle, shapeit) %>%
+  cor() %>%
+  knitr::kable()
+
+df_afr %>%
+  mutate(beagle = beagle_s / hets,
+         eagle = eagle_s / hets,
+         shapeit = shapeit_s / hets) %>%
+  select(beagle, eagle, shapeit) %>%
+  cor(method = "spearman") %>%
+  knitr::kable()
 ```
 
 ### Flips
@@ -813,6 +861,22 @@ df_afr %>%
     theme_classic() +
     xlab("Bin") +
   ggtitle("Flips per Heterozygous Site per MB Bin", "AFR Synthetic Diploids")
+
+df_afr %>%
+  mutate(beagle = beagle_f / hets,
+         eagle = eagle_f / hets,
+         shapeit = shapeit_f / hets) %>%
+  select(beagle, eagle, shapeit) %>%
+  cor() %>%
+  knitr::kable()
+
+df_afr %>%
+  mutate(beagle = beagle_f / hets,
+         eagle = eagle_f / hets,
+         shapeit = shapeit_f / hets) %>%
+  select(beagle, eagle, shapeit) %>%
+  cor(method = "spearman") %>%
+  knitr::kable()
 ```
 
 ## AMR
@@ -881,6 +945,22 @@ df_amr %>%
     theme_classic() +
     xlab("Bin") +
   ggtitle("Switches per Heterozygous Site per MB Bin", "AMR Synthetic Diploids")
+
+df_amr %>%
+  mutate(beagle = beagle_s / hets,
+         eagle = eagle_s / hets,
+         shapeit = shapeit_s / hets) %>%
+  select(beagle, eagle, shapeit) %>%
+  cor() %>%
+  knitr::kable()
+
+df_amr %>%
+  mutate(beagle = beagle_s / hets,
+         eagle = eagle_s / hets,
+         shapeit = shapeit_s / hets) %>%
+  select(beagle, eagle, shapeit) %>%
+  cor(method = "spearman") %>%
+  knitr::kable()
 ```
 
 ### Flips
@@ -936,6 +1016,22 @@ df_amr %>%
     theme_classic() +
     xlab("Bin") +
   ggtitle("Flips per Heterozygous Site per MB Bin", "AMR Synthetic Diploids")
+
+df_amr %>%
+  mutate(beagle = beagle_f / hets,
+         eagle = eagle_f / hets,
+         shapeit = shapeit_f / hets) %>%
+  select(beagle, eagle, shapeit) %>%
+  cor() %>%
+  knitr::kable()
+
+df_amr %>%
+  mutate(beagle = beagle_f / hets,
+         eagle = eagle_f / hets,
+         shapeit = shapeit_f / hets) %>%
+  select(beagle, eagle, shapeit) %>%
+  cor(method = "spearman") %>%
+  knitr::kable()
 ```
 
 ## EAS
@@ -1004,6 +1100,22 @@ df_eas %>%
     theme_classic() +
     xlab("Bin") +
   ggtitle("Switches per Heterozygous Site per MB Bin", "EAS Synthetic Diploids")
+
+df_eas %>%
+  mutate(beagle = beagle_s / hets,
+         eagle = eagle_s / hets,
+         shapeit = shapeit_s / hets) %>%
+  select(beagle, eagle, shapeit) %>%
+  cor() %>%
+  knitr::kable()
+
+df_eas %>%
+  mutate(beagle = beagle_s / hets,
+         eagle = eagle_s / hets,
+         shapeit = shapeit_s / hets) %>%
+  select(beagle, eagle, shapeit) %>%
+  cor(method = "spearman") %>%
+  knitr::kable()
 ```
 
 ### Flips
@@ -1059,6 +1171,22 @@ df_eas %>%
     theme_classic() +
     xlab("Bin") +
   ggtitle("Flips per Heterozygous Site per MB Bin", "EAS Synthetic Diploids")
+
+df_eas %>%
+  mutate(beagle = beagle_f / hets,
+         eagle = eagle_f / hets,
+         shapeit = shapeit_f / hets) %>%
+  select(beagle, eagle, shapeit) %>%
+  cor() %>%
+  knitr::kable()
+
+df_eas %>%
+  mutate(beagle = beagle_f / hets,
+         eagle = eagle_f / hets,
+         shapeit = shapeit_f / hets) %>%
+  select(beagle, eagle, shapeit) %>%
+  cor(method = "spearman") %>%
+  knitr::kable()
 ```
 
 ## SAS
@@ -1127,6 +1255,22 @@ df_sas %>%
     theme_classic() +
     xlab("Bin") +
   ggtitle("Switches per Heterozygous Site per MB Bin", "SAS Synthetic Diploids")
+
+df_sas %>%
+  mutate(beagle = beagle_s / hets,
+         eagle = eagle_s / hets,
+         shapeit = shapeit_s / hets) %>%
+  select(beagle, eagle, shapeit) %>%
+  cor() %>%
+  knitr::kable()
+
+df_sas %>%
+  mutate(beagle = beagle_s / hets,
+         eagle = eagle_s / hets,
+         shapeit = shapeit_s / hets) %>%
+  select(beagle, eagle, shapeit) %>%
+  cor(method = "spearman") %>%
+  knitr::kable()
 ```
 
 ### Flips
@@ -1182,5 +1326,21 @@ df_sas %>%
     theme_classic() +
     xlab("Bin") +
   ggtitle("Flips per Heterozygous Site per MB Bin", "SAS Synthetic Diploids")
+
+df_sas %>%
+  mutate(beagle = beagle_f / hets,
+         eagle = eagle_f / hets,
+         shapeit = shapeit_f / hets) %>%
+  select(beagle, eagle, shapeit) %>%
+  cor() %>%
+  knitr::kable()
+
+df_sas %>%
+  mutate(beagle = beagle_f / hets,
+         eagle = eagle_f / hets,
+         shapeit = shapeit_f / hets) %>%
+  select(beagle, eagle, shapeit) %>%
+  cor(method = "spearman") %>%
+  knitr::kable()
 ```
 
