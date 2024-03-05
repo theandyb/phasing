@@ -1,0 +1,181 @@
+---
+title: "all_vs_noRefRef"
+author: "Andy Beck"
+date: "2024-03-05"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Libraries and Directories
+
+```{r}
+library(tidyverse)
+library(janitor)
+source("code/common_functions.R")
+library(reactable)
+theme_set(theme_bw(base_size = 12))
+
+# no ref/ref results
+base_dir_no_ref <- "/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/"
+eagle_no_ref <-   paste0(base_dir_no_ref,"switch_errors/eagle/annotated/")
+shapeit_no_ref <- paste0(base_dir_no_ref,"switch_errors/shapeit/annotated/")
+beagle_no_ref <-  paste0(base_dir_no_ref,"switch_errors/beagle/annotated/")
+whatshap_no_ref <-paste0(base_dir_no_ref,"whatshap/")
+het_loc_dir_no_ref <- paste0(base_dir_no_ref,"/het_loc/")
+
+# ref/ref results
+base_dir_ref <- "/net/snowwhite/home/beckandy/research/phasing/output/switch_errors/"
+eagle_ref <-   paste0(base_dir_ref,"switch_errors/eagle/annotated/")
+shapeit_ref <- paste0(base_dir_ref,"switch_errors/shapeit/annotated/")
+beagle_ref <-  paste0(base_dir_ref,"switch_errors/beagle/annotated/")
+whatshap_ref <-paste0(base_dir_ref,"whatshap/")
+het_loc_dir_ref <- paste0(base_dir_ref,"/het_loc/")
+
+pair_info_df <- read_delim("data/sample_pairs_9aug2023.csv", col_names = c("POP", "ID1", "ID2"))
+pair_info_df$SP <- c(rep("EUR", 200), rep("AFR", 200), rep("AMR", 100), rep("EAS", 100), rep("SAS", 100))
+
+gc_content_1kb <- read_tsv("data/ref/gc1kb_X_only.bed")
+colnames(gc_content_1kb) <- c("CHR", "START", "END", "AT", "GC", "A", "C", "G", "T", "TOTAL", "OTHER", "LENGTH")
+gc_content_1kb  <- gc_content_1kb %>%
+  mutate(bin_id = (START / 1000) + 1)
+
+background_dimer <- read_csv("/net/snowwhite/home/beckandy/research/phasing/output/background_rates/dimer.csv")
+background_3mer <- read_csv("/net/snowwhite/home/beckandy/research/phasing/output/background_rates/3mer.csv")
+
+cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+```
+
+## Load the Results
+
+```{r}
+# no ref/ref
+df_switch_no_ref <- lapply(c(1:700), 
+                    function(x){
+                      switch_summary(x, eagle_no_ref, beagle_no_ref, shapeit_no_ref, gc_content_1kb, het_loc_dir_no_ref)
+                      }) %>%
+  bind_rows()
+
+df_switch_no_ref$pop <- c(rep("EUR", 200), rep("AFR", 200), rep("AMR", 100), rep("EAS", 100), rep("SAS", 100))
+
+# with ref/ref
+df_switch_ref <- lapply(c(1:700), 
+                    function(x){
+                      switch_summary(x, eagle_ref, beagle_ref, shapeit_ref, gc_content_1kb, het_loc_dir_ref)
+                      }) %>%
+  bind_rows()
+
+df_switch_ref$pop <- c(rep("EUR", 200), rep("AFR", 200), rep("AMR", 100), rep("EAS", 100), rep("SAS", 100))
+```
+
+## Plots
+
+### Beagle
+
+```{r}
+df_switch_no_ref %>%
+  select(pair_id, n_switch_beagle, pop) %>%
+  rename(no_ref = n_switch_beagle) %>%
+  inner_join({df_switch_ref %>%
+      select(pair_id, n_switch_beagle) %>% 
+      rename(with_ref = n_switch_beagle)}) %>%
+  ggplot(aes(x = no_ref, y = with_ref, color = pop)) +
+  geom_point() +
+  xlab("No Ref/Ref") +
+  ylab("With Ref/Ref") +
+  ggtitle("Switch Errors With and Without Ref/Ref", "Beagle") +
+  scale_color_manual(values = cbPalette) +
+  geom_abline(slope = 1, intercept = 0) +
+  theme_classic()
+```
+
+```{r}
+df_switch_no_ref %>%
+  select(pair_id, n_flip_beagle, pop) %>%
+  rename(no_ref = n_flip_beagle) %>%
+  inner_join({df_switch_ref %>%
+      select(pair_id, n_flip_beagle) %>% 
+      rename(with_ref = n_flip_beagle)}) %>%
+  ggplot(aes(x = no_ref, y = with_ref, color = pop)) +
+  geom_point() +
+  xlab("No Ref/Ref") +
+  ylab("With Ref/Ref") +
+  ggtitle("Flip Errors With and Without Ref/Ref", "Beagle") +
+  scale_color_manual(values = cbPalette) +
+  geom_abline(slope = 1, intercept = 0) +
+  theme_classic()
+```
+
+### Eagle
+
+```{r}
+df_switch_no_ref %>%
+  select(pair_id, n_switch_eagle, pop) %>%
+  rename(no_ref = n_switch_eagle) %>%
+  inner_join({df_switch_ref %>%
+      select(pair_id, n_switch_eagle) %>% 
+      rename(with_ref = n_switch_eagle)}) %>%
+  ggplot(aes(x = no_ref, y = with_ref, color = pop)) +
+  geom_point() +
+  xlab("No Ref/Ref") +
+  ylab("With Ref/Ref") +
+  ggtitle("Switch Errors With and Without Ref/Ref", "Eagle") +
+  scale_color_manual(values = cbPalette) +
+  geom_abline(slope = 1, intercept = 0) +
+  theme_classic()
+```
+
+```{r}
+df_switch_no_ref %>%
+  select(pair_id, n_flip_eagle, pop) %>%
+  rename(no_ref = n_flip_eagle) %>%
+  inner_join({df_switch_ref %>%
+      select(pair_id, n_flip_eagle) %>% 
+      rename(with_ref = n_flip_eagle)}) %>%
+  ggplot(aes(x = no_ref, y = with_ref, color = pop)) +
+  geom_point() +
+  xlab("No Ref/Ref") +
+  ylab("With Ref/Ref") +
+  ggtitle("Flip Errors With and Without Ref/Ref", "Eagle") +
+  scale_color_manual(values = cbPalette) +
+  geom_abline(slope = 1, intercept = 0) +
+  theme_classic()
+```
+
+### SHAPEIT
+
+```{r}
+df_switch_no_ref %>%
+  select(pair_id, n_switch_shapeit, pop) %>%
+  rename(no_ref = n_switch_shapeit) %>%
+  inner_join({df_switch_ref %>%
+      select(pair_id, n_switch_shapeit) %>% 
+      rename(with_ref = n_switch_shapeit)}) %>%
+  ggplot(aes(x = no_ref, y = with_ref, color = pop)) +
+  geom_point() +
+  xlab("No Ref/Ref") +
+  ylab("With Ref/Ref") +
+  ggtitle("Switch Errors With and Without Ref/Ref", "SHAPEIT") +
+  scale_color_manual(values = cbPalette) +
+  geom_abline(slope = 1, intercept = 0) +
+  theme_classic()
+```
+
+```{r}
+df_switch_no_ref %>%
+  select(pair_id, n_flip_shapeit, pop) %>%
+  rename(no_ref = n_flip_shapeit) %>%
+  inner_join({df_switch_ref %>%
+      select(pair_id, n_flip_shapeit) %>% 
+      rename(with_ref = n_flip_shapeit)}) %>%
+  ggplot(aes(x = no_ref, y = with_ref, color = pop)) +
+  geom_point() +
+  xlab("No Ref/Ref") +
+  ylab("With Ref/Ref") +
+  ggtitle("Flip Errors With and Without Ref/Ref", "SHAPEIT") +
+  scale_color_manual(values = cbPalette) +
+  geom_abline(slope = 1, intercept = 0) +
+  theme_classic()
+```
+
+
