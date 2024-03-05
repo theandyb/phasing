@@ -37,6 +37,13 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/core-js-2.5.3/shim.min.js"></script>
+<script src="site_libs/react-18.2.0/react.min.js"></script>
+<script src="site_libs/react-18.2.0/react-dom.min.js"></script>
+<script src="site_libs/reactwidget-1.0.0/react-tools.js"></script>
+<script src="site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<link href="site_libs/reactable-0.4.4/reactable.css" rel="stylesheet" />
+<script src="site_libs/reactable-binding-0.4.4/reactable.js"></script>
 <link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
 
@@ -571,15 +578,15 @@ output/background_rates/3mer.csv
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomtheandybphasingtree6b8cccb0a83cd290200c43eef205f31afb5f05fetargetblank6b8cccba">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomtheandybphasingtree270f528f422735d566839353003b2eefed16be0dtargetblank270f528a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/theandyb/phasing/tree/6b8cccb0a83cd290200c43eef205f31afb5f05fe" target="_blank">6b8cccb</a>
+<a href="https://github.com/theandyb/phasing/tree/270f528f422735d566839353003b2eefed16be0d" target="_blank">270f528</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomtheandybphasingtree6b8cccb0a83cd290200c43eef205f31afb5f05fetargetblank6b8cccba"
+id="strongRepositoryversionstrongahrefhttpsgithubcomtheandybphasingtree270f528f422735d566839353003b2eefed16be0dtargetblank270f528a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -589,7 +596,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/theandyb/phasing/tree/6b8cccb0a83cd290200c43eef205f31afb5f05fe" target="_blank">6b8cccb</a>.
+<a href="https://github.com/theandyb/phasing/tree/270f528f422735d566839353003b2eefed16be0d" target="_blank">270f528</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -686,6 +693,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/270f528f422735d566839353003b2eefed16be0d/analysis/all_vs_noRefRef.Rmd" target="_blank">270f528</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-03-05
+</td>
+<td>
+wflow_publish("analysis/all_vs_noRefRef.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/theandyb/phasing/ddaea961c5655a241e767fd77ee8499d99e82068/docs/all_vs_noRefRef.html" target="_blank">ddaea96</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-03-05
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -833,6 +874,43 @@ df_switch_ref$pop &lt;- c(rep(&quot;EUR&quot;, 200), rep(&quot;AFR&quot;, 200), 
   theme_classic()</code></pre>
 <pre><code>Joining with `by = join_by(pair_id)`</code></pre>
 <p><img src="figure/all_vs_noRefRef.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-1">
+Past versions of unnamed-chunk-3-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/ddaea961c5655a241e767fd77ee8499d99e82068/docs/figure/all_vs_noRefRef.Rmd/unnamed-chunk-3-1.png" target="_blank">ddaea96</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-03-05
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>df_switch_no_ref %&gt;%
   select(pair_id, n_flip_beagle, pop) %&gt;%
   rename(no_ref = n_flip_beagle) %&gt;%
@@ -849,6 +927,43 @@ df_switch_ref$pop &lt;- c(rep(&quot;EUR&quot;, 200), rep(&quot;AFR&quot;, 200), 
   theme_classic()</code></pre>
 <pre><code>Joining with `by = join_by(pair_id)`</code></pre>
 <p><img src="figure/all_vs_noRefRef.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-1">
+Past versions of unnamed-chunk-4-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-4-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/ddaea961c5655a241e767fd77ee8499d99e82068/docs/figure/all_vs_noRefRef.Rmd/unnamed-chunk-4-1.png" target="_blank">ddaea96</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-03-05
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="eagle" class="section level3">
 <h3>Eagle</h3>
@@ -868,6 +983,43 @@ df_switch_ref$pop &lt;- c(rep(&quot;EUR&quot;, 200), rep(&quot;AFR&quot;, 200), 
   theme_classic()</code></pre>
 <pre><code>Joining with `by = join_by(pair_id)`</code></pre>
 <p><img src="figure/all_vs_noRefRef.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
+Past versions of unnamed-chunk-5-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/ddaea961c5655a241e767fd77ee8499d99e82068/docs/figure/all_vs_noRefRef.Rmd/unnamed-chunk-5-1.png" target="_blank">ddaea96</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-03-05
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>df_switch_no_ref %&gt;%
   select(pair_id, n_flip_eagle, pop) %&gt;%
   rename(no_ref = n_flip_eagle) %&gt;%
@@ -884,6 +1036,43 @@ df_switch_ref$pop &lt;- c(rep(&quot;EUR&quot;, 200), rep(&quot;AFR&quot;, 200), 
   theme_classic()</code></pre>
 <pre><code>Joining with `by = join_by(pair_id)`</code></pre>
 <p><img src="figure/all_vs_noRefRef.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-1">
+Past versions of unnamed-chunk-6-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/ddaea961c5655a241e767fd77ee8499d99e82068/docs/figure/all_vs_noRefRef.Rmd/unnamed-chunk-6-1.png" target="_blank">ddaea96</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-03-05
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="shapeit" class="section level3">
 <h3>SHAPEIT</h3>
@@ -903,6 +1092,43 @@ df_switch_ref$pop &lt;- c(rep(&quot;EUR&quot;, 200), rep(&quot;AFR&quot;, 200), 
   theme_classic()</code></pre>
 <pre><code>Joining with `by = join_by(pair_id)`</code></pre>
 <p><img src="figure/all_vs_noRefRef.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-1">
+Past versions of unnamed-chunk-7-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/ddaea961c5655a241e767fd77ee8499d99e82068/docs/figure/all_vs_noRefRef.Rmd/unnamed-chunk-7-1.png" target="_blank">ddaea96</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-03-05
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>df_switch_no_ref %&gt;%
   select(pair_id, n_flip_shapeit, pop) %&gt;%
   rename(no_ref = n_flip_shapeit) %&gt;%
@@ -919,6 +1145,100 @@ df_switch_ref$pop &lt;- c(rep(&quot;EUR&quot;, 200), rep(&quot;AFR&quot;, 200), 
   theme_classic()</code></pre>
 <pre><code>Joining with `by = join_by(pair_id)`</code></pre>
 <p><img src="figure/all_vs_noRefRef.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-1">
+Past versions of unnamed-chunk-8-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/ddaea961c5655a241e767fd77ee8499d99e82068/docs/figure/all_vs_noRefRef.Rmd/unnamed-chunk-8-1.png" target="_blank">ddaea96</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-03-05
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div id="tables" class="section level2">
+<h2>Tables</h2>
+<div id="beagle-1" class="section level3">
+<h3>Beagle</h3>
+<pre class="r"><code>df_switch_no_ref %&gt;%
+  select(pair_id, n_switch_beagle, n_flip_beagle, pop) %&gt;%
+  rename(no_ref_flip = n_flip_beagle,
+         no_ref_switch = n_switch_beagle) %&gt;%
+  inner_join({df_switch_ref %&gt;%
+      select(pair_id, n_switch_beagle, n_flip_beagle) %&gt;% 
+      rename(with_ref_flip = n_flip_beagle,
+             with_ref_switch = n_switch_beagle)}) %&gt;%
+  select(-pair_id) %&gt;%
+  group_by(pop) %&gt;%
+  summarize_all(list(mean, sd)) %&gt;%
+  reactable::reactable()</code></pre>
+<pre><code>Joining with `by = join_by(pair_id)`</code></pre>
+<div class="reactable html-widget html-fill-item" id="htmlwidget-e7ad701397ebb463ad9a" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-e7ad701397ebb463ad9a">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"pop":["AFR","AMR","EAS","EUR","SAS"],"no_ref_switch_fn1":[342.61,224.63,386.04,271.215,342.89],"no_ref_flip_fn1":[102.985,63.29,98.19,73.335,92.68],"with_ref_switch_fn1":[292.94,211.51,367.04,244.38,314.36],"with_ref_flip_fn1":[101.92,68.44,108.35,76.08,96.05],"no_ref_switch_fn2":[88.8654784847955,89.0981362251079,54.0327098836782,70.7944066651835,86.7704384563026],"no_ref_flip_fn2":[26.606282082079,22.7739417809571,15.0847404332787,19.3290152140695,24.6813551680067],"with_ref_switch_fn2":[76.8532269489207,82.612946254742,54.6709015358945,65.0552575328337,78.5239486083736],"with_ref_flip_fn2":[26.4805532134897,23.0429199889285,17.2681612784741,20.0005929560342,23.7241619153524]},"columns":[{"id":"pop","name":"pop","type":"character"},{"id":"no_ref_switch_fn1","name":"no_ref_switch_fn1","type":"numeric"},{"id":"no_ref_flip_fn1","name":"no_ref_flip_fn1","type":"numeric"},{"id":"with_ref_switch_fn1","name":"with_ref_switch_fn1","type":"numeric"},{"id":"with_ref_flip_fn1","name":"with_ref_flip_fn1","type":"numeric"},{"id":"no_ref_switch_fn2","name":"no_ref_switch_fn2","type":"numeric"},{"id":"no_ref_flip_fn2","name":"no_ref_flip_fn2","type":"numeric"},{"id":"with_ref_switch_fn2","name":"with_ref_switch_fn2","type":"numeric"},{"id":"with_ref_flip_fn2","name":"with_ref_flip_fn2","type":"numeric"}],"dataKey":"702d5d5a4c6442b73afcea29cb5b0eb4"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+</div>
+<div id="eagle-1" class="section level3">
+<h3>Eagle</h3>
+<pre class="r"><code>df_switch_no_ref %&gt;%
+  select(pair_id, n_switch_eagle, n_flip_eagle, pop) %&gt;%
+  rename(no_ref_flip = n_flip_eagle,
+         no_ref_switch = n_switch_eagle) %&gt;%
+  inner_join({df_switch_ref %&gt;%
+      select(pair_id, n_switch_eagle, n_flip_eagle) %&gt;% 
+      rename(with_ref_flip = n_flip_eagle,
+             with_ref_switch = n_switch_eagle)}) %&gt;%
+  select(-pair_id) %&gt;%
+  group_by(pop) %&gt;%
+  summarize_all(list(mean, sd)) %&gt;%
+  reactable::reactable()</code></pre>
+<pre><code>Joining with `by = join_by(pair_id)`</code></pre>
+<div class="reactable html-widget html-fill-item" id="htmlwidget-773211d561e31df7b6a8" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-773211d561e31df7b6a8">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"pop":["AFR","AMR","EAS","EUR","SAS"],"no_ref_switch_fn1":[387.905,262.34,448.17,307.85,400.64],"no_ref_flip_fn1":[116.21,74.87,118.25,83.875,112.83],"with_ref_switch_fn1":[337.96,238.15,410.31,276.105,362.53],"with_ref_flip_fn1":[100.78,67.55,106.19,75.365,101.17],"no_ref_switch_fn2":[105.706457944897,75.2505874335271,48.3952696160701,66.1138617354019,75.4037643408317],"no_ref_flip_fn2":[32.7609876462507,18.7566311506414,13.8727077458591,18.2940629356485,22.513320411694],"with_ref_switch_fn2":[92.0343960172025,76.6812074484849,51.8922144371573,64.1158183744787,73.5026220929938],"with_ref_flip_fn2":[28.1568042955997,19.0498415911121,14.7912716549902,17.5479751584279,20.6964863069688]},"columns":[{"id":"pop","name":"pop","type":"character"},{"id":"no_ref_switch_fn1","name":"no_ref_switch_fn1","type":"numeric"},{"id":"no_ref_flip_fn1","name":"no_ref_flip_fn1","type":"numeric"},{"id":"with_ref_switch_fn1","name":"with_ref_switch_fn1","type":"numeric"},{"id":"with_ref_flip_fn1","name":"with_ref_flip_fn1","type":"numeric"},{"id":"no_ref_switch_fn2","name":"no_ref_switch_fn2","type":"numeric"},{"id":"no_ref_flip_fn2","name":"no_ref_flip_fn2","type":"numeric"},{"id":"with_ref_switch_fn2","name":"with_ref_switch_fn2","type":"numeric"},{"id":"with_ref_flip_fn2","name":"with_ref_flip_fn2","type":"numeric"}],"dataKey":"5e674710547b4e3f54b0c2dde4251ce1"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+</div>
+<div id="shapeit-1" class="section level3">
+<h3>SHAPEIT</h3>
+<pre class="r"><code>df_switch_no_ref %&gt;%
+  select(pair_id, n_switch_shapeit, n_flip_shapeit, pop) %&gt;%
+  rename(no_ref_flip = n_flip_shapeit,
+         no_ref_switch = n_switch_shapeit) %&gt;%
+  inner_join({df_switch_ref %&gt;%
+      select(pair_id, n_switch_shapeit, n_flip_shapeit) %&gt;% 
+      rename(with_ref_flip = n_flip_shapeit,
+             with_ref_switch = n_switch_shapeit)}) %&gt;%
+  select(-pair_id) %&gt;%
+  group_by(pop) %&gt;%
+  summarize_all(list(mean, sd)) %&gt;%
+  reactable::reactable()</code></pre>
+<pre><code>Joining with `by = join_by(pair_id)`</code></pre>
+<div class="reactable html-widget html-fill-item" id="htmlwidget-177f6a89d219696005a8" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-177f6a89d219696005a8">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"pop":["AFR","AMR","EAS","EUR","SAS"],"no_ref_switch_fn1":[343.39,243.58,409.94,288.775,360.95],"no_ref_flip_fn1":[127.22,82.57,121.94,93.235,116.28],"with_ref_switch_fn1":[317.685,229.04,374.61,258.17,328.55],"with_ref_flip_fn1":[120.335,79.6,116.31,87.135,109.31],"no_ref_switch_fn2":[82.2750497969796,93.1153493406339,62.8698864820243,77.3365312795432,89.192491304204],"no_ref_flip_fn2":[30.157569447402,26.2248455715668,19.6195223327597,24.6193080047585,27.7467187977318],"with_ref_switch_fn2":[79.2407170030394,81.3620068681701,58.553591959103,67.7442804795242,75.9864920212597],"with_ref_flip_fn2":[29.371178143337,22.2256563003165,17.6822087152738,22.0945154521507,23.6325810881691]},"columns":[{"id":"pop","name":"pop","type":"character"},{"id":"no_ref_switch_fn1","name":"no_ref_switch_fn1","type":"numeric"},{"id":"no_ref_flip_fn1","name":"no_ref_flip_fn1","type":"numeric"},{"id":"with_ref_switch_fn1","name":"with_ref_switch_fn1","type":"numeric"},{"id":"with_ref_flip_fn1","name":"with_ref_flip_fn1","type":"numeric"},{"id":"no_ref_switch_fn2","name":"no_ref_switch_fn2","type":"numeric"},{"id":"no_ref_flip_fn2","name":"no_ref_flip_fn2","type":"numeric"},{"id":"with_ref_switch_fn2","name":"with_ref_switch_fn2","type":"numeric"},{"id":"with_ref_flip_fn2","name":"with_ref_flip_fn2","type":"numeric"}],"dataKey":"fd1454f28f47344dc983ff1c5d181838"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -958,21 +1278,22 @@ other attached packages:
 
 loaded via a namespace (and not attached):
  [1] gtable_0.3.4      xfun_0.42         bslib_0.6.1       htmlwidgets_1.6.4
- [5] processx_3.8.3    callr_3.7.5       tzdb_0.4.0        vctrs_0.6.5      
- [9] tools_4.3.3       ps_1.7.6          generics_0.1.3    parallel_4.3.3   
-[13] fansi_1.0.6       highr_0.10        pkgconfig_2.0.3   lifecycle_1.0.4  
-[17] farver_2.1.1      compiler_4.3.3    git2r_0.33.0      munsell_0.5.0    
-[21] getPass_0.2-4     snakecase_0.11.1  httpuv_1.6.14     htmltools_0.5.7  
-[25] sass_0.4.8        yaml_2.3.8        later_1.3.2       pillar_1.9.0     
-[29] crayon_1.5.2      jquerylib_0.1.4   whisker_0.4.1     cachem_1.0.8     
-[33] tidyselect_1.2.0  digest_0.6.34     stringi_1.8.3     labeling_0.4.3   
-[37] rprojroot_2.0.4   fastmap_1.1.1     grid_4.3.3        archive_1.1.7    
-[41] colorspace_2.1-0  cli_3.6.2         magrittr_2.0.3    utf8_1.2.4       
-[45] withr_3.0.0       scales_1.3.0      promises_1.2.1    bit64_4.0.5      
-[49] timechange_0.3.0  rmarkdown_2.25    httr_1.4.7        bit_4.0.5        
-[53] hms_1.1.3         evaluate_0.23     knitr_1.45        rlang_1.1.3      
-[57] Rcpp_1.0.12       glue_1.7.0        rstudioapi_0.15.0 vroom_1.6.5      
-[61] jsonlite_1.8.8    R6_2.5.1          fs_1.6.3         </code></pre>
+ [5] processx_3.8.3    callr_3.7.5       tzdb_0.4.0        crosstalk_1.2.1  
+ [9] vctrs_0.6.5       tools_4.3.3       ps_1.7.6          generics_0.1.3   
+[13] parallel_4.3.3    fansi_1.0.6       highr_0.10        pkgconfig_2.0.3  
+[17] lifecycle_1.0.4   farver_2.1.1      compiler_4.3.3    git2r_0.33.0     
+[21] munsell_0.5.0     getPass_0.2-4     snakecase_0.11.1  httpuv_1.6.14    
+[25] htmltools_0.5.7   sass_0.4.8        yaml_2.3.8        later_1.3.2      
+[29] pillar_1.9.0      crayon_1.5.2      jquerylib_0.1.4   whisker_0.4.1    
+[33] ellipsis_0.3.2    cachem_1.0.8      tidyselect_1.2.0  digest_0.6.34    
+[37] stringi_1.8.3     labeling_0.4.3    rprojroot_2.0.4   fastmap_1.1.1    
+[41] grid_4.3.3        archive_1.1.7     colorspace_2.1-0  cli_3.6.2        
+[45] magrittr_2.0.3    utf8_1.2.4        reactR_0.5.0      withr_3.0.0      
+[49] scales_1.3.0      promises_1.2.1    bit64_4.0.5       timechange_0.3.0 
+[53] rmarkdown_2.25    httr_1.4.7        bit_4.0.5         hms_1.1.3        
+[57] evaluate_0.23     knitr_1.45        rlang_1.1.3       Rcpp_1.0.12      
+[61] glue_1.7.0        rstudioapi_0.15.0 vroom_1.6.5       jsonlite_1.8.8   
+[65] R6_2.5.1          fs_1.6.3         </code></pre>
 </div>
 </div>
 </div>
