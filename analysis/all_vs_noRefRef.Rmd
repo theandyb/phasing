@@ -178,4 +178,56 @@ df_switch_no_ref %>%
   theme_classic()
 ```
 
+## Tables
+
+### Beagle
+
+```{r}
+df_switch_no_ref %>%
+  select(pair_id, n_switch_beagle, n_flip_beagle, pop) %>%
+  rename(no_ref_flip = n_flip_beagle,
+         no_ref_switch = n_switch_beagle) %>%
+  inner_join({df_switch_ref %>%
+      select(pair_id, n_switch_beagle, n_flip_beagle) %>% 
+      rename(with_ref_flip = n_flip_beagle,
+             with_ref_switch = n_switch_beagle)}) %>%
+  select(-pair_id) %>%
+  group_by(pop) %>%
+  summarize_all(list(mean, sd)) %>%
+  reactable::reactable()
+```
+
+### Eagle
+
+```{r}
+df_switch_no_ref %>%
+  select(pair_id, n_switch_eagle, n_flip_eagle, pop) %>%
+  rename(no_ref_flip = n_flip_eagle,
+         no_ref_switch = n_switch_eagle) %>%
+  inner_join({df_switch_ref %>%
+      select(pair_id, n_switch_eagle, n_flip_eagle) %>% 
+      rename(with_ref_flip = n_flip_eagle,
+             with_ref_switch = n_switch_eagle)}) %>%
+  select(-pair_id) %>%
+  group_by(pop) %>%
+  summarize_all(list(mean, sd)) %>%
+  reactable::reactable()
+```
+
+### SHAPEIT
+
+```{r}
+df_switch_no_ref %>%
+  select(pair_id, n_switch_shapeit, n_flip_shapeit, pop) %>%
+  rename(no_ref_flip = n_flip_shapeit,
+         no_ref_switch = n_switch_shapeit) %>%
+  inner_join({df_switch_ref %>%
+      select(pair_id, n_switch_shapeit, n_flip_shapeit) %>% 
+      rename(with_ref_flip = n_flip_shapeit,
+             with_ref_switch = n_switch_shapeit)}) %>%
+  select(-pair_id) %>%
+  group_by(pop) %>%
+  summarize_all(list(mean, sd)) %>%
+  reactable::reactable()
+```
 
