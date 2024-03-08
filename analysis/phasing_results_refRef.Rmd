@@ -1,0 +1,170 @@
+---
+title: "phasing_results_refRef"
+author: "Andy Beck"
+date: "2024-03-08"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Libraries and Utility Functions
+
+```{r}
+library(tidyverse)
+library(janitor)
+library(reactable)
+source("code/common_functions.R")
+
+cbbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+```
+
+```{r}
+# function takes dataframe and two column names, returns a scatterplot
+scatterplot <- function(df, x_var, y_var, colour_var, title, xlab, ylab){
+  ggplot(df) +
+    geom_point(aes(.data[[x_var]], .data[[y_var]], color = .data[[colour_var]])) +
+    labs(title = title, x = xlab, y = ylab) +
+    theme_classic()
+}
+```
+
+
+## Directories
+
+```{r}
+eagle_switch_dir <-   "/net/snowwhite/home/beckandy/research/phasing/output/switch_errors/switch_errors/eagle/annotated/"
+shapeit_switch_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/switch_errors/switch_errors/shapeit/annotated/"
+beagle_switch_dir <-  "/net/snowwhite/home/beckandy/research/phasing/output/switch_errors/switch_errors/beagle/annotated/"
+num_sites_dir <-      "/net/snowwhite/home/beckandy/research/phasing/output/switch_errors/vcf_n_sites/"
+whatshap_dir <-       "/net/snowwhite/home/beckandy/research/phasing/output/switch_errors/whatshap/"
+het_loc_dir <-        "/net/snowwhite/home/beckandy/research/phasing/output/switch_errors/het_loc/"
+```
+
+## Load Data
+
+```{r}
+gc_content_1kb <- read_tsv("data/ref/gc1kb_X_only.bed")
+colnames(gc_content_1kb) <- c("CHR", "START", "END", "AT", "GC", "A", "C", "G", "T", "TOTAL", "OTHER", "LENGTH")
+gc_content_1kb  <- gc_content_1kb %>%
+  mutate(bin_id = (START / 1000) + 1)
+
+df_vcftools <- lapply(c(1:700), 
+                    function(x){
+                      switch_summary(x, eagle_switch_dir, beagle_switch_dir, shapeit_switch_dir, gc_content_1kb, het_loc_dir)
+                      }) %>%
+  bind_rows()
+
+df_vcftools$pop <- c(rep("EUR", 200), rep("AFR", 200), rep("AMR", 100), rep("EAS", 100), rep("SAS", 100))
+
+df_wh_eagle <- get_all_whatshap("eagle", n = 700, pop = c(rep("EUR", 200), rep("AFR", 200), rep("AMR", 100), rep("EAS", 100), rep("SAS", 100)))
+df_wh_beagle <- get_all_whatshap("beagle", n = 700, pop = c(rep("EUR", 200), rep("AFR", 200), rep("AMR", 100), rep("EAS", 100), rep("SAS", 100)))
+df_wh_si <- get_all_whatshap("shapeit", n = 700, pop = c(rep("EUR", 200), rep("AFR", 200), rep("AMR", 100), rep("EAS", 100), rep("SAS", 100)))
+
+# pd_size <- data.frame(id = 1:700, size = rep(0, 700))
+# for(i in 1:700){
+#   df_het <- read_tsv(paste0(het_loc_dir, "pair_",i,"_het_loc.txt"), col_names = c("chr", "pos", "gt", "X"),show_col_types = FALSE)
+#   min_pos <- df_het$pos[1]
+#   max_pos <- df_het$pos[length(df_het$pos)]
+#   n_pos <- max_pos - min_pos
+#   pd_size$size[i] <- n_pos
+# }
+# write_csv(pd_size, "/net/snowwhite/home/beckandy/research/phasing/output/switch_errors/het_loc/phased_size.csv")
+    
+par_size <- (2781479 - 10001) + (156030895 - 155701383)
+pd_size <- read_csv("/net/snowwhite/home/beckandy/research/phasing/output/switch_errors/het_loc/phased_size.csv",show_col_types = FALSE) %>%
+  mutate(size_mb = (size - par_size) / 1e6)
+
+df_wh_eagle$size_mb <- pd_size$size_mb
+df_wh_beagle$size_mb <- pd_size$size_mb
+df_wh_si$size_mb <- pd_size$size_mb
+df_vcftools$size_mb <- pd_size$size_mb
+```
+
+## Initial Results
+
+We first look at the average counts for each type of error (flips and non-flip switches) for each method within each of the five 1kGP super-populations:
+
+```{r}
+df_vcftools %>%
+  group_by(pop) %>%
+  summarise(mean_switch_eagle = mean(n_other_eagle),
+            mean_switch_beagle = mean(n_other_beagle),
+            mean_switch_shapeit = mean(n_other_shapeit),
+            mean_flip_eagle = mean(n_flip_eagle),
+            mean_flip_beagle = mean(n_flip_beagle),
+            mean_flip_shapeit = mean(n_flip_shapeit)) %>%
+  reactable()
+```
+
+We see that in all populations, Eagle has a higher mean number of switch errors per synthetic diploid than Beagle, which in turn has a higner number of switch errors per synthetic diploid than SHAPEIT. In contrast, SHAPEIT has a higher average number of flip errors per synthetic diploid than the other two methods. Below we report the same metrics, but on a per-MB scale:
+
+```{r}
+df_vcftools %>%
+  group_by(pop) %>%
+  summarize(mean_switch_eagle = mean(n_other_eagle / size_mb),
+            mean_switch_beagle = mean(n_other_beagle / size_mb),
+            mean_switch_shapeit = mean(n_other_shapeit / size_mb),
+            mean_flip_eagle = mean(n_flip_eagle / size_mb),
+            mean_flip_beagle = mean(n_flip_beagle / size_mb),
+            mean_flip_shapeit = mean(n_flip_shapeit / size_mb)) %>%
+  reactable()
+```
+
+On a per-MB scale, we see the highest rate of switches per MB is observed in the EAS super-population across all three methods, while the lowest switch-error rate is observed in the AMR super-population. The AMR super-population consists of samples from 6 North American admixed samples. For flips, the highest rate of flips per MB for Eagle and Beagle are seen in the EAS super-population as well, while the highest observed rate for SHAPEIT is in the AFR super-population. The correlations of the flip and switch rates are presented below:
+
+```{r}
+df_vcftools %>%
+  group_by(pop) %>%
+  summarize(mean_switch_eagle = mean(n_other_eagle / size_mb),
+            mean_switch_beagle = mean(n_other_beagle / size_mb),
+            mean_switch_shapeit = mean(n_other_shapeit / size_mb)) %>%
+  corrr::correlate(diagonal = 1, method = "pearson") %>%
+  reactable()
+
+df_vcftools %>%
+  group_by(pop) %>%
+  summarize(mean_switch_eagle = mean(n_other_eagle / size_mb),
+            mean_switch_beagle = mean(n_other_beagle / size_mb),
+            mean_switch_shapeit = mean(n_other_shapeit / size_mb)) %>%
+  corrr::correlate(diagonal = 1, method = "spearman") %>%
+  reactable()
+
+df_vcftools %>%
+  group_by(pop) %>%
+  summarize(mean_flip_eagle = mean(n_flip_eagle / size_mb),
+            mean_flip_beagle = mean(n_flip_beagle / size_mb),
+            mean_flip_shapeit = mean(n_flip_shapeit / size_mb)) %>%
+  corrr::correlate(diagonal = 1, method = "pearson") %>%
+  reactable()
+
+df_vcftools %>%
+  group_by(pop) %>%
+  summarize(mean_flip_eagle = mean(n_flip_eagle / size_mb),
+            mean_flip_beagle = mean(n_flip_beagle / size_mb),
+            mean_flip_shapeit = mean(n_flip_shapeit / size_mb)) %>%
+  corrr::correlate(diagonal = 1, method = "spearman") %>%
+  reactable()
+```
+
+A similar metric is the mean number of heterozygous positions in-between each error. These can be thought of as "trials" at which an error could have occured but did not. Note that this isn't quite right, as we consider each error type independently and are counting the number of heterozygoud positions between errors of each type that are not themselves locations of errors of that type.
+
+```{r}
+df_vcftools %>%
+  group_by(pop) %>%
+  summarize(mean_het_switch_beagle = mean(mean_hets_switch_beagle),
+            mean_het_switch_eagle = mean(mean_hets_switch_eagle),
+            mean_het_switch_shapeit = mean(mean_hets_switch_shapeit)) %>%
+  reactable()
+```
+
+The above table does not account for differences in the mean number of heterozygous positions within each synthethic diploid across the populations:
+
+```{r}
+df_vcftools %>%
+  group_by(pop) %>%
+  summarize(mean_n_het = mean(n_hets),
+            sd_n_het = sd(n_hets)) %>%
+  reactable()
+```
+
+
