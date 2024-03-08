@@ -360,6 +360,8 @@ df_vcftools %>%
 
 ### Total Errors
 
+These figures are wrong -> they double count flips 
+
 ```{r}
 df_wh_si %>%
   select(id, pop, total_errors) %>%

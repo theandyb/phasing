@@ -88,6 +88,16 @@ df_vcftools %>%
 
 df_vcftools %>%
   {sum(.$n_total_beagle < .$n_total_eagle)}
+
+df_vcftools %>%
+  ggplot(aes(x = n_total_eagle, y = n_total_shapeit, color = pop)) +
+  geom_point() +
+  xlab("Eagle") +
+  ylab("SHAPEIT") +
+  geom_abline(slope = 1, intercept = 0) +
+  theme_classic() +
+  ggtitle("Total Errors") +
+  scale_color_manual(values=cbPalette)
 ```
 
 
@@ -175,3 +185,17 @@ df_tmp %>%
 ```
 
 In contrast to switch errors, we find that SHAPEIT tends to introduce more flips errors on average (mean 108.81, sd 31.46) than either Eagle (mean 100.87, sd 29.33) or Beagle (mean 86.69, sd 27.00). Out of the 700 synthetic diploids, SHAPEIT introduces as many or more flips as Eagle in 516 synthetic diploids and as many or more flips as Beagle in 695 synthetic diploids, while in 582 synthetic diploids Eagle introduces more flips than Beagle. On average within each synthetic diploid, SHAPEIT introduces 7.94 (15.56) more flips than Eagle and 22.13 (11.42) more flips than Beagle, while Eagle introduces 14.19 (14.84) more flips than Beagle.
+
+# Switches and Flips within populations
+
+```{r}
+df_vcftools %>%
+  group_by(pop) %>%
+  summarize(mean_switch_eagle = mean(n_other_eagle),
+            mean_switch_beagle = mean(n_other_beagle),
+            mean_switch_shapeit = mean(n_other_shapeit),
+            mean_flip_eagle = mean(n_flip_eagle),
+            mean_flip_beagle = mean(n_flip_beagle),
+            mean_flip_shapeit = mean(n_flip_shapeit)) %>%
+  knitr::kable()
+```

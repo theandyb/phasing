@@ -2,15 +2,15 @@
 #
 #SBATCH --job-name=pdPhase
 #SBATCH --ntasks=1
-#SBATCH --time=06:00:00
+#SBATCH --time=10:00:00
 #SBATCH --cpus-per-task=4
-#SBATCH --mem-per-cpu=5GB
+#SBATCH --mem-per-cpu=8GB
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=beckandy@umich.edu
 #SBATCH --array=1-700
 #SBATCH --constraint=avx2
-#SBATCH -e /net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/slurm/pseduo_dip.%A.%a.err
-#SBATCH --output=/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/slurm/pseudo_dip.%A.%a.err
+#SBATCH -e /net/snowwhite/home/beckandy/research/phasing/output/switch_errors/slurm/pseduo_dip.%A.%a.err
+#SBATCH --output=/net/snowwhite/home/beckandy/research/phasing/output/switch_errors/slurm/pseudo_dip.%A.%a.out
 
 # Code for generating switch error results for pseudo-diploids constructed using male X chromosomes (non-PAR)
 # This version uses all samples not used in the generation of the PD as the reference panel (males and females)
@@ -18,7 +18,7 @@
 
 VCF="/net/snowwhite/home/beckandy/research/phasing/data/1kgp/1kGP_nonPAR_mask_noSing.bcf"
 shapeit_dir="/net/snowwhite/home/beckandy/software/shapeit5/shapeit5"
-out_dir="/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors"
+out_dir="/net/snowwhite/home/beckandy/research/phasing/output/switch_errors"
 # Read line from sample_pairs.csv
 line=$(awk -v id=${SLURM_ARRAY_TASK_ID} 'NR==id{ print; exit }' /net/snowwhite/home/beckandy/research/phasing/data/sample_pairs_9aug2023.csv)
 arrSub=(${line//,/ })
@@ -27,11 +27,11 @@ sub_b=${arrSub[2]}
 
 echo "Our subjects are $sub_a and $sub_b"
 
-if [ ! -f "${out_dir}/switch_errors/shapeit/error_${SLURM_ARRAY_TASK_ID}.diff.switch"  ]; then
+if [ ! -f "${out_dir}/switch_errors/eagle/error_${SLURM_ARRAY_TASK_ID}.diff.switch"  ]; then
 
 # Get list of sites for our two subjects
 bcftools view -v snps -Ou $VCF | \
-  bcftools view -s $sub_a,$sub_b -c1 -Ou |\
+  bcftools view -s $sub_a,$sub_b -Ou |\
   bcftools query  -f '%CHROM\t%POS\n' | tr -s ' ' |
   awk '!seen[$0]++' > $out_dir/site_list/sites_${SLURM_ARRAY_TASK_ID}.tsv
 echo -e "Site list generated"
@@ -39,7 +39,7 @@ echo -e "Site list generated"
 #Filter VCF to our subjects and their list of sites, removing positions with not alt in either as well
 bcftools view -v snps -s $sub_a,$sub_b -Ou $VCF |\
 	bcftools view -T $out_dir/site_list/sites_${SLURM_ARRAY_TASK_ID}.tsv |\
-	bcftools view -c 1 -Oz > /tmp/andy_input_${SLURM_ARRAY_TASK_ID}.vcf.gz
+	bcftools view -Oz > /tmp/andy_input_${SLURM_ARRAY_TASK_ID}.vcf.gz
 
 # Generate pseudodiploid from two haplotypes
 Rscript /net/snowwhite/home/beckandy/research/phasing/code/diploidifier.R /tmp/andy_input_${SLURM_ARRAY_TASK_ID}.vcf.gz /tmp/andy_input_${SLURM_ARRAY_TASK_ID} ${SLURM_ARRAY_TASK_ID}
@@ -97,7 +97,7 @@ echo "SHAPEIT done"
 
 bcftools view /tmp/andy_ref_${SLURM_ARRAY_TASK_ID}.bcf -Ov > /tmp/andy_ref_${SLURM_ARRAY_TASK_ID}.vcf
 
-java -Xmx4g -jar /net/snowwhite/home/beckandy/bin/beagle.05May22.33a.jar \
+java -Xmx6g -jar /net/snowwhite/home/beckandy/bin/beagle.05May22.33a.jar \
   gt=/tmp/andy_input_${SLURM_ARRAY_TASK_ID}_test.vcf.gz \
   ref=/tmp/andy_ref_${SLURM_ARRAY_TASK_ID}.vcf \
   map=/net/snowwhite/home/beckandy/research/phasing/data/ref/plink.chrX.map \

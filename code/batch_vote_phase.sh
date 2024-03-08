@@ -7,7 +7,7 @@
 #SBATCH --mem-per-cpu=5GB
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=beckandy@umich.edu
-#SBATCH --array=607-700
+#SBATCH --array=1-700
 #SBATCH --constraint=avx2
 #SBATCH -e /net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/slurm/vote_easy.%A_%a.err
 #SBATCH --output=/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/slurm/vote_easy.%A.%a.out
@@ -16,9 +16,11 @@ in_dir="/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors
 out_dir="/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/vote/easy"
 
 # Index input bcf
-#bcftools index $in_dir/shapeit/pair_${SLURM_ARRAY_TASK_ID}.bcf
-#bcftools index $in_dir/beagle/pair_${SLURM_ARRAY_TASK_ID}.bcf
-#bcftools index $in_dir/eagle/pair_${SLURM_ARRAY_TASK_ID}.bcf
+bcftools index $in_dir/shapeit/pair_${SLURM_ARRAY_TASK_ID}.bcf
+bcftools index $in_dir/beagle/pair_${SLURM_ARRAY_TASK_ID}.bcf
+bcftools index $in_dir/eagle/pair_${SLURM_ARRAY_TASK_ID}.bcf
+
+if [ ! -f "${out_dir}/error_vote_${SLURM_ARRAY_TASK_ID}.tsv" ]; then
 
 # Get intersection of sites in the 3 VCFs
 bcftools isec -n=3 -c all $in_dir/shapeit/pair_${SLURM_ARRAY_TASK_ID}.bcf $in_dir/beagle/pair_${SLURM_ARRAY_TASK_ID}.bcf $in_dir/eagle/pair_${SLURM_ARRAY_TASK_ID}.bcf >\
@@ -47,3 +49,7 @@ rm $out_dir/common_pos_${SLURM_ARRAY_TASK_ID}.txt
 
 bcftools view -Ob $out_dir/vote_${SLURM_ARRAY_TASK_ID}.vcf > $out_dir/vote_${SLURM_ARRAY_TASK_ID}.bcf
 rm $out_dir/vote_${SLURM_ARRAY_TASK_ID}.vcf
+
+else
+echo "All good for ${SLURM_ARRAY_TASK_ID}"
+fi

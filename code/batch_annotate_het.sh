@@ -8,10 +8,10 @@
 #SBATCH --job-name=annHet
 #SBATCH --array=1-700
 #SBATCH --requeue
-#SBATCH -e /net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/slurm/het_ann-%J.err
-#SBATCH -o /net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/slurm/het_ann-%J.out
+#SBATCH -e /net/snowwhite/home/beckandy/research/phasing/output/switch_errors/slurm/het_ann-%A_%a.err
+#SBATCH -o /net/snowwhite/home/beckandy/research/phasing/output/switch_errors/slurm/het_ann-%A_%a.out
 
-input_dir="/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/het_loc"
+input_dir="/net/snowwhite/home/beckandy/research/phasing/output/switch_errors/het_loc"
 output_dir="${input_dir}/annotated/"
 
 python /net/snowwhite/home/beckandy/research/phasing/code/append_cpg_het.py -c X \
