@@ -15,16 +15,18 @@ library(janitor)
 library(reactable)
 source("code/common_functions.R")
 
-cbbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+cbbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
 ```
 
 ```{r}
 # function takes dataframe and two column names, returns a scatterplot
-scatterplot <- function(df, x_var, y_var, colour_var, title, xlab, ylab){
+scatterplot <- function(df, x_var, y_var, colour_var, xlab, ylab){
   ggplot(df) +
     geom_point(aes(.data[[x_var]], .data[[y_var]], color = .data[[colour_var]])) +
-    labs(title = title, x = xlab, y = ylab) +
-    theme_classic()
+    labs(x = xlab, y = ylab) +
+    theme_classic() + 
+    geom_abline(slope = 1, intercept = 0) + 
+    scale_color_manual(values=cbbPalette)
 }
 ```
 
@@ -167,4 +169,38 @@ df_vcftools %>%
   reactable()
 ```
 
+### Plots
 
+Here we plot the count of errors within each synthetic diploid between each pair of methods.
+
+#### Switches
+
+```{r}
+p1 <- scatterplot(df_vcftools, "n_other_beagle", "n_other_eagle", "pop", "Beagle", "Eagle") + labs(colour="Population")
+
+legend_obj <- cowplot::get_legend(p1)
+p1 <- p1 + guides(colour = "none")
+
+p2 <- scatterplot(df_vcftools, "n_other_beagle", "n_other_shapeit", "pop", "Beagle", "SHAPEIT") + 
+  guides(colour="none") 
+p3 <- scatterplot(df_vcftools, "n_other_eagle", "n_other_shapeit", "pop",  "Eagle", "SHAPEIT") + 
+  guides(colour="none") 
+
+gridExtra::grid.arrange(p2, p1, p3, legend_obj, layout_matrix = matrix(c(1, 2, 3, 4), byrow = TRUE, ncol = 2))
+```
+
+#### Flips
+
+```{r}
+p1 <- scatterplot(df_vcftools, "n_flip_beagle", "n_flip_eagle", "pop", "Beagle", "Eagle") + labs(colour="Population")
+
+legend_obj <- cowplot::get_legend(p1)
+p1 <- p1 + guides(colour = "none")
+
+p2 <- scatterplot(df_vcftools, "n_flip_beagle", "n_flip_shapeit", "pop", "Beagle", "SHAPEIT") + 
+  guides(colour="none") 
+p3 <- scatterplot(df_vcftools, "n_flip_eagle", "n_flip_shapeit", "pop",  "Eagle", "SHAPEIT") + 
+  guides(colour="none") 
+
+gridExtra::grid.arrange(p2, p1, p3, legend_obj, layout_matrix = matrix(c(1, 2, 3, 4), byrow = TRUE, ncol = 2))
+```
