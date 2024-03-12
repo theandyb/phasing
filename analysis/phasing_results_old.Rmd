@@ -22,13 +22,13 @@ pal1 <- pal_ucscgb()
 
 svg_out_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/figures/paper_svg/"
 
-eagle_switch_dir <-   "/net/snowwhite/home/beckandy/research/phasing/output/switch_errors/switch_errors/eagle/annotated/"
-shapeit_switch_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/switch_errors/switch_errors/shapeit/annotated/"
-beagle_switch_dir <-  "/net/snowwhite/home/beckandy/research/phasing/output/switch_errors/switch_errors/beagle/annotated/"
-num_sites_dir <-      "/net/snowwhite/home/beckandy/research/phasing/output/switch_errors/vcf_n_sites/"
-whatshap_dir <-       "/net/snowwhite/home/beckandy/research/phasing/output/switch_errors/whatshap/"
-whatshap_dir2 <-      "/net/snowwhite/home/beckandy/research/phasing/output/switch_errors/whatshap/"
-het_loc_dir <-        "/net/snowwhite/home/beckandy/research/phasing/output/switch_errors/het_loc/"
+eagle_switch_dir <-   "/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/switch_errors/eagle/annotated/"
+shapeit_switch_dir <- "/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/switch_errors/shapeit/annotated/"
+beagle_switch_dir <-  "/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/switch_errors/beagle/annotated/"
+num_sites_dir <-      "/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/vcf_n_sites/"
+whatshap_dir <-       "/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/whatshap/"
+whatshap_dir2 <-      "/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/whatshap/"
+het_loc_dir <-        "/net/snowwhite/home/beckandy/research/phasing/output/final_switch_errors/het_loc/"
 
 pair_info_df <- read_delim("data/sample_pairs_9aug2023.csv", col_names = c("POP", "ID1", "ID2"))
 pair_info_df$SP <- c(rep("EUR", 200), rep("AFR", 200), rep("AMR", 100), rep("EAS", 100), rep("SAS", 100))
