@@ -14,6 +14,7 @@ library(tidyverse)
 library(janitor)
 library(reactable)
 library(gtsummary)
+library(corrr)
 source("code/common_functions.R")
 
 cbbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
@@ -81,6 +82,22 @@ df_wh_eagle$size_mb <- pd_size$size_mb
 df_wh_beagle$size_mb <- pd_size$size_mb
 df_wh_si$size_mb <- pd_size$size_mb
 df_vcftools$size_mb <- pd_size$size_mb
+
+df_vcftools$switch_per_mb_beagle <- df_vcftools$n_other_beagle / df_vcftools$size_mb
+df_vcftools$switch_per_mb_eagle <- df_vcftools$n_other_eagle / df_vcftools$size_mb
+df_vcftools$switch_per_mb_shapeit <- df_vcftools$n_other_shapeit / df_vcftools$size_mb
+
+df_vcftools$flip_per_mb_beagle <- df_vcftools$n_flip_beagle / df_vcftools$size_mb
+df_vcftools$flip_per_mb_eagle <- df_vcftools$n_flip_eagle / df_vcftools$size_mb
+df_vcftools$flip_per_mb_shapeit <- df_vcftools$n_flip_shapeit / df_vcftools$size_mb
+
+df_vcftools$n_total_beagle <- df_vcftools$n_other_beagle + df_vcftools$n_flip_beagle
+df_vcftools$n_total_eagle <- df_vcftools$n_other_eagle + df_vcftools$n_flip_eagle
+df_vcftools$n_total_shapeit <- df_vcftools$n_other_shapeit + df_vcftools$n_flip_shapeit
+
+df_vcftools$total_per_mb_beagle <- df_vcftools$n_total_beagle / df_vcftools$size_mb
+df_vcftools$total_per_mb_eagle <- df_vcftools$n_total_eagle / df_vcftools$size_mb
+df_vcftools$total_per_mb_shapeit <- df_vcftools$n_total_shapeit / df_vcftools$size_mb
 ```
 
 ## Initial Results
@@ -174,6 +191,22 @@ df_vcftools %>%
 
 Here we plot the count of errors within each synthetic diploid between each pair of methods.
 
+#### Total Errors
+
+```{r}
+p1 <- scatterplot(df_vcftools, "n_total_beagle", "n_total_eagle", "pop", "Beagle", "Eagle") + labs(colour="Population")
+
+legend_obj <- cowplot::get_legend(p1)
+p1 <- p1 + guides(colour = "none")
+
+p2 <- scatterplot(df_vcftools, "n_total_beagle", "n_total_shapeit", "pop", "Beagle", "SHAPEIT") + 
+  guides(colour="none") 
+p3 <- scatterplot(df_vcftools, "n_total_eagle", "n_total_shapeit", "pop",  "Eagle", "SHAPEIT") + 
+  guides(colour="none") 
+
+gridExtra::grid.arrange(p2, p3, p1, legend_obj, layout_matrix = matrix(c(1, 2, 3, 4), byrow = TRUE, ncol = 2))
+```
+
 #### Switches
 
 ```{r}
@@ -216,25 +249,20 @@ We simulate synthetic diploids with known phase by sampling male X chromosomes f
 
 ```{r}
 df_vcftools %>%
-  mutate(n_total_beagle = n_other_beagle + n_flip_beagle,
-         n_total_eagle = n_other_eagle + n_flip_eagle,
-         n_total_shapeit = n_other_shapeit + n_flip_shapeit) %>%
+  rowwise() %>%
   mutate(delta_beagle_eagle = n_total_beagle - n_total_eagle,
          delta_beagle_shapeit = n_total_beagle - n_total_shapeit,
          delta_eagle_shapeit = n_total_eagle - n_total_shapeit,
-         e_big_b = ifelse(n_total_eagle > n_total_beagle, "Y", "N"),
-         b_big_s = ifelse(n_total_beagle > n_total_shapeit, "Y", "N"),
-         s_big_b = ifelse(n_total_shapeit > n_total_beagle, "Y", "N"),
-         e_big_s = ifelse(n_total_eagle > n_total_shapeit, "Y", "N")) %>%
+         e_big_b = n_total_eagle > n_total_beagle,
+         b_big_s =n_total_beagle > n_total_shapeit,
+         s_big_b =n_total_shapeit > n_total_beagle,
+         e_big_s = n_total_eagle > n_total_shapeit) %>%
   select(starts_with("delta"),contains("_big_")) %>%
   gtsummary::tbl_summary(statistic = list(all_continuous() ~ "{mean} ({sd})"),
                          digits = list(all_continuous() ~ c(1,2))) %>% 
   gtsummary::as_gt()
 
 df_vcftools %>%
-  mutate(n_total_beagle = n_other_beagle + n_flip_beagle,
-         n_total_eagle = n_other_eagle + n_flip_eagle,
-         n_total_shapeit = n_other_shapeit + n_flip_shapeit) %>%
   mutate(delta_beagle_eagle = n_total_beagle - n_total_eagle,
          delta_beagle_shapeit = n_total_beagle - n_total_shapeit,
          delta_eagle_shapeit = n_total_eagle - n_total_shapeit) %>%
@@ -244,3 +272,33 @@ df_vcftools %>%
 ```
 
 Considering the total number of errors observed within each synthetic diploid, we find that Eagle tends to introduce more errors than both Beagle and SHAPEIT. On average, Eagle produces 39 more errors ($\sigma=20.38$) per synthetic diploid than Beagle, and 35.5 ($\sigma=20.60$) more errors than SHAPEIT. Across the 700 synthetic diploids, in 694 we observe more errors in Eagle than in Beagle, and similarly we observe more errors in Eagle than in SHAPEIT in 683 synthetic diploids. The distributions of total errors between Beagle and SHAPEIT are more similar, with Beagle producing on average 3.6 ($\sigma=14.38$) more errors per synthetic diploid than SHAPEIT, while SHAPEIT introduces more total errors in 414 of the synthetic diploids while Beagle introduces more errors in 266 of the synthetic diploids.
+
+```{r}
+df_vcftools %>%
+  mutate(delta_beagle_eagle = n_other_beagle - n_other_eagle,
+         delta_beagle_shapeit = n_other_beagle - n_other_shapeit,
+         delta_eagle_shapeit = n_other_eagle - n_other_shapeit,
+         e_big_b = n_other_eagle > n_other_beagle,
+         b_big_e = n_other_eagle < n_other_beagle,
+         b_big_s =n_other_beagle > n_other_shapeit,
+         s_big_b =n_other_shapeit > n_other_beagle,
+         e_big_s = n_other_eagle > n_other_shapeit,
+         s_big_e = n_other_eagle < n_other_shapeit) %>%
+  select(starts_with("delta"),contains("_big_")) %>%
+  gtsummary::tbl_summary(statistic = list(all_continuous() ~ "{mean} ({sd})"),
+                         digits = list(all_continuous() ~ c(1,2))) %>% 
+  gtsummary::as_gt()
+
+df_vcftools %>%
+  select(starts_with("n_other")) %>%
+   gtsummary::tbl_summary(statistic = list(all_continuous() ~ "{mean} ({sd})"),
+                         digits = list(all_continuous() ~ c(1,2)))
+
+df_vcftools %>%
+  select(starts_with("n_other"), pop) %>%
+   gtsummary::tbl_summary(by = pop,
+                          statistic = list(all_continuous() ~ "{mean} ({sd})"),
+                         digits = list(all_continuous() ~ c(1,2))) 
+```
+
+When we consider non-flip switches separately from flips, we find a similar pattern emerges as that seen with the counts of all errors. Eagle on average produces 39.3 ($\sigma-17.06$) more switches per synthetic diploid than Beagle, and 48.7 ($\sigma=18.79$) more switches per synthetic diploid than SHAPEIT.
