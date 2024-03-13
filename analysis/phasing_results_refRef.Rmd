@@ -13,6 +13,7 @@ editor_options:
 library(tidyverse)
 library(janitor)
 library(reactable)
+library(gtsummary)
 source("code/common_functions.R")
 
 cbbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
@@ -186,7 +187,7 @@ p2 <- scatterplot(df_vcftools, "n_other_beagle", "n_other_shapeit", "pop", "Beag
 p3 <- scatterplot(df_vcftools, "n_other_eagle", "n_other_shapeit", "pop",  "Eagle", "SHAPEIT") + 
   guides(colour="none") 
 
-gridExtra::grid.arrange(p2, p1, p3, legend_obj, layout_matrix = matrix(c(1, 2, 3, 4), byrow = TRUE, ncol = 2))
+gridExtra::grid.arrange(p2, p3, p1, legend_obj, layout_matrix = matrix(c(1, 2, 3, 4), byrow = TRUE, ncol = 2))
 ```
 
 #### Flips
@@ -202,5 +203,44 @@ p2 <- scatterplot(df_vcftools, "n_flip_beagle", "n_flip_shapeit", "pop", "Beagle
 p3 <- scatterplot(df_vcftools, "n_flip_eagle", "n_flip_shapeit", "pop",  "Eagle", "SHAPEIT") + 
   guides(colour="none") 
 
-gridExtra::grid.arrange(p2, p1, p3, legend_obj, layout_matrix = matrix(c(1, 2, 3, 4), byrow = TRUE, ncol = 2))
+gridExtra::grid.arrange(p2, p3, p1, legend_obj, layout_matrix = matrix(c(1, 2, 3, 4), byrow = TRUE, ncol = 2))
 ```
+
+## Re-writing the draft
+
+We simulate synthetic diploids with known phase by sampling male X chromosomes from the 1kGP study. Each synthetic diploid is statistically phased with a reference panel consisting of the 1kGP samples which were not used to construct the synthetic diploid, and the results of the three phasing methods are compared to the true phase to assess their accuracy. Switches and flips are tallied within each synthetic diploid, and these counts form the basis of our evaluation of the performance of the three methods. Additionally, we evaluate the overlap of errors across methods by identifying shared switch and flip errors. The genomic context in which the errors occur is also evaluated by contrasting the density of errors across the X chromosome with genomic features including GC content and recombination rate.
+
+### The distribution of errors across methods
+
+#### Total Errors
+
+```{r}
+df_vcftools %>%
+  mutate(n_total_beagle = n_other_beagle + n_flip_beagle,
+         n_total_eagle = n_other_eagle + n_flip_eagle,
+         n_total_shapeit = n_other_shapeit + n_flip_shapeit) %>%
+  mutate(delta_beagle_eagle = n_total_beagle - n_total_eagle,
+         delta_beagle_shapeit = n_total_beagle - n_total_shapeit,
+         delta_eagle_shapeit = n_total_eagle - n_total_shapeit,
+         e_big_b = ifelse(n_total_eagle > n_total_beagle, "Y", "N"),
+         b_big_s = ifelse(n_total_beagle > n_total_shapeit, "Y", "N"),
+         s_big_b = ifelse(n_total_shapeit > n_total_beagle, "Y", "N"),
+         e_big_s = ifelse(n_total_eagle > n_total_shapeit, "Y", "N")) %>%
+  select(starts_with("delta"),contains("_big_")) %>%
+  gtsummary::tbl_summary(statistic = list(all_continuous() ~ "{mean} ({sd})"),
+                         digits = list(all_continuous() ~ c(1,2))) %>% 
+  gtsummary::as_gt()
+
+df_vcftools %>%
+  mutate(n_total_beagle = n_other_beagle + n_flip_beagle,
+         n_total_eagle = n_other_eagle + n_flip_eagle,
+         n_total_shapeit = n_other_shapeit + n_flip_shapeit) %>%
+  mutate(delta_beagle_eagle = n_total_beagle - n_total_eagle,
+         delta_beagle_shapeit = n_total_beagle - n_total_shapeit,
+         delta_eagle_shapeit = n_total_eagle - n_total_shapeit) %>%
+  select(pop, starts_with("delta")) %>%
+  gtsummary::tbl_summary(by=pop) %>% #gtsummary::tbl_summary(by=pop, statistic = list(all_continuous() ~ "{mean} ({sd})")) %>%
+  gtsummary::as_gt()
+```
+
+Considering the total number of errors observed within each synthetic diploid, we find that Eagle tends to introduce more errors than both Beagle and SHAPEIT. On average, Eagle produces 39 more errors ($\sigma=20.38$) per synthetic diploid than Beagle, and 35.5 ($\sigma=20.60$) more errors than SHAPEIT. Across the 700 synthetic diploids, in 694 we observe more errors in Eagle than in Beagle, and similarly we observe more errors in Eagle than in SHAPEIT in 683 synthetic diploids. The distributions of total errors between Beagle and SHAPEIT are more similar, with Beagle producing on average 3.6 ($\sigma=14.38$) more errors per synthetic diploid than SHAPEIT, while SHAPEIT introduces more total errors in 414 of the synthetic diploids while Beagle introduces more errors in 266 of the synthetic diploids.
