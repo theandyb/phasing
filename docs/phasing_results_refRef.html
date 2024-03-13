@@ -397,7 +397,7 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2024-03-12
+<strong>Last updated:</strong> 2024-03-13
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -602,15 +602,15 @@ output/switch_errors/het_loc/phased_size.csv
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomtheandybphasingtree8ce2855b16e277e15f4484e824b9c288a5b7753ctargetblank8ce2855a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomtheandybphasingtree400643ce67fb929fa28bb5d5c7c4c3a790155231targetblank400643ca">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/theandyb/phasing/tree/8ce2855b16e277e15f4484e824b9c288a5b7753c" target="_blank">8ce2855</a>
+<a href="https://github.com/theandyb/phasing/tree/400643ce67fb929fa28bb5d5c7c4c3a790155231" target="_blank">400643c</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomtheandybphasingtree8ce2855b16e277e15f4484e824b9c288a5b7753ctargetblank8ce2855a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomtheandybphasingtree400643ce67fb929fa28bb5d5c7c4c3a790155231targetblank400643ca"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -620,7 +620,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/theandyb/phasing/tree/8ce2855b16e277e15f4484e824b9c288a5b7753c" target="_blank">8ce2855</a>.
+<a href="https://github.com/theandyb/phasing/tree/400643ce67fb929fa28bb5d5c7c4c3a790155231" target="_blank">400643c</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -711,6 +711,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/theandyb/phasing/blob/400643ce67fb929fa28bb5d5c7c4c3a790155231/analysis/phasing_results_refRef.Rmd" target="_blank">400643c</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-03-13
+</td>
+<td>
+wflow_publish("analysis/phasing_results_refRef.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/theandyb/phasing/e340f5efd59060cdfda8dbfdd2684298fa7677cf/docs/phasing_results_refRef.html" target="_blank">e340f5e</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-03-12
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/theandyb/phasing/blob/8ce2855b16e277e15f4484e824b9c288a5b7753c/analysis/phasing_results_refRef.Rmd" target="_blank">8ce2855</a>
 </td>
 <td>
@@ -785,6 +819,7 @@ The following objects are masked from &#39;package:stats&#39;:
 
     chisq.test, fisher.test</code></pre>
 <pre class="r"><code>library(reactable)
+library(gtsummary)
 source(&quot;code/common_functions.R&quot;)
 
 cbbPalette &lt;- c(&quot;#999999&quot;, &quot;#E69F00&quot;, &quot;#56B4E9&quot;, &quot;#009E73&quot;, &quot;#F0E442&quot;, &quot;#0072B2&quot;, &quot;#D55E00&quot;, &quot;#CC79A7&quot;)</code></pre>
@@ -867,8 +902,8 @@ super-populations:</p>
             mean_flip_beagle = mean(n_flip_beagle),
             mean_flip_shapeit = mean(n_flip_shapeit)) %&gt;%
   reactable()</code></pre>
-<div class="reactable html-widget html-fill-item" id="htmlwidget-e7ad701397ebb463ad9a" style="width:auto;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-e7ad701397ebb463ad9a">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"pop":["AFR","AMR","EAS","EUR","SAS"],"mean_switch_eagle":[136.4,103.05,197.93,125.375,160.19],"mean_switch_beagle":[89.1,74.63,150.34,92.22,122.26],"mean_switch_shapeit":[77.015,69.84,141.99,83.9,109.93],"mean_flip_eagle":[100.78,67.55,106.19,75.365,101.17],"mean_flip_beagle":[101.92,68.44,108.35,76.08,96.05],"mean_flip_shapeit":[120.335,79.6,116.31,87.135,109.31]},"columns":[{"id":"pop","name":"pop","type":"character"},{"id":"mean_switch_eagle","name":"mean_switch_eagle","type":"numeric"},{"id":"mean_switch_beagle","name":"mean_switch_beagle","type":"numeric"},{"id":"mean_switch_shapeit","name":"mean_switch_shapeit","type":"numeric"},{"id":"mean_flip_eagle","name":"mean_flip_eagle","type":"numeric"},{"id":"mean_flip_beagle","name":"mean_flip_beagle","type":"numeric"},{"id":"mean_flip_shapeit","name":"mean_flip_shapeit","type":"numeric"}],"dataKey":"2f59c3f1be5d0fe2c2a73c9a0d612bde"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+<div class="reactable html-widget html-fill-item" id="htmlwidget-ad701397ebb463ad9a77" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-ad701397ebb463ad9a77">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"pop":["AFR","AMR","EAS","EUR","SAS"],"mean_switch_eagle":[136.4,103.05,197.93,125.375,160.19],"mean_switch_beagle":[89.1,74.63,150.34,92.22,122.26],"mean_switch_shapeit":[77.015,69.84,141.99,83.9,109.93],"mean_flip_eagle":[100.78,67.55,106.19,75.365,101.17],"mean_flip_beagle":[101.92,68.44,108.35,76.08,96.05],"mean_flip_shapeit":[120.335,79.6,116.31,87.135,109.31]},"columns":[{"id":"pop","name":"pop","type":"character"},{"id":"mean_switch_eagle","name":"mean_switch_eagle","type":"numeric"},{"id":"mean_switch_beagle","name":"mean_switch_beagle","type":"numeric"},{"id":"mean_switch_shapeit","name":"mean_switch_shapeit","type":"numeric"},{"id":"mean_flip_eagle","name":"mean_flip_eagle","type":"numeric"},{"id":"mean_flip_beagle","name":"mean_flip_beagle","type":"numeric"},{"id":"mean_flip_shapeit","name":"mean_flip_shapeit","type":"numeric"}],"dataKey":"2f59c3f1be5d0fe2c2a73c9a0d612bde"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
 <p>We see that in all populations, Eagle has a higher mean number of
 switch errors per synthetic diploid than Beagle, which in turn has a
 higner number of switch errors per synthetic diploid than SHAPEIT. In
@@ -884,8 +919,8 @@ metrics, but on a per-MB scale:</p>
             mean_flip_beagle = mean(n_flip_beagle / size_mb),
             mean_flip_shapeit = mean(n_flip_shapeit / size_mb)) %&gt;%
   reactable()</code></pre>
-<div class="reactable html-widget html-fill-item" id="htmlwidget-773211d561e31df7b6a8" style="width:auto;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-773211d561e31df7b6a8">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"pop":["AFR","AMR","EAS","EUR","SAS"],"mean_switch_eagle":[0.910608666871649,0.687933623591323,1.32137886014022,0.836981813399044,1.06944922330328],"mean_switch_beagle":[0.594812573334048,0.498210710443134,1.00366834173654,0.615645244098146,0.816214949974361],"mean_switch_shapeit":[0.514143400080548,0.466236312636762,0.947920763188235,0.560103141040877,0.733909681565596],"mean_flip_eagle":[0.672823386531599,0.450940621178788,0.708920442208304,0.50312391280138,0.675409720516917],"mean_flip_beagle":[0.680421361017494,0.456882053118291,0.723343969611907,0.50789749709923,0.641250252285006],"mean_flip_shapeit":[0.803388214374572,0.531383874261017,0.776489205455229,0.581700817079541,0.729772324569223]},"columns":[{"id":"pop","name":"pop","type":"character"},{"id":"mean_switch_eagle","name":"mean_switch_eagle","type":"numeric"},{"id":"mean_switch_beagle","name":"mean_switch_beagle","type":"numeric"},{"id":"mean_switch_shapeit","name":"mean_switch_shapeit","type":"numeric"},{"id":"mean_flip_eagle","name":"mean_flip_eagle","type":"numeric"},{"id":"mean_flip_beagle","name":"mean_flip_beagle","type":"numeric"},{"id":"mean_flip_shapeit","name":"mean_flip_shapeit","type":"numeric"}],"dataKey":"dd543034c227365cc903738f78e734fc"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+<div class="reactable html-widget html-fill-item" id="htmlwidget-3211d561e31df7b6a817" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-3211d561e31df7b6a817">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"pop":["AFR","AMR","EAS","EUR","SAS"],"mean_switch_eagle":[0.910608666871649,0.687933623591323,1.32137886014022,0.836981813399044,1.06944922330328],"mean_switch_beagle":[0.594812573334048,0.498210710443134,1.00366834173654,0.615645244098146,0.816214949974361],"mean_switch_shapeit":[0.514143400080548,0.466236312636762,0.947920763188235,0.560103141040877,0.733909681565596],"mean_flip_eagle":[0.672823386531599,0.450940621178788,0.708920442208304,0.50312391280138,0.675409720516917],"mean_flip_beagle":[0.680421361017494,0.456882053118291,0.723343969611907,0.50789749709923,0.641250252285006],"mean_flip_shapeit":[0.803388214374572,0.531383874261017,0.776489205455229,0.581700817079541,0.729772324569223]},"columns":[{"id":"pop","name":"pop","type":"character"},{"id":"mean_switch_eagle","name":"mean_switch_eagle","type":"numeric"},{"id":"mean_switch_beagle","name":"mean_switch_beagle","type":"numeric"},{"id":"mean_switch_shapeit","name":"mean_switch_shapeit","type":"numeric"},{"id":"mean_flip_eagle","name":"mean_flip_eagle","type":"numeric"},{"id":"mean_flip_beagle","name":"mean_flip_beagle","type":"numeric"},{"id":"mean_flip_shapeit","name":"mean_flip_shapeit","type":"numeric"}],"dataKey":"dd543034c227365cc903738f78e734fc"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
 <p>On a per-MB scale, we see the highest rate of switches per MB is
 observed in the EAS super-population across all three methods, while the
 lowest switch-error rate is observed in the AMR super-population. The
@@ -905,8 +940,8 @@ correlations of the flip and switch rates are presented below:</p>
 Correlation computed with
 • Method: &#39;pearson&#39;
 • Missing treated using: &#39;pairwise.complete.obs&#39;</code></pre>
-<div class="reactable html-widget html-fill-item" id="htmlwidget-177f6a89d219696005a8" style="width:auto;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-177f6a89d219696005a8">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"term":["mean_switch_eagle","mean_switch_beagle","mean_switch_shapeit"],"mean_switch_eagle":[1,0.982664148784435,0.967100930742785],"mean_switch_beagle":[0.982664148784435,1,0.99491887785666],"mean_switch_shapeit":[0.967100930742785,0.99491887785666,1]},"columns":[{"id":"term","name":"term","type":"character"},{"id":"mean_switch_eagle","name":"mean_switch_eagle","type":"numeric"},{"id":"mean_switch_beagle","name":"mean_switch_beagle","type":"numeric"},{"id":"mean_switch_shapeit","name":"mean_switch_shapeit","type":"numeric"}],"dataKey":"24035cfdfb85779814d2947121f565c6"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+<div class="reactable html-widget html-fill-item" id="htmlwidget-7f6a89d219696005a82e" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-7f6a89d219696005a82e">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"term":["mean_switch_eagle","mean_switch_beagle","mean_switch_shapeit"],"mean_switch_eagle":[1,0.982664148784435,0.967100930742785],"mean_switch_beagle":[0.982664148784435,1,0.99491887785666],"mean_switch_shapeit":[0.967100930742785,0.99491887785666,1]},"columns":[{"id":"term","name":"term","type":"character"},{"id":"mean_switch_eagle","name":"mean_switch_eagle","type":"numeric"},{"id":"mean_switch_beagle","name":"mean_switch_beagle","type":"numeric"},{"id":"mean_switch_shapeit","name":"mean_switch_shapeit","type":"numeric"}],"dataKey":"24035cfdfb85779814d2947121f565c6"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>df_vcftools %&gt;%
   group_by(pop) %&gt;%
   summarize(mean_switch_eagle = mean(n_other_eagle / size_mb),
@@ -918,8 +953,8 @@ Correlation computed with
 Correlation computed with
 • Method: &#39;spearman&#39;
 • Missing treated using: &#39;pairwise.complete.obs&#39;</code></pre>
-<div class="reactable html-widget html-fill-item" id="htmlwidget-2ecbc02bad37ab90bbb4" style="width:auto;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-2ecbc02bad37ab90bbb4">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"term":["mean_switch_eagle","mean_switch_beagle","mean_switch_shapeit"],"mean_switch_eagle":[1,0.9,0.9],"mean_switch_beagle":[0.9,1,1],"mean_switch_shapeit":[0.9,1,1]},"columns":[{"id":"term","name":"term","type":"character"},{"id":"mean_switch_eagle","name":"mean_switch_eagle","type":"numeric"},{"id":"mean_switch_beagle","name":"mean_switch_beagle","type":"numeric"},{"id":"mean_switch_shapeit","name":"mean_switch_shapeit","type":"numeric"}],"dataKey":"5158683a011a7c5978d0bdde4ad5dcda"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+<div class="reactable html-widget html-fill-item" id="htmlwidget-cbc02bad37ab90bbb42d" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-cbc02bad37ab90bbb42d">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"term":["mean_switch_eagle","mean_switch_beagle","mean_switch_shapeit"],"mean_switch_eagle":[1,0.9,0.9],"mean_switch_beagle":[0.9,1,1],"mean_switch_shapeit":[0.9,1,1]},"columns":[{"id":"term","name":"term","type":"character"},{"id":"mean_switch_eagle","name":"mean_switch_eagle","type":"numeric"},{"id":"mean_switch_beagle","name":"mean_switch_beagle","type":"numeric"},{"id":"mean_switch_shapeit","name":"mean_switch_shapeit","type":"numeric"}],"dataKey":"5158683a011a7c5978d0bdde4ad5dcda"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>df_vcftools %&gt;%
   group_by(pop) %&gt;%
   summarize(mean_flip_eagle = mean(n_flip_eagle / size_mb),
@@ -931,8 +966,8 @@ Correlation computed with
 Correlation computed with
 • Method: &#39;pearson&#39;
 • Missing treated using: &#39;pairwise.complete.obs&#39;</code></pre>
-<div class="reactable html-widget html-fill-item" id="htmlwidget-2d635c57605cdf0d2da4" style="width:auto;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-2d635c57605cdf0d2da4">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"term":["mean_flip_eagle","mean_flip_beagle","mean_flip_shapeit"],"mean_flip_eagle":[1,0.986231951676034,0.971106273432717],"mean_flip_beagle":[0.986231951676034,1,0.977487832380558],"mean_flip_shapeit":[0.971106273432717,0.977487832380558,1]},"columns":[{"id":"term","name":"term","type":"character"},{"id":"mean_flip_eagle","name":"mean_flip_eagle","type":"numeric"},{"id":"mean_flip_beagle","name":"mean_flip_beagle","type":"numeric"},{"id":"mean_flip_shapeit","name":"mean_flip_shapeit","type":"numeric"}],"dataKey":"af2dc1b26361f081907432fccda918da"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+<div class="reactable html-widget html-fill-item" id="htmlwidget-635c57605cdf0d2da426" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-635c57605cdf0d2da426">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"term":["mean_flip_eagle","mean_flip_beagle","mean_flip_shapeit"],"mean_flip_eagle":[1,0.986231951676034,0.971106273432717],"mean_flip_beagle":[0.986231951676034,1,0.977487832380558],"mean_flip_shapeit":[0.971106273432717,0.977487832380558,1]},"columns":[{"id":"term","name":"term","type":"character"},{"id":"mean_flip_eagle","name":"mean_flip_eagle","type":"numeric"},{"id":"mean_flip_beagle","name":"mean_flip_beagle","type":"numeric"},{"id":"mean_flip_shapeit","name":"mean_flip_shapeit","type":"numeric"}],"dataKey":"af2dc1b26361f081907432fccda918da"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>df_vcftools %&gt;%
   group_by(pop) %&gt;%
   summarize(mean_flip_eagle = mean(n_flip_eagle / size_mb),
@@ -944,8 +979,8 @@ Correlation computed with
 Correlation computed with
 • Method: &#39;spearman&#39;
 • Missing treated using: &#39;pairwise.complete.obs&#39;</code></pre>
-<div class="reactable html-widget html-fill-item" id="htmlwidget-2654fb30a1050a775e97" style="width:auto;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-2654fb30a1050a775e97">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"term":["mean_flip_eagle","mean_flip_beagle","mean_flip_shapeit"],"mean_flip_eagle":[1,0.9,0.7],"mean_flip_beagle":[0.9,1,0.9],"mean_flip_shapeit":[0.7,0.9,1]},"columns":[{"id":"term","name":"term","type":"character"},{"id":"mean_flip_eagle","name":"mean_flip_eagle","type":"numeric"},{"id":"mean_flip_beagle","name":"mean_flip_beagle","type":"numeric"},{"id":"mean_flip_shapeit","name":"mean_flip_shapeit","type":"numeric"}],"dataKey":"0085bcdd237ecf2f2c5596c7c4f976ed"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+<div class="reactable html-widget html-fill-item" id="htmlwidget-54fb30a1050a775e974e" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-54fb30a1050a775e974e">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"term":["mean_flip_eagle","mean_flip_beagle","mean_flip_shapeit"],"mean_flip_eagle":[1,0.9,0.7],"mean_flip_beagle":[0.9,1,0.9],"mean_flip_shapeit":[0.7,0.9,1]},"columns":[{"id":"term","name":"term","type":"character"},{"id":"mean_flip_eagle","name":"mean_flip_eagle","type":"numeric"},{"id":"mean_flip_beagle","name":"mean_flip_beagle","type":"numeric"},{"id":"mean_flip_shapeit","name":"mean_flip_shapeit","type":"numeric"}],"dataKey":"0085bcdd237ecf2f2c5596c7c4f976ed"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
 <p>A similar metric is the mean number of heterozygous positions
 in-between each error. These can be thought of as “trials” at which an
 error could have occured but did not. Note that this isn’t quite right,
@@ -958,8 +993,8 @@ themselves locations of errors of that type.</p>
             mean_het_switch_eagle = mean(mean_hets_switch_eagle),
             mean_het_switch_shapeit = mean(mean_hets_switch_shapeit)) %&gt;%
   reactable()</code></pre>
-<div class="reactable html-widget html-fill-item" id="htmlwidget-4e24c97131cfe7bdd6ae" style="width:auto;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-4e24c97131cfe7bdd6ae">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"pop":["AFR","AMR","EAS","EUR","SAS"],"mean_het_switch_beagle":[1239.59192421507,1223.24632142321,366.874152641706,744.87758351788,565.425349651016],"mean_het_switch_eagle":[783.588495292143,785.357548111768,277.307564784589,529.983263282239,422.278908004489],"mean_het_switch_shapeit":[1444.96685816594,1441.02428331095,392.684324515756,831.622205629338,643.486166947371]},"columns":[{"id":"pop","name":"pop","type":"character"},{"id":"mean_het_switch_beagle","name":"mean_het_switch_beagle","type":"numeric"},{"id":"mean_het_switch_eagle","name":"mean_het_switch_eagle","type":"numeric"},{"id":"mean_het_switch_shapeit","name":"mean_het_switch_shapeit","type":"numeric"}],"dataKey":"e11c52fcea405670a1c8d8accff443d8"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+<div class="reactable html-widget html-fill-item" id="htmlwidget-24c97131cfe7bdd6ae01" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-24c97131cfe7bdd6ae01">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"pop":["AFR","AMR","EAS","EUR","SAS"],"mean_het_switch_beagle":[1239.59192421507,1223.24632142321,366.874152641706,744.87758351788,565.425349651016],"mean_het_switch_eagle":[783.588495292143,785.357548111768,277.307564784589,529.983263282239,422.278908004489],"mean_het_switch_shapeit":[1444.96685816594,1441.02428331095,392.684324515756,831.622205629338,643.486166947371]},"columns":[{"id":"pop","name":"pop","type":"character"},{"id":"mean_het_switch_beagle","name":"mean_het_switch_beagle","type":"numeric"},{"id":"mean_het_switch_eagle","name":"mean_het_switch_eagle","type":"numeric"},{"id":"mean_het_switch_shapeit","name":"mean_het_switch_shapeit","type":"numeric"}],"dataKey":"e11c52fcea405670a1c8d8accff443d8"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
 <p>The above table does not account for differences in the mean number
 of heterozygous positions within each synthethic diploid across the
 populations:</p>
@@ -968,8 +1003,8 @@ populations:</p>
   summarize(mean_n_het = mean(n_hets),
             sd_n_het = sd(n_hets)) %&gt;%
   reactable()</code></pre>
-<div class="reactable html-widget html-fill-item" id="htmlwidget-01aa65b76c1deb0285c7" style="width:auto;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-01aa65b76c1deb0285c7">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"pop":["AFR","AMR","EAS","EUR","SAS"],"mean_n_het":[100444.12,65626.36,54336.17,61000.74,64326.3],"sd_n_het":[3369.68818854804,12345.7109646479,2827.51033741379,3129.67922680801,2732.91166555327]},"columns":[{"id":"pop","name":"pop","type":"character"},{"id":"mean_n_het","name":"mean_n_het","type":"numeric"},{"id":"sd_n_het","name":"sd_n_het","type":"numeric"}],"dataKey":"dcbb9975dded87d6896bdaae118add32"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+<div class="reactable html-widget html-fill-item" id="htmlwidget-aa65b76c1deb0285c79f" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-aa65b76c1deb0285c79f">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"pop":["AFR","AMR","EAS","EUR","SAS"],"mean_n_het":[100444.12,65626.36,54336.17,61000.74,64326.3],"sd_n_het":[3369.68818854804,12345.7109646479,2827.51033741379,3129.67922680801,2732.91166555327]},"columns":[{"id":"pop","name":"pop","type":"character"},{"id":"mean_n_het","name":"mean_n_het","type":"numeric"},{"id":"sd_n_het","name":"sd_n_het","type":"numeric"}],"dataKey":"dcbb9975dded87d6896bdaae118add32"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
 <div id="plots" class="section level3">
 <h3>Plots</h3>
 <p>Here we plot the count of errors within each synthetic diploid
@@ -988,8 +1023,45 @@ p2 &lt;- scatterplot(df_vcftools, &quot;n_other_beagle&quot;, &quot;n_other_shap
 p3 &lt;- scatterplot(df_vcftools, &quot;n_other_eagle&quot;, &quot;n_other_shapeit&quot;, &quot;pop&quot;,  &quot;Eagle&quot;, &quot;SHAPEIT&quot;) + 
   guides(colour=&quot;none&quot;) 
 
-gridExtra::grid.arrange(p2, p1, p3, legend_obj, layout_matrix = matrix(c(1, 2, 3, 4), byrow = TRUE, ncol = 2))</code></pre>
+gridExtra::grid.arrange(p2, p3, p1, legend_obj, layout_matrix = matrix(c(1, 2, 3, 4), byrow = TRUE, ncol = 2))</code></pre>
 <p><img src="figure/phasing_results_refRef.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-1">
+Past versions of unnamed-chunk-10-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-10-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/e340f5efd59060cdfda8dbfdd2684298fa7677cf/docs/figure/phasing_results_refRef.Rmd/unnamed-chunk-10-1.png" target="_blank">e340f5e</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-03-12
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="flips" class="section level4">
 <h4>Flips</h4>
@@ -1005,8 +1077,1072 @@ p2 &lt;- scatterplot(df_vcftools, &quot;n_flip_beagle&quot;, &quot;n_flip_shapei
 p3 &lt;- scatterplot(df_vcftools, &quot;n_flip_eagle&quot;, &quot;n_flip_shapeit&quot;, &quot;pop&quot;,  &quot;Eagle&quot;, &quot;SHAPEIT&quot;) + 
   guides(colour=&quot;none&quot;) 
 
-gridExtra::grid.arrange(p2, p1, p3, legend_obj, layout_matrix = matrix(c(1, 2, 3, 4), byrow = TRUE, ncol = 2))</code></pre>
+gridExtra::grid.arrange(p2, p3, p1, legend_obj, layout_matrix = matrix(c(1, 2, 3, 4), byrow = TRUE, ncol = 2))</code></pre>
 <p><img src="figure/phasing_results_refRef.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-11-1">
+Past versions of unnamed-chunk-11-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-11-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/e340f5efd59060cdfda8dbfdd2684298fa7677cf/docs/figure/phasing_results_refRef.Rmd/unnamed-chunk-11-1.png" target="_blank">e340f5e</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-03-12
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="re-writing-the-draft" class="section level2">
+<h2>Re-writing the draft</h2>
+<p>We simulate synthetic diploids with known phase by sampling male X
+chromosomes from the 1kGP study. Each synthetic diploid is statistically
+phased with a reference panel consisting of the 1kGP samples which were
+not used to construct the synthetic diploid, and the results of the
+three phasing methods are compared to the true phase to assess their
+accuracy. Switches and flips are tallied within each synthetic diploid,
+and these counts form the basis of our evaluation of the performance of
+the three methods. Additionally, we evaluate the overlap of errors
+across methods by identifying shared switch and flip errors. The genomic
+context in which the errors occur is also evaluated by contrasting the
+density of errors across the X chromosome with genomic features
+including GC content and recombination rate.</p>
+<div id="the-distribution-of-errors-across-methods"
+class="section level3">
+<h3>The distribution of errors across methods</h3>
+<div id="total-errors" class="section level4">
+<h4>Total Errors</h4>
+<pre class="r"><code>df_vcftools %&gt;%
+  mutate(n_total_beagle = n_other_beagle + n_flip_beagle,
+         n_total_eagle = n_other_eagle + n_flip_eagle,
+         n_total_shapeit = n_other_shapeit + n_flip_shapeit) %&gt;%
+  mutate(delta_beagle_eagle = n_total_beagle - n_total_eagle,
+         delta_beagle_shapeit = n_total_beagle - n_total_shapeit,
+         delta_eagle_shapeit = n_total_eagle - n_total_shapeit,
+         e_big_b = ifelse(n_total_eagle &gt; n_total_beagle, &quot;Y&quot;, &quot;N&quot;),
+         b_big_s = ifelse(n_total_beagle &gt; n_total_shapeit, &quot;Y&quot;, &quot;N&quot;),
+         s_big_b = ifelse(n_total_shapeit &gt; n_total_beagle, &quot;Y&quot;, &quot;N&quot;),
+         e_big_s = ifelse(n_total_eagle &gt; n_total_shapeit, &quot;Y&quot;, &quot;N&quot;)) %&gt;%
+  select(starts_with(&quot;delta&quot;),contains(&quot;_big_&quot;)) %&gt;%
+  gtsummary::tbl_summary(statistic = list(all_continuous() ~ &quot;{mean} ({sd})&quot;),
+                         digits = list(all_continuous() ~ c(1,2))) %&gt;% 
+  gtsummary::as_gt()</code></pre>
+<div id="nqtxludnxs" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#nqtxludnxs table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#nqtxludnxs thead, #nqtxludnxs tbody, #nqtxludnxs tfoot, #nqtxludnxs tr, #nqtxludnxs td, #nqtxludnxs th {
+  border-style: none;
+}
+
+#nqtxludnxs p {
+  margin: 0;
+  padding: 0;
+}
+
+#nqtxludnxs .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#nqtxludnxs .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#nqtxludnxs .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#nqtxludnxs .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#nqtxludnxs .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#nqtxludnxs .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#nqtxludnxs .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#nqtxludnxs .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#nqtxludnxs .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#nqtxludnxs .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#nqtxludnxs .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#nqtxludnxs .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#nqtxludnxs .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#nqtxludnxs .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#nqtxludnxs .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#nqtxludnxs .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#nqtxludnxs .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#nqtxludnxs .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#nqtxludnxs .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#nqtxludnxs .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#nqtxludnxs .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#nqtxludnxs .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#nqtxludnxs .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#nqtxludnxs .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#nqtxludnxs .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#nqtxludnxs .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#nqtxludnxs .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#nqtxludnxs .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#nqtxludnxs .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#nqtxludnxs .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#nqtxludnxs .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#nqtxludnxs .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#nqtxludnxs .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#nqtxludnxs .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#nqtxludnxs .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#nqtxludnxs .gt_left {
+  text-align: left;
+}
+
+#nqtxludnxs .gt_center {
+  text-align: center;
+}
+
+#nqtxludnxs .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#nqtxludnxs .gt_font_normal {
+  font-weight: normal;
+}
+
+#nqtxludnxs .gt_font_bold {
+  font-weight: bold;
+}
+
+#nqtxludnxs .gt_font_italic {
+  font-style: italic;
+}
+
+#nqtxludnxs .gt_super {
+  font-size: 65%;
+}
+
+#nqtxludnxs .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#nqtxludnxs .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#nqtxludnxs .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#nqtxludnxs .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#nqtxludnxs .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#nqtxludnxs .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#nqtxludnxs .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <thead>
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="&lt;strong&gt;Characteristic&lt;/strong&gt;"><strong>Characteristic</strong></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="&lt;strong&gt;N = 700&lt;/strong&gt;&lt;span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;&quot;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/span&gt;"><strong>N = 700</strong><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span></th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="label" class="gt_row gt_left">delta_beagle_eagle</td>
+<td headers="stat_0" class="gt_row gt_center">-39.0 (20.38)</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">delta_beagle_shapeit</td>
+<td headers="stat_0" class="gt_row gt_center">-3.6 (14.38)</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">delta_eagle_shapeit</td>
+<td headers="stat_0" class="gt_row gt_center">35.5 (20.60)</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">e_big_b</td>
+<td headers="stat_0" class="gt_row gt_center"><br /></td></tr>
+    <tr><td headers="label" class="gt_row gt_left">    N</td>
+<td headers="stat_0" class="gt_row gt_center">6 (0.9%)</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">    Y</td>
+<td headers="stat_0" class="gt_row gt_center">694 (99%)</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">b_big_s</td>
+<td headers="stat_0" class="gt_row gt_center"><br /></td></tr>
+    <tr><td headers="label" class="gt_row gt_left">    N</td>
+<td headers="stat_0" class="gt_row gt_center">434 (62%)</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">    Y</td>
+<td headers="stat_0" class="gt_row gt_center">266 (38%)</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">s_big_b</td>
+<td headers="stat_0" class="gt_row gt_center"><br /></td></tr>
+    <tr><td headers="label" class="gt_row gt_left">    N</td>
+<td headers="stat_0" class="gt_row gt_center">286 (41%)</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">    Y</td>
+<td headers="stat_0" class="gt_row gt_center">414 (59%)</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">e_big_s</td>
+<td headers="stat_0" class="gt_row gt_center"><br /></td></tr>
+    <tr><td headers="label" class="gt_row gt_left">    N</td>
+<td headers="stat_0" class="gt_row gt_center">17 (2.4%)</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">    Y</td>
+<td headers="stat_0" class="gt_row gt_center">683 (98%)</td></tr>
+  </tbody>
+  
+  <tfoot class="gt_footnotes">
+    <tr>
+      <td class="gt_footnote" colspan="2"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span> Mean (SD); n (%)</td>
+    </tr>
+  </tfoot>
+</table>
+</div>
+<pre class="r"><code>df_vcftools %&gt;%
+  mutate(n_total_beagle = n_other_beagle + n_flip_beagle,
+         n_total_eagle = n_other_eagle + n_flip_eagle,
+         n_total_shapeit = n_other_shapeit + n_flip_shapeit) %&gt;%
+  mutate(delta_beagle_eagle = n_total_beagle - n_total_eagle,
+         delta_beagle_shapeit = n_total_beagle - n_total_shapeit,
+         delta_eagle_shapeit = n_total_eagle - n_total_shapeit) %&gt;%
+  select(pop, starts_with(&quot;delta&quot;)) %&gt;%
+  gtsummary::tbl_summary(by=pop) %&gt;% #gtsummary::tbl_summary(by=pop, statistic = list(all_continuous() ~ &quot;{mean} ({sd})&quot;)) %&gt;%
+  gtsummary::as_gt()</code></pre>
+<div id="lqundxanne" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#lqundxanne table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#lqundxanne thead, #lqundxanne tbody, #lqundxanne tfoot, #lqundxanne tr, #lqundxanne td, #lqundxanne th {
+  border-style: none;
+}
+
+#lqundxanne p {
+  margin: 0;
+  padding: 0;
+}
+
+#lqundxanne .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#lqundxanne .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#lqundxanne .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#lqundxanne .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#lqundxanne .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#lqundxanne .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#lqundxanne .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#lqundxanne .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#lqundxanne .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#lqundxanne .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#lqundxanne .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#lqundxanne .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#lqundxanne .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#lqundxanne .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#lqundxanne .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#lqundxanne .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#lqundxanne .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#lqundxanne .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#lqundxanne .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#lqundxanne .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#lqundxanne .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#lqundxanne .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#lqundxanne .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#lqundxanne .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#lqundxanne .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#lqundxanne .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#lqundxanne .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#lqundxanne .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#lqundxanne .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#lqundxanne .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#lqundxanne .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#lqundxanne .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#lqundxanne .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#lqundxanne .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#lqundxanne .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#lqundxanne .gt_left {
+  text-align: left;
+}
+
+#lqundxanne .gt_center {
+  text-align: center;
+}
+
+#lqundxanne .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#lqundxanne .gt_font_normal {
+  font-weight: normal;
+}
+
+#lqundxanne .gt_font_bold {
+  font-weight: bold;
+}
+
+#lqundxanne .gt_font_italic {
+  font-style: italic;
+}
+
+#lqundxanne .gt_super {
+  font-size: 65%;
+}
+
+#lqundxanne .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#lqundxanne .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#lqundxanne .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#lqundxanne .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#lqundxanne .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#lqundxanne .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#lqundxanne .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <thead>
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="&lt;strong&gt;Characteristic&lt;/strong&gt;"><strong>Characteristic</strong></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="&lt;strong&gt;AFR&lt;/strong&gt;, N = 200&lt;span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;&quot;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/span&gt;"><strong>AFR</strong>, N = 200<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="&lt;strong&gt;AMR&lt;/strong&gt;, N = 100&lt;span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;&quot;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/span&gt;"><strong>AMR</strong>, N = 100<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="&lt;strong&gt;EAS&lt;/strong&gt;, N = 100&lt;span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;&quot;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/span&gt;"><strong>EAS</strong>, N = 100<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="&lt;strong&gt;EUR&lt;/strong&gt;, N = 200&lt;span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;&quot;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/span&gt;"><strong>EUR</strong>, N = 200<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="&lt;strong&gt;SAS&lt;/strong&gt;, N = 100&lt;span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;&quot;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/span&gt;"><strong>SAS</strong>, N = 100<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span></th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="label" class="gt_row gt_left">delta_beagle_eagle</td>
+<td headers="stat_1" class="gt_row gt_center">-43 (-53, -30)</td>
+<td headers="stat_2" class="gt_row gt_center">-27 (-36, -19)</td>
+<td headers="stat_3" class="gt_row gt_center">-45 (-56, -35)</td>
+<td headers="stat_4" class="gt_row gt_center">-32 (-41, -23)</td>
+<td headers="stat_5" class="gt_row gt_center">-43 (-55, -31)</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">delta_beagle_shapeit</td>
+<td headers="stat_1" class="gt_row gt_center">-5 (-15, 4)</td>
+<td headers="stat_2" class="gt_row gt_center">-6 (-14, 2)</td>
+<td headers="stat_3" class="gt_row gt_center">-2 (-12, 12)</td>
+<td headers="stat_4" class="gt_row gt_center">-2 (-11, 5)</td>
+<td headers="stat_5" class="gt_row gt_center">0 (-11, 10)</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">delta_eagle_shapeit</td>
+<td headers="stat_1" class="gt_row gt_center">37 (26, 49)</td>
+<td headers="stat_2" class="gt_row gt_center">21 (12, 30)</td>
+<td headers="stat_3" class="gt_row gt_center">45 (33, 58)</td>
+<td headers="stat_4" class="gt_row gt_center">30 (20, 38)</td>
+<td headers="stat_5" class="gt_row gt_center">40 (27, 56)</td></tr>
+  </tbody>
+  
+  <tfoot class="gt_footnotes">
+    <tr>
+      <td class="gt_footnote" colspan="6"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span> Median (IQR)</td>
+    </tr>
+  </tfoot>
+</table>
+</div>
+<p>Considering the total number of errors observed within each synthetic
+diploid, we find that Eagle tends to introduce more errors than both
+Beagle and SHAPEIT. On average, Eagle produces 39 more errors (<span
+class="math inline">\(\sigma=20.38\)</span>) per synthetic diploid than
+Beagle, and 35.5 (<span class="math inline">\(\sigma=20.60\)</span>)
+more errors than SHAPEIT. Across the 700 synthetic diploids, in 694 we
+observe more errors in Eagle than in Beagle, and similarly we observe
+more errors in Eagle than in SHAPEIT in 683 synthetic diploids. The
+distributions of total errors between Beagle and SHAPEIT are more
+similar, with Beagle producing on average 3.6 (<span
+class="math inline">\(\sigma=14.38\)</span>) more errors per synthetic
+diploid than SHAPEIT, while SHAPEIT introduces more total errors in 414
+of the synthetic diploids while Beagle introduces more errors in 266 of
+the synthetic diploids.</p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1039,30 +2175,37 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] reactable_0.4.4 janitor_2.2.0   lubridate_1.9.3 forcats_1.0.0  
- [5] stringr_1.5.1   dplyr_1.1.4     purrr_1.0.2     readr_2.1.5    
- [9] tidyr_1.3.1     tibble_3.2.1    ggplot2_3.5.0   tidyverse_2.0.0
-[13] workflowr_1.7.1
+ [1] gtsummary_1.7.2 reactable_0.4.4 janitor_2.2.0   lubridate_1.9.3
+ [5] forcats_1.0.0   stringr_1.5.1   dplyr_1.1.4     purrr_1.0.2    
+ [9] readr_2.1.5     tidyr_1.3.1     tibble_3.2.1    ggplot2_3.5.0  
+[13] tidyverse_2.0.0 workflowr_1.7.1
 
 loaded via a namespace (and not attached):
- [1] gtable_0.3.4      xfun_0.42         bslib_0.6.1       htmlwidgets_1.6.4
- [5] processx_3.8.3    corrr_0.4.4       callr_3.7.5       tzdb_0.4.0       
- [9] crosstalk_1.2.1   vctrs_0.6.5       tools_4.3.3       ps_1.7.6         
-[13] generics_0.1.3    parallel_4.3.3    fansi_1.0.6       highr_0.10       
-[17] pkgconfig_2.0.3   lifecycle_1.0.4   farver_2.1.1      compiler_4.3.3   
-[21] git2r_0.33.0      munsell_0.5.0     getPass_0.2-4     snakecase_0.11.1 
-[25] httpuv_1.6.14     htmltools_0.5.7   sass_0.4.8        yaml_2.3.8       
-[29] later_1.3.2       pillar_1.9.0      crayon_1.5.2      jquerylib_0.1.4  
-[33] whisker_0.4.1     ellipsis_0.3.2    cachem_1.0.8      tidyselect_1.2.0 
-[37] digest_0.6.34     stringi_1.8.3     labeling_0.4.3    cowplot_1.1.3    
-[41] rprojroot_2.0.4   fastmap_1.1.1     grid_4.3.3        archive_1.1.7    
-[45] colorspace_2.1-0  cli_3.6.2         magrittr_2.0.3    utf8_1.2.4       
-[49] reactR_0.5.0      withr_3.0.0       scales_1.3.0      promises_1.2.1   
-[53] bit64_4.0.5       timechange_0.3.0  rmarkdown_2.25    httr_1.4.7       
-[57] bit_4.0.5         gridExtra_2.3     hms_1.1.3         evaluate_0.23    
-[61] knitr_1.45        rlang_1.1.3       Rcpp_1.0.12       glue_1.7.0       
-[65] rstudioapi_0.15.0 vroom_1.6.5       jsonlite_1.8.8    R6_2.5.1         
-[69] fs_1.6.3         </code></pre>
+ [1] gtable_0.3.4         xfun_0.42            bslib_0.6.1         
+ [4] htmlwidgets_1.6.4    processx_3.8.3       corrr_0.4.4         
+ [7] callr_3.7.5          tzdb_0.4.0           crosstalk_1.2.1     
+[10] vctrs_0.6.5          tools_4.3.3          ps_1.7.6            
+[13] generics_0.1.3       parallel_4.3.3       fansi_1.0.6         
+[16] highr_0.10           pkgconfig_2.0.3      gt_0.10.1           
+[19] lifecycle_1.0.4      farver_2.1.1         compiler_4.3.3      
+[22] git2r_0.33.0         munsell_0.5.0        getPass_0.2-4       
+[25] snakecase_0.11.1     httpuv_1.6.14        htmltools_0.5.7     
+[28] sass_0.4.8           yaml_2.3.8           crayon_1.5.2        
+[31] later_1.3.2          pillar_1.9.0         jquerylib_0.1.4     
+[34] whisker_0.4.1        ellipsis_0.3.2       broom.helpers_1.14.0
+[37] cachem_1.0.8         commonmark_1.9.1     tidyselect_1.2.0    
+[40] digest_0.6.34        stringi_1.8.3        labeling_0.4.3      
+[43] cowplot_1.1.3        rprojroot_2.0.4      fastmap_1.1.1       
+[46] grid_4.3.3           archive_1.1.7        colorspace_2.1-0    
+[49] cli_3.6.2            magrittr_2.0.3       utf8_1.2.4          
+[52] reactR_0.5.0         withr_3.0.0          scales_1.3.0        
+[55] promises_1.2.1       bit64_4.0.5          timechange_0.3.0    
+[58] rmarkdown_2.25       httr_1.4.7           bit_4.0.5           
+[61] gridExtra_2.3        hms_1.1.3            evaluate_0.23       
+[64] knitr_1.45           markdown_1.12        rlang_1.1.3         
+[67] Rcpp_1.0.12          glue_1.7.0           xml2_1.3.6          
+[70] rstudioapi_0.15.0    vroom_1.6.5          jsonlite_1.8.8      
+[73] R6_2.5.1             fs_1.6.3            </code></pre>
 </div>
 </div>
 </div>
