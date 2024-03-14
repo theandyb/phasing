@@ -15,6 +15,7 @@ library(janitor)
 library(reactable)
 library(gtsummary)
 library(corrr)
+library(limma)
 source("code/common_functions.R")
 
 cbbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
@@ -42,11 +43,16 @@ beagle_switch_dir <-  "/net/snowwhite/home/beckandy/research/phasing/output/swit
 num_sites_dir <-      "/net/snowwhite/home/beckandy/research/phasing/output/switch_errors/vcf_n_sites/"
 whatshap_dir <-       "/net/snowwhite/home/beckandy/research/phasing/output/switch_errors/whatshap/"
 het_loc_dir <-        "/net/snowwhite/home/beckandy/research/phasing/output/switch_errors/het_loc/"
+het_loc_ann_dir <-        "/net/snowwhite/home/beckandy/research/phasing/output/switch_errors/het_loc/annotated/"
 ```
 
 ## Load Data
 
 ```{r}
+rr_df_hapmap <- read_delim("data/recomb/genetic_map_X.txt",delim = " ", col_names = c("chr", "pos", "combined", "rr")) %>%
+  mutate(pos_n = lead(pos))
+df_freq <- read_tsv("/net/snowwhite/home/beckandy/research/phasing/output/chrX_maf_simple.tsv")
+
 gc_content_1kb <- read_tsv("data/ref/gc1kb_X_only.bed")
 colnames(gc_content_1kb) <- c("CHR", "START", "END", "AT", "GC", "A", "C", "G", "T", "TOTAL", "OTHER", "LENGTH")
 gc_content_1kb  <- gc_content_1kb %>%
@@ -54,7 +60,7 @@ gc_content_1kb  <- gc_content_1kb %>%
 
 df_vcftools <- lapply(c(1:700), 
                     function(x){
-                      switch_summary(x, eagle_switch_dir, beagle_switch_dir, shapeit_switch_dir, gc_content_1kb, het_loc_dir)
+                      switch_summary2(x, eagle_switch_dir, beagle_switch_dir, shapeit_switch_dir, gc_content_1kb, het_loc_ann_dir)
                       }) %>%
   bind_rows()
 
@@ -95,9 +101,20 @@ df_vcftools$n_total_beagle <- df_vcftools$n_other_beagle + df_vcftools$n_flip_be
 df_vcftools$n_total_eagle <- df_vcftools$n_other_eagle + df_vcftools$n_flip_eagle
 df_vcftools$n_total_shapeit <- df_vcftools$n_other_shapeit + df_vcftools$n_flip_shapeit
 
+df_vcftools$n_total_cpg_beagle <- df_vcftools$n_other_cpg_beagle + df_vcftools$n_flip_cpg_beagle
+df_vcftools$n_total_cpg_eagle <- df_vcftools$n_other_cpg_eagle + df_vcftools$n_flip_cpg_eagle
+df_vcftools$n_total_cpg_shapeit <- df_vcftools$n_other_cpg_shapeit + df_vcftools$n_flip_cpg_shapeit
+
 df_vcftools$total_per_mb_beagle <- df_vcftools$n_total_beagle / df_vcftools$size_mb
 df_vcftools$total_per_mb_eagle <- df_vcftools$n_total_eagle / df_vcftools$size_mb
 df_vcftools$total_per_mb_shapeit <- df_vcftools$n_total_shapeit / df_vcftools$size_mb
+
+# overlap counts
+df_venn_eur <- get_error_counts(1:200, het_loc_ann_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq)
+df_venn_afr <- get_error_counts(201:400, het_loc_ann_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq)
+df_venn_amr <- get_error_counts(401:500, het_loc_ann_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq)
+df_venn_eas <- get_error_counts(501:600, het_loc_ann_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq)
+df_venn_sas <- get_error_counts(601:700, het_loc_ann_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq)
 ```
 
 ## Initial Results
@@ -290,15 +307,435 @@ df_vcftools %>%
   gtsummary::as_gt()
 
 df_vcftools %>%
-  select(starts_with("n_other")) %>%
+  select(starts_with("n_other") & !contains("cpg")) %>%
+   gtsummary::tbl_summary(statistic = list(all_continuous() ~ "{mean} ({sd})"),
+                         digits = list(all_continuous() ~ c(1,2)))
+```
+
+When we consider non-flip switches separately from flips, we find a similar pattern emerges as that seen with the counts of all errors. Eagle on average produces 39.3 ($\sigma-17.06$) more switches per synthetic diploid than Beagle, and 48.7 ($\sigma=18.79$) more switches per synthetic diploid than SHAPEIT. Both Beagle and SHAPEIT only produce more switches than Eagle in 1 synthetic diploid, while Beagle produces more switch errors than SHAPEIT in 562 synthetic diploids.
+
+```{r}
+df_vcftools %>%
+  mutate(delta_beagle_eagle = n_flip_beagle - n_flip_eagle,
+         delta_beagle_shapeit = n_flip_beagle - n_flip_shapeit,
+         delta_eagle_shapeit = n_flip_eagle - n_other_shapeit,
+         e_big_b = n_flip_eagle > n_flip_beagle,
+         b_big_e = n_flip_eagle < n_flip_beagle,
+         b_big_s =n_flip_beagle > n_flip_shapeit,
+         s_big_b =n_flip_shapeit > n_flip_beagle,
+         e_big_s = n_flip_eagle > n_flip_shapeit,
+         s_big_e = n_flip_eagle < n_flip_shapeit) %>%
+  select(starts_with("delta"),contains("_big_")) %>%
+  gtsummary::tbl_summary(statistic = list(all_continuous() ~ "{mean} ({sd})"),
+                         digits = list(all_continuous() ~ c(1,2))) %>% 
+  gtsummary::as_gt()
+
+df_vcftools %>%
+  select(starts_with("n_flip") & !contains("cpg")) %>%
    gtsummary::tbl_summary(statistic = list(all_continuous() ~ "{mean} ({sd})"),
                          digits = list(all_continuous() ~ c(1,2)))
 
 df_vcftools %>%
-  select(starts_with("n_other"), pop) %>%
+  select(starts_with("n_flip"), pop) %>%
    gtsummary::tbl_summary(by = pop,
                           statistic = list(all_continuous() ~ "{mean} ({sd})"),
                          digits = list(all_continuous() ~ c(1,2))) 
 ```
 
-When we consider non-flip switches separately from flips, we find a similar pattern emerges as that seen with the counts of all errors. Eagle on average produces 39.3 ($\sigma-17.06$) more switches per synthetic diploid than Beagle, and 48.7 ($\sigma=18.79$) more switches per synthetic diploid than SHAPEIT.
+
+In contrast, when we examine the distribution of flip counts across methods, we find that SHAPEIT tends to introduce more flip errors, with an average of 13 ($\sigma=11.14$) more flips per synthetic diploid than Beagle and 2.3 ($\sigma=29.01$) more per synthetic diploid than Eagle. 
+
+```{r}
+# Total 
+
+df_vcftools %>%
+  mutate(errors_per_het_b = n_total_beagle / n_hets,
+         errors_per_het_e = n_total_eagle / n_hets,
+         errors_per_het_s = n_total_shapeit / n_hets) %>%
+  select(starts_with("errors_per_het"), pop) %>%
+   gtsummary::tbl_summary(by = pop,
+                          statistic = list(all_continuous() ~ "{mean} ({sd})"),
+                         digits = list(all_continuous() ~ c(4,4))) 
+
+# Switches
+
+df_vcftools %>%
+  mutate(other_per_het_b = n_other_beagle / n_hets,
+         other_per_het_e = n_other_eagle / n_hets,
+         other_per_het_s = n_other_shapeit / n_hets) %>%
+  select(starts_with("other_per"), pop) %>%
+   gtsummary::tbl_summary(by = pop,
+                          statistic = list(all_continuous() ~ "{mean} ({sd})"),
+                         digits = list(all_continuous() ~ c(4,4))) 
+
+# Flips
+
+df_vcftools %>%
+  mutate(flips_per_het_b = n_flip_beagle / n_hets,
+         flips_per_het_e = n_flip_eagle / n_hets,
+         flips_per_het_s = n_flip_shapeit / n_hets) %>%
+  select(starts_with("flips_per_het"), pop) %>%
+   gtsummary::tbl_summary(by = pop,
+                          statistic = list(all_continuous() ~ "{mean} ({sd})"),
+                         digits = list(all_continuous() ~ c(4,4))) 
+```
+
+The rankings of the three methods with regards to the number of total errors, number of switches, and number of flips per synthetic diploid are mostly consistent across the five 1kGP super-populations. Scaling the counts of errors by the number of heterozygous sites within each synthetic diploid, we observe for total errors that Eagle has a higher average rate of errors while SHAPEIT and Beagle are similar within each population. For switches, the order from highest to lowest switch rate rank is Eagle, Beagle, and SHAPEIT in all 5 populations, while for flips SHAPEIT has the highest rate of flips in all populations while Beagle and Eagle have similar average rates in all populations. Additionally, the mean count per synthetic diploid in all three methods are highly correlated across all pairs of populations.
+
+```{r}
+# correlations of average error counts across populations
+
+df_vcftools %>%
+  select(pop, starts_with("n_total")) %>%
+  group_by(pop) %>%
+  summarize(beagle = mean(n_total_beagle),
+            eagle = mean(n_total_eagle),
+            shapeit = mean(n_total_shapeit)) %>%
+  pivot_longer(!pop, names_to = "col1", values_to = "col2") %>% 
+  pivot_wider(names_from = "pop", values_from = "col2") %>%
+  correlate() %>%
+  shave() %>%
+  fashion(decimals = 3)
+
+df_vcftools %>%
+  select(pop, starts_with("n_total")) %>%
+  group_by(pop) %>%
+  summarize(beagle = mean(n_total_beagle),
+            eagle = mean(n_total_eagle),
+            shapeit = mean(n_total_shapeit)) %>%
+  select(-pop) %>%
+  correlate(method = "pearson") %>% 
+  shave() %>%
+  fashion()
+
+# switches
+df_vcftools %>%
+  select(pop, starts_with("n_other")) %>%
+  group_by(pop) %>%
+  summarize(beagle = mean(n_other_beagle),
+            eagle = mean(n_other_eagle),
+            shapeit = mean(n_other_shapeit)) %>%
+  pivot_longer(!pop, names_to = "col1", values_to = "col2") %>% 
+  pivot_wider(names_from = "pop", values_from = "col2") %>%
+  correlate() %>%
+  shave() %>%
+  fashion(decimals = 3)
+
+df_vcftools %>%
+  select(pop, starts_with("n_other")) %>%
+  group_by(pop) %>%
+  summarize(beagle = mean(n_other_beagle),
+            eagle = mean(n_other_eagle),
+            shapeit = mean(n_other_shapeit)) %>%
+  select(-pop) %>%
+  correlate(method = "pearson") %>% 
+  shave() %>%
+  fashion()
+
+# flips
+
+df_vcftools %>%
+  select(pop, starts_with("n_flip")) %>%
+  group_by(pop) %>%
+  summarize(beagle = mean(n_flip_beagle),
+            eagle = mean(n_flip_eagle),
+            shapeit = mean(n_flip_shapeit)) %>%
+  pivot_longer(!pop, names_to = "col1", values_to = "col2") %>% 
+  pivot_wider(names_from = "pop", values_from = "col2") %>%
+  correlate() %>%
+  shave() %>%
+  fashion(decimals = 3)
+
+df_vcftools %>%
+  select(pop, starts_with("n_flip")) %>%
+  group_by(pop) %>%
+  summarize(beagle = mean(n_flip_beagle),
+            eagle = mean(n_flip_eagle),
+            shapeit = mean(n_flip_shapeit)) %>%
+  select(-pop) %>%
+  correlate(method = "pearson") %>% 
+  shave() %>%
+  fashion()
+```
+
+## Overlap of Errors Across Methods
+
+```{r}
+df_venn_eur[[1]] %>% count_to_ven()
+df_venn_eur[[2]] %>% count_to_ven()
+```
+
+
+In addition to the comparisons of counts of switch and flips errors, we also evaluate the overlap of switch and flip errors by 
+counting the number of overlapping switches and flips within each synthetic diploid. We only consider switches which overlap with 
+switches between methods and flips which directly overlap between methods, i.e. flips that start at the same heterozygous position 
+within the synthetic diploid. Across the 200 European synthetic diploids, we observe a total of 41470 switch errors, of which 27707 
+are unique to one of the three methods. Between the methods, 38.4% of Beagle’s switches are unique to Beagle, while 57.9% of 
+Eagle’s switches are unique to Eagle and 35.1% of SHAPEIT’s switches are unique to SHAPEIT. Of the 30725 total flip errors we 
+observe in the 200 EUR synthetic diploids, 17848 are unique to a particular method within a synthetic diploid (~58.1%). Considering 
+the percent of switches unique to the method within each method, Beagle has 31.9% of its observations unique to itself, Eagle has 
+41.2% of its observations unique to itself, and SHAPEIT has 38.2% of its observations unique to itself.
+
+```{r}
+df_eur_bin <- get_errors_mb(1:200, 1e6, het_loc_ann_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq)
+
+df_eur_bin %>%  
+  ggplot(aes(x = bin_id, y = hets)) +
+  geom_point() +
+  geom_line() +
+  ggtitle("Aggregated Heterozygous Sites per Bin", "EUR Synthetic Diploids") +
+  xlab("Bin") +
+  ylab("Heterozygous Sites") +
+  theme_classic()
+
+df_eur_bin %>%
+  select(bin_id, beagle_s, eagle_s, shapeit_s) %>%
+  rename(Beagle = beagle_s, Eagle = eagle_s, SHAPEIT = shapeit_s) %>%
+  pivot_longer(-bin_id, names_to = "Method", values_to = "Switches") %>%
+  ggplot(aes(x = bin_id, y = Switches, color = Method )) +
+    geom_point() +
+    geom_line() +
+    theme_classic() +
+    xlab("Bin") +
+  ggtitle("Switches per MB Bin", "EUR Synthetic Diploids")
+
+df_eur_bin %>%
+  mutate(beagle = beagle_s / hets,
+         eagle = eagle_s / hets,
+         shapeit = shapeit_s / hets) %>%
+  select(bin_id, beagle, eagle, shapeit) %>%
+  rename(Beagle = beagle, Eagle = eagle, SHAPEIT = shapeit) %>%
+  pivot_longer(-bin_id, names_to = "Method", values_to = "Switches") %>%
+  ggplot(aes(x = bin_id, y = Switches, color = Method )) +
+    geom_point() +
+    geom_line() +
+    theme_classic() +
+    xlab("Bin") +
+  ggtitle("Switches per Heterozygous Site per MB Bin", "EUR Synthetic Diploids")
+
+df_eur_bin %>%
+  mutate(beagle = beagle_s / hets,
+         eagle = eagle_s / hets,
+         shapeit = shapeit_s / hets) %>%
+  select(bin_id, beagle, eagle, shapeit) %>%
+  rename(Beagle = beagle, Eagle = eagle, SHAPEIT = shapeit) %>%
+  pivot_longer(-bin_id, names_to = "Method", values_to = "Switches") %>%
+  ggplot(aes(x = bin_id, y = Switches, color = Method )) +
+  geom_point() +
+  geom_line() +
+  scale_y_log10() +
+  theme_classic(base_size = 12) +
+  xlab("Bin") +
+  ggtitle("Switches per Heterozygous Site per MB Bin", "EUR Synthetic Diploids")
+
+df_eur_bin %>%
+  mutate(beagle = beagle_s / hets,
+         eagle = eagle_s / hets,
+         shapeit = shapeit_s / hets) %>%
+  select(beagle, eagle, shapeit) %>%
+  cor() %>%
+  knitr::kable()
+
+df_eur_bin %>%
+  mutate(beagle = beagle_s / hets,
+         eagle = eagle_s / hets,
+         shapeit = shapeit_s / hets) %>%
+  select(beagle, eagle, shapeit) %>%
+  cor(method = "spearman") %>%
+  knitr::kable()
+```
+
+While the identification of shared switches and flips offers a glimpse into the similarity of phasing errors across methods, we are also interested in 
+
+```{r}
+df_eur_bin <- get_errors_mb(1:200, 1e7, het_loc_ann_dir, beagle_switch_dir, eagle_switch_dir, shapeit_switch_dir, df_freq)
+
+df_eur_bin %>%  
+  ggplot(aes(x = bin_id, y = hets)) +
+  geom_point() +
+  geom_line() +
+  ggtitle("Aggregated Heterozygous Sites per Bin", "EUR Synthetic Diploids") +
+  xlab("Bin") +
+  ylab("Heterozygous Sites") +
+  theme_classic()
+
+df_eur_bin %>%
+  select(bin_id, beagle_s, eagle_s, shapeit_s) %>%
+  rename(Beagle = beagle_s, Eagle = eagle_s, SHAPEIT = shapeit_s) %>%
+  pivot_longer(-bin_id, names_to = "Method", values_to = "Switches") %>%
+  ggplot(aes(x = bin_id, y = Switches, color = Method )) +
+    geom_point() +
+    geom_line() +
+    theme_classic() +
+    xlab("Bin") +
+  ggtitle("Switches per 10 MB Bin", "EUR Synthetic Diploids")
+
+df_eur_bin %>%
+  mutate(beagle = beagle_s / hets,
+         eagle = eagle_s / hets,
+         shapeit = shapeit_s / hets) %>%
+  select(bin_id, beagle, eagle, shapeit) %>%
+  rename(Beagle = beagle, Eagle = eagle, SHAPEIT = shapeit) %>%
+  pivot_longer(-bin_id, names_to = "Method", values_to = "Switches") %>%
+  ggplot(aes(x = bin_id, y = Switches, color = Method )) +
+    geom_point() +
+    geom_line() +
+    theme_classic() +
+    xlab("Bin") +
+  ggtitle("Switches per Heterozygous Site per 10 MB Bin", "EUR Synthetic Diploids")
+
+df_eur_bin %>%
+  mutate(beagle = beagle_s / hets,
+         eagle = eagle_s / hets,
+         shapeit = shapeit_s / hets) %>%
+  select(bin_id, beagle, eagle, shapeit) %>%
+  rename(Beagle = beagle, Eagle = eagle, SHAPEIT = shapeit) %>%
+  pivot_longer(-bin_id, names_to = "Method", values_to = "Switches") %>%
+  ggplot(aes(x = bin_id, y = Switches, color = Method )) +
+  geom_point() +
+  geom_line() +
+  scale_y_log10() +
+  theme_classic() +
+  xlab("Bin") +
+  ggtitle("Switches per Heterozygous Site per 10 MB Bin", "EUR Synthetic Diploids")
+
+df_eur_bin %>%
+  mutate(beagle = beagle_s / hets,
+         eagle = eagle_s / hets,
+         shapeit = shapeit_s / hets) %>%
+  select(beagle, eagle, shapeit) %>%
+  cor() %>%
+  knitr::kable()
+
+df_eur_bin %>%
+  mutate(beagle = beagle_s / hets,
+         eagle = eagle_s / hets,
+         shapeit = shapeit_s / hets) %>%
+  select(beagle, eagle, shapeit) %>%
+  cor(method = "spearman") %>%
+  knitr::kable()
+```
+
+## Genomic Context of Errors
+
+### CpG
+
+```{r}
+df_vcftools %>%
+  mutate(beagle = (n_total_cpg_beagle / n_total_beagle) / prop_het_cpg,
+         eagle = (n_total_cpg_eagle / n_total_eagle) / prop_het_cpg,
+         shapeit =( n_total_cpg_shapeit / n_total_shapeit) / prop_het_cpg ) %>%
+  select(pop, beagle, eagle, shapeit) %>%
+  pivot_longer(-pop, names_to = "Method", values_to = "Enrichment") %>%
+  ggplot(aes(x = Method, y = Enrichment)) +
+  geom_abline(slope = 0, intercept = 1) +
+  geom_boxplot() +
+  theme_classic() + 
+  labs(colour = "Population") +
+  ggtitle("Enrichment of Errors at CpG Sites")
+
+
+df_vcftools %>%
+  mutate(beagle = (n_total_cpg_beagle / n_total_beagle) / prop_het_cpg,
+         eagle = (n_total_cpg_eagle / n_total_eagle) / prop_het_cpg,
+         shapeit =( n_total_cpg_shapeit / n_total_shapeit) / prop_het_cpg ) %>%
+  select(pop, beagle, eagle, shapeit) %>%
+  pivot_longer(-pop, names_to = "Method", values_to = "Enrichment") %>%
+  ggplot(aes(x = Method, y = Enrichment, colour = pop)) +
+  geom_abline(slope = 0, intercept = 1) +
+  geom_boxplot() +
+  theme_classic() + 
+  labs(colour = "Population") +
+  ggtitle("Enrichment of Errors at CpG Sites") +
+  scale_color_manual(values = cbbPalette)
+
+#Switches
+
+df_vcftools %>%
+  mutate(beagle = (n_other_cpg_beagle / n_other_beagle) / prop_het_cpg,
+         eagle = (n_other_cpg_eagle / n_other_eagle) / prop_het_cpg,
+         shapeit =( n_other_cpg_shapeit / n_other_shapeit) / prop_het_cpg ) %>%
+  select(pop, beagle, eagle, shapeit) %>%
+  pivot_longer(-pop, names_to = "Method", values_to = "Enrichment") %>%
+  ggplot(aes(x = Method, y = Enrichment)) +
+  geom_abline(slope = 0, intercept = 1) +
+  geom_boxplot() +
+  theme_classic() + 
+  ggtitle("Enrichment of Switches at CpG Sites")
+
+df_vcftools %>%
+  mutate(beagle = (n_other_cpg_beagle / n_other_beagle) / prop_het_cpg,
+         eagle = (n_other_cpg_eagle / n_other_eagle) / prop_het_cpg,
+         shapeit =( n_other_cpg_shapeit / n_other_shapeit) / prop_het_cpg ) %>%
+  select(pop, beagle, eagle, shapeit) %>%
+  pivot_longer(-pop, names_to = "Method", values_to = "Enrichment") %>%
+  ggplot(aes(x = Method, y = Enrichment, colour = pop)) +
+  geom_abline(slope = 0, intercept = 1) +
+  geom_boxplot() +
+  theme_classic() + 
+  labs(colour = "Population") +
+  ggtitle("Enrichment of Switches at CpG Sites") +
+  scale_color_manual(values = cbbPalette)
+
+# Flips
+
+df_vcftools %>%
+  mutate(beagle = (n_flip_cpg_beagle / n_other_beagle) / prop_het_cpg,
+         eagle = (n_flip_cpg_eagle / n_other_eagle) / prop_het_cpg,
+         shapeit =( n_flip_cpg_shapeit / n_other_shapeit) / prop_het_cpg ) %>%
+  select(pop, beagle, eagle, shapeit) %>%
+  pivot_longer(-pop, names_to = "Method", values_to = "Enrichment") %>%
+  ggplot(aes(x = Method, y = Enrichment)) +
+  geom_abline(slope = 0, intercept = 1) +
+  geom_boxplot() +
+  theme_classic() + 
+  ggtitle("Enrichment of Flips at CpG Sites")
+
+df_vcftools %>%
+  mutate(beagle = (n_flip_cpg_beagle / n_other_beagle) / prop_het_cpg,
+         eagle = (n_flip_cpg_eagle / n_other_eagle) / prop_het_cpg,
+         shapeit =( n_flip_cpg_shapeit / n_other_shapeit) / prop_het_cpg ) %>%
+  select(pop, beagle, eagle, shapeit) %>%
+  pivot_longer(-pop, names_to = "Method", values_to = "Enrichment") %>%
+  ggplot(aes(x = Method, y = Enrichment, colour = pop)) +
+  geom_abline(slope = 0, intercept = 1) +
+  geom_boxplot() +
+  theme_classic() + 
+  labs(colour = "Population") +
+  ggtitle("Enrichment of Flips at CpG Sites") +
+  scale_color_manual(values = cbbPalette)
+```
+
+### T-tests
+
+```{r}
+df_vcftools %>%
+  mutate(beagle = (n_total_cpg_beagle / n_total_beagle) / prop_het_cpg,
+         eagle = (n_total_cpg_eagle / n_total_eagle) / prop_het_cpg,
+         shapeit = (n_total_cpg_shapeit / n_total_shapeit) / prop_het_cpg ) %>%
+  select(pop, beagle, eagle, shapeit) %>%
+  select_if(is.numeric) %>%
+  map_df(~ broom::tidy(t.test(., mu = 1)), .id = 'var') %>%
+  reactable()
+
+# switches
+df_vcftools %>%
+  mutate(beagle = (n_other_cpg_beagle / n_other_beagle) / prop_het_cpg,
+         eagle = (n_other_cpg_eagle / n_other_eagle) / prop_het_cpg,
+         shapeit = (n_other_cpg_shapeit / n_other_shapeit) / prop_het_cpg )%>%
+  select(pop, beagle, eagle, shapeit) %>%
+  select_if(is.numeric) %>%
+  map_df(~ broom::tidy(t.test(., mu = 1)), .id = 'var') %>%
+  reactable()
+
+# Flips
+df_vcftools %>%
+   mutate(beagle = (n_flip_cpg_beagle / n_other_beagle) / prop_het_cpg,
+         eagle = (n_flip_cpg_eagle / n_other_eagle) / prop_het_cpg,
+         shapeit = (n_flip_cpg_shapeit / n_other_shapeit) / prop_het_cpg) %>%
+  select(pop, beagle, eagle, shapeit) %>%
+  select_if(is.numeric) %>%
+  map_df(~ broom::tidy(t.test(., mu = 1)), .id = 'var') %>%
+  reactable()
+```
+
