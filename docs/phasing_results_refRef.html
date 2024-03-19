@@ -397,7 +397,7 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2024-03-14
+<strong>Last updated:</strong> 2024-03-19
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -618,15 +618,15 @@ output/switch_errors/het_loc/phased_size.csv
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomtheandybphasingtree168a3d776e0f50133062e341b4a78b7ea4047479targetblank168a3d7a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomtheandybphasingtreecd3fb17af9e5c5e453fa24481d3b4f7e1ffa6fe6targetblankcd3fb17a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/theandyb/phasing/tree/168a3d776e0f50133062e341b4a78b7ea4047479" target="_blank">168a3d7</a>
+<a href="https://github.com/theandyb/phasing/tree/cd3fb17af9e5c5e453fa24481d3b4f7e1ffa6fe6" target="_blank">cd3fb17</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomtheandybphasingtree168a3d776e0f50133062e341b4a78b7ea4047479targetblank168a3d7a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomtheandybphasingtreecd3fb17af9e5c5e453fa24481d3b4f7e1ffa6fe6targetblankcd3fb17a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -636,7 +636,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/theandyb/phasing/tree/168a3d776e0f50133062e341b4a78b7ea4047479" target="_blank">168a3d7</a>.
+<a href="https://github.com/theandyb/phasing/tree/cd3fb17af9e5c5e453fa24481d3b4f7e1ffa6fe6" target="_blank">cd3fb17</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -653,7 +653,6 @@ were generated:
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-    Ignored:    analysis/figure/
     Ignored:    data/1kgp/
     Ignored:    data/consensus/
     Ignored:    data/gnomAD/
@@ -723,6 +722,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/cd3fb17af9e5c5e453fa24481d3b4f7e1ffa6fe6/analysis/phasing_results_refRef.Rmd" target="_blank">cd3fb17</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-03-19
+</td>
+<td>
+wflow_publish("analysis/phasing_results_refRef.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/theandyb/phasing/020fff0b5c8a084da7c2bfede0c38a1e916d03f0/docs/phasing_results_refRef.html" target="_blank">020fff0</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-03-14
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -2353,6 +2386,9 @@ class="math inline">\(\sigma=14.38\)</span>) more errors per synthetic
 diploid than SHAPEIT, while SHAPEIT introduces more total errors in 414
 of the synthetic diploids while Beagle introduces more errors in 266 of
 the synthetic diploids.</p>
+</div>
+<div id="switches-1" class="section level4">
+<h4>Switches</h4>
 <pre class="r"><code>df_vcftools %&gt;%
   mutate(delta_beagle_eagle = n_other_beagle - n_other_eagle,
          delta_beagle_shapeit = n_other_beagle - n_other_shapeit,
@@ -3318,6 +3354,9 @@ class="math inline">\(\sigma=18.79\)</span>) more switches per synthetic
 diploid than SHAPEIT. Both Beagle and SHAPEIT only produce more switches
 than Eagle in 1 synthetic diploid, while Beagle produces more switch
 errors than SHAPEIT in 562 synthetic diploids.</p>
+</div>
+<div id="flips-1" class="section level4">
+<h4>Flips</h4>
 <pre class="r"><code>df_vcftools %&gt;%
   mutate(delta_beagle_eagle = n_flip_beagle - n_flip_eagle,
          delta_beagle_shapeit = n_flip_beagle - n_flip_shapeit,
@@ -6262,7 +6301,6 @@ and Eagle have similar average rates in all populations. Additionally,
 the mean count per synthetic diploid in all three methods are highly
 correlated across all pairs of populations.</p>
 <pre class="r"><code># correlations of average error counts across populations
-
 df_vcftools %&gt;%
   select(pop, starts_with(&quot;n_total&quot;)) %&gt;%
   group_by(pop) %&gt;%
@@ -6387,9 +6425,83 @@ Correlation computed with
 <h2>Overlap of Errors Across Methods</h2>
 <pre class="r"><code>df_venn_eur[[1]] %&gt;% count_to_ven()</code></pre>
 <p><img src="figure/phasing_results_refRef.Rmd/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-18-1">
+Past versions of unnamed-chunk-18-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-18-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/020fff0b5c8a084da7c2bfede0c38a1e916d03f0/docs/figure/phasing_results_refRef.Rmd/unnamed-chunk-18-1.png" target="_blank">020fff0</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>NULL</code></pre>
 <pre class="r"><code>df_venn_eur[[2]] %&gt;% count_to_ven()</code></pre>
 <p><img src="figure/phasing_results_refRef.Rmd/unnamed-chunk-18-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-18-2">
+Past versions of unnamed-chunk-18-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-18-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/020fff0b5c8a084da7c2bfede0c38a1e916d03f0/docs/figure/phasing_results_refRef.Rmd/unnamed-chunk-18-2.png" target="_blank">020fff0</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>NULL</code></pre>
 <p>In addition to the comparisons of counts of switch and flips errors,
 we also evaluate the overlap of switch and flip errors by counting the
@@ -6419,6 +6531,43 @@ df_eur_bin %&gt;%
   ylab(&quot;Heterozygous Sites&quot;) +
   theme_classic()</code></pre>
 <p><img src="figure/phasing_results_refRef.Rmd/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-19-1">
+Past versions of unnamed-chunk-19-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-19-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/020fff0b5c8a084da7c2bfede0c38a1e916d03f0/docs/figure/phasing_results_refRef.Rmd/unnamed-chunk-19-1.png" target="_blank">020fff0</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>df_eur_bin %&gt;%
   select(bin_id, beagle_s, eagle_s, shapeit_s) %&gt;%
   rename(Beagle = beagle_s, Eagle = eagle_s, SHAPEIT = shapeit_s) %&gt;%
@@ -6430,6 +6579,43 @@ df_eur_bin %&gt;%
     xlab(&quot;Bin&quot;) +
   ggtitle(&quot;Switches per MB Bin&quot;, &quot;EUR Synthetic Diploids&quot;)</code></pre>
 <p><img src="figure/phasing_results_refRef.Rmd/unnamed-chunk-19-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-19-2">
+Past versions of unnamed-chunk-19-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-19-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/020fff0b5c8a084da7c2bfede0c38a1e916d03f0/docs/figure/phasing_results_refRef.Rmd/unnamed-chunk-19-2.png" target="_blank">020fff0</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>df_eur_bin %&gt;%
   mutate(beagle = beagle_s / hets,
          eagle = eagle_s / hets,
@@ -6444,6 +6630,43 @@ df_eur_bin %&gt;%
     xlab(&quot;Bin&quot;) +
   ggtitle(&quot;Switches per Heterozygous Site per MB Bin&quot;, &quot;EUR Synthetic Diploids&quot;)</code></pre>
 <p><img src="figure/phasing_results_refRef.Rmd/unnamed-chunk-19-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-19-3">
+Past versions of unnamed-chunk-19-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-19-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/020fff0b5c8a084da7c2bfede0c38a1e916d03f0/docs/figure/phasing_results_refRef.Rmd/unnamed-chunk-19-3.png" target="_blank">020fff0</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>df_eur_bin %&gt;%
   mutate(beagle = beagle_s / hets,
          eagle = eagle_s / hets,
@@ -6459,6 +6682,43 @@ df_eur_bin %&gt;%
   xlab(&quot;Bin&quot;) +
   ggtitle(&quot;Switches per Heterozygous Site per MB Bin&quot;, &quot;EUR Synthetic Diploids&quot;)</code></pre>
 <p><img src="figure/phasing_results_refRef.Rmd/unnamed-chunk-19-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-19-4">
+Past versions of unnamed-chunk-19-4.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-19-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/020fff0b5c8a084da7c2bfede0c38a1e916d03f0/docs/figure/phasing_results_refRef.Rmd/unnamed-chunk-19-4.png" target="_blank">020fff0</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>df_eur_bin %&gt;%
   mutate(beagle = beagle_s / hets,
          eagle = eagle_s / hets,
@@ -6547,6 +6807,43 @@ df_eur_bin %&gt;%
   ylab(&quot;Heterozygous Sites&quot;) +
   theme_classic()</code></pre>
 <p><img src="figure/phasing_results_refRef.Rmd/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-20-1">
+Past versions of unnamed-chunk-20-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-20-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/020fff0b5c8a084da7c2bfede0c38a1e916d03f0/docs/figure/phasing_results_refRef.Rmd/unnamed-chunk-20-1.png" target="_blank">020fff0</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>df_eur_bin %&gt;%
   select(bin_id, beagle_s, eagle_s, shapeit_s) %&gt;%
   rename(Beagle = beagle_s, Eagle = eagle_s, SHAPEIT = shapeit_s) %&gt;%
@@ -6558,6 +6855,43 @@ df_eur_bin %&gt;%
     xlab(&quot;Bin&quot;) +
   ggtitle(&quot;Switches per 10 MB Bin&quot;, &quot;EUR Synthetic Diploids&quot;)</code></pre>
 <p><img src="figure/phasing_results_refRef.Rmd/unnamed-chunk-20-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-20-2">
+Past versions of unnamed-chunk-20-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-20-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/020fff0b5c8a084da7c2bfede0c38a1e916d03f0/docs/figure/phasing_results_refRef.Rmd/unnamed-chunk-20-2.png" target="_blank">020fff0</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>df_eur_bin %&gt;%
   mutate(beagle = beagle_s / hets,
          eagle = eagle_s / hets,
@@ -6572,6 +6906,43 @@ df_eur_bin %&gt;%
     xlab(&quot;Bin&quot;) +
   ggtitle(&quot;Switches per Heterozygous Site per 10 MB Bin&quot;, &quot;EUR Synthetic Diploids&quot;)</code></pre>
 <p><img src="figure/phasing_results_refRef.Rmd/unnamed-chunk-20-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-20-3">
+Past versions of unnamed-chunk-20-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-20-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/020fff0b5c8a084da7c2bfede0c38a1e916d03f0/docs/figure/phasing_results_refRef.Rmd/unnamed-chunk-20-3.png" target="_blank">020fff0</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>df_eur_bin %&gt;%
   mutate(beagle = beagle_s / hets,
          eagle = eagle_s / hets,
@@ -6587,6 +6958,43 @@ df_eur_bin %&gt;%
   xlab(&quot;Bin&quot;) +
   ggtitle(&quot;Switches per Heterozygous Site per 10 MB Bin&quot;, &quot;EUR Synthetic Diploids&quot;)</code></pre>
 <p><img src="figure/phasing_results_refRef.Rmd/unnamed-chunk-20-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-20-4">
+Past versions of unnamed-chunk-20-4.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-20-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/020fff0b5c8a084da7c2bfede0c38a1e916d03f0/docs/figure/phasing_results_refRef.Rmd/unnamed-chunk-20-4.png" target="_blank">020fff0</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>df_eur_bin %&gt;%
   mutate(beagle = beagle_s / hets,
          eagle = eagle_s / hets,
@@ -6679,6 +7087,43 @@ df_eur_bin %&gt;%
   labs(colour = &quot;Population&quot;) +
   ggtitle(&quot;Enrichment of Errors at CpG Sites&quot;)</code></pre>
 <p><img src="figure/phasing_results_refRef.Rmd/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-21-1">
+Past versions of unnamed-chunk-21-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-21-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/020fff0b5c8a084da7c2bfede0c38a1e916d03f0/docs/figure/phasing_results_refRef.Rmd/unnamed-chunk-21-1.png" target="_blank">020fff0</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>df_vcftools %&gt;%
   mutate(beagle = (n_total_cpg_beagle / n_total_beagle) / prop_het_cpg,
          eagle = (n_total_cpg_eagle / n_total_eagle) / prop_het_cpg,
@@ -6693,6 +7138,43 @@ df_eur_bin %&gt;%
   ggtitle(&quot;Enrichment of Errors at CpG Sites&quot;) +
   scale_color_manual(values = cbbPalette)</code></pre>
 <p><img src="figure/phasing_results_refRef.Rmd/unnamed-chunk-21-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-21-2">
+Past versions of unnamed-chunk-21-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-21-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/020fff0b5c8a084da7c2bfede0c38a1e916d03f0/docs/figure/phasing_results_refRef.Rmd/unnamed-chunk-21-2.png" target="_blank">020fff0</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#Switches
 
 df_vcftools %&gt;%
@@ -6707,6 +7189,43 @@ df_vcftools %&gt;%
   theme_classic() + 
   ggtitle(&quot;Enrichment of Switches at CpG Sites&quot;)</code></pre>
 <p><img src="figure/phasing_results_refRef.Rmd/unnamed-chunk-21-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-21-3">
+Past versions of unnamed-chunk-21-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-21-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/020fff0b5c8a084da7c2bfede0c38a1e916d03f0/docs/figure/phasing_results_refRef.Rmd/unnamed-chunk-21-3.png" target="_blank">020fff0</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>df_vcftools %&gt;%
   mutate(beagle = (n_other_cpg_beagle / n_other_beagle) / prop_het_cpg,
          eagle = (n_other_cpg_eagle / n_other_eagle) / prop_het_cpg,
@@ -6721,6 +7240,43 @@ df_vcftools %&gt;%
   ggtitle(&quot;Enrichment of Switches at CpG Sites&quot;) +
   scale_color_manual(values = cbbPalette)</code></pre>
 <p><img src="figure/phasing_results_refRef.Rmd/unnamed-chunk-21-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-21-4">
+Past versions of unnamed-chunk-21-4.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-21-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/020fff0b5c8a084da7c2bfede0c38a1e916d03f0/docs/figure/phasing_results_refRef.Rmd/unnamed-chunk-21-4.png" target="_blank">020fff0</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># Flips
 
 df_vcftools %&gt;%
@@ -6735,6 +7291,43 @@ df_vcftools %&gt;%
   theme_classic() + 
   ggtitle(&quot;Enrichment of Flips at CpG Sites&quot;)</code></pre>
 <p><img src="figure/phasing_results_refRef.Rmd/unnamed-chunk-21-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-21-5">
+Past versions of unnamed-chunk-21-5.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-21-5" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/020fff0b5c8a084da7c2bfede0c38a1e916d03f0/docs/figure/phasing_results_refRef.Rmd/unnamed-chunk-21-5.png" target="_blank">020fff0</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>df_vcftools %&gt;%
   mutate(beagle = (n_flip_cpg_beagle / n_other_beagle) / prop_het_cpg,
          eagle = (n_flip_cpg_eagle / n_other_eagle) / prop_het_cpg,
@@ -6749,9 +7342,45 @@ df_vcftools %&gt;%
   ggtitle(&quot;Enrichment of Flips at CpG Sites&quot;) +
   scale_color_manual(values = cbbPalette)</code></pre>
 <p><img src="figure/phasing_results_refRef.Rmd/unnamed-chunk-21-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-21-6">
+Past versions of unnamed-chunk-21-6.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-21-6" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/theandyb/phasing/blob/020fff0b5c8a084da7c2bfede0c38a1e916d03f0/docs/figure/phasing_results_refRef.Rmd/unnamed-chunk-21-6.png" target="_blank">020fff0</a>
+</td>
+<td>
+Andy Beck
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div id="t-tests" class="section level3">
-<h3>T-tests</h3>
+</div>
+<div id="t-tests" class="section level4">
+<h4>T-tests</h4>
 <pre class="r"><code>df_vcftools %&gt;%
   mutate(beagle = (n_total_cpg_beagle / n_total_beagle) / prop_het_cpg,
          eagle = (n_total_cpg_eagle / n_total_eagle) / prop_het_cpg,
@@ -6784,6 +7413,50 @@ df_vcftools %&gt;%
   reactable()</code></pre>
 <div class="reactable html-widget html-fill-item" id="htmlwidget-75144595743c9182b314" style="width:auto;height:auto;"></div>
 <script type="application/json" data-for="htmlwidget-75144595743c9182b314">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"var":["beagle","eagle","shapeit"],"estimate":[1.06453161534085,0.730098733815566,1.41417935443662],"statistic":[4.1371517199862,-29.3483753076433,17.0284477609446],"p.value":[3.94480808940049e-05,5.29624526360259e-124,1.18319550817897e-54],"parameter":[699,699,699],"conf.low":[1.03390691708686,0.712042732092587,1.36642487500225],"conf.high":[1.09515631359484,0.748154735538546,1.461933833871],"method":["One Sample t-test","One Sample t-test","One Sample t-test"],"alternative":["two.sided","two.sided","two.sided"]},"columns":[{"id":"var","name":"var","type":"character"},{"id":"estimate","name":"estimate","type":"numeric"},{"id":"statistic","name":"statistic","type":"numeric"},{"id":"p.value","name":"p.value","type":"numeric"},{"id":"parameter","name":"parameter","type":"numeric"},{"id":"conf.low","name":"conf.low","type":"numeric"},{"id":"conf.high","name":"conf.high","type":"numeric"},{"id":"method","name":"method","type":"character"},{"id":"alternative","name":"alternative","type":"character"}],"dataKey":"4c9a23da5ea48f04a67b99732c7b38c4"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<div id="recombination-rate" class="section level3">
+<h3>Recombination Rate</h3>
+<pre class="r"><code>rr_df_hapmap_bin &lt;- rr_df_hapmap %&gt;%
+  mutate(bin_id = ceiling(pos_n / 1e6)) %&gt;%
+  group_by(bin_id) %&gt;%
+  summarize(mean_rr = mean(combined, na.rm = T))
+
+df_eur_bin %&gt;%
+  left_join(rr_df_hapmap_bin, by = &quot;bin_id&quot;)</code></pre>
+<pre><code># A tibble: 16 × 9
+   bin_id beagle_s eagle_s shapeit_s beagle_f eagle_f shapeit_f    hets mean_rr
+    &lt;dbl&gt;    &lt;int&gt;   &lt;int&gt;     &lt;int&gt;    &lt;int&gt;   &lt;int&gt;     &lt;int&gt;   &lt;int&gt;   &lt;dbl&gt;
+ 1      1     2063    2297      1960     1108    1131      1284  908106   9.09 
+ 2      2     1263    1637      1110     1020    1024      1133  738515   6.82 
+ 3      3     1302    1691      1202      962     929      1097  891326   5.60 
+ 4      4     1615    1989      1484      954     961      1065  890240   2.99 
+ 5      5     1456    1758      1358     1036    1033      1160  700971   1.29 
+ 6      6      513    1150       430      823     847       957  484119   1.83 
+ 7      7      582    1174       446      953     705      1052  369267   2.92 
+ 8      8      544    1301       395      985    1007      1118  748589   0.788
+ 9      9      491     936       412      981    1015      1137 1143890   2.82 
+10     10      906    1346       817      929     875      1008  869596   4.16 
+11     11      573    1004       496      781     754       931  601427   1.49 
+12     12     1250    1658      1108      915     983      1052  939150   0.802
+13     13     1375    1694      1257      917     899      1059  912055   3.58 
+14     14      811    1173       718      830     866       982  596177   3.65 
+15     15     2643    3085      2608     1347    1392      1583 1051230   1.10 
+16     16     1192    1386      1078      805     759       963  430807   0.676</code></pre>
+<pre class="r"><code>p1 &lt;- 239
+p2 &lt;- 357
+
+df_vcftools %&gt;%
+  filter(pair_id %!in% c(239, 357)) %&gt;%
+  select(n_total_beagle, n_total_shapeit) %&gt;%
+  summary()</code></pre>
+<pre><code> n_total_beagle  n_total_shapeit
+ Min.   : 36.0   Min.   : 39.0  
+ 1st Qu.:155.0   1st Qu.:157.0  
+ Median :190.0   Median :194.0  
+ Mean   :190.5   Mean   :194.2  
+ 3rd Qu.:230.0   3rd Qu.:234.0  
+ Max.   :345.0   Max.   :379.0  </code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
