@@ -290,6 +290,8 @@ df_vcftools %>%
 
 Considering the total number of errors observed within each synthetic diploid, we find that Eagle tends to introduce more errors than both Beagle and SHAPEIT. On average, Eagle produces 39 more errors ($\sigma=20.38$) per synthetic diploid than Beagle, and 35.5 ($\sigma=20.60$) more errors than SHAPEIT. Across the 700 synthetic diploids, in 694 we observe more errors in Eagle than in Beagle, and similarly we observe more errors in Eagle than in SHAPEIT in 683 synthetic diploids. The distributions of total errors between Beagle and SHAPEIT are more similar, with Beagle producing on average 3.6 ($\sigma=14.38$) more errors per synthetic diploid than SHAPEIT, while SHAPEIT introduces more total errors in 414 of the synthetic diploids while Beagle introduces more errors in 266 of the synthetic diploids.
 
+#### Switches
+
 ```{r}
 df_vcftools %>%
   mutate(delta_beagle_eagle = n_other_beagle - n_other_eagle,
@@ -313,6 +315,8 @@ df_vcftools %>%
 ```
 
 When we consider non-flip switches separately from flips, we find a similar pattern emerges as that seen with the counts of all errors. Eagle on average produces 39.3 ($\sigma-17.06$) more switches per synthetic diploid than Beagle, and 48.7 ($\sigma=18.79$) more switches per synthetic diploid than SHAPEIT. Both Beagle and SHAPEIT only produce more switches than Eagle in 1 synthetic diploid, while Beagle produces more switch errors than SHAPEIT in 562 synthetic diploids.
+
+#### Flips
 
 ```{r}
 df_vcftools %>%
@@ -384,7 +388,6 @@ The rankings of the three methods with regards to the number of total errors, nu
 
 ```{r}
 # correlations of average error counts across populations
-
 df_vcftools %>%
   select(pop, starts_with("n_total")) %>%
   group_by(pop) %>%
@@ -706,7 +709,7 @@ df_vcftools %>%
   scale_color_manual(values = cbbPalette)
 ```
 
-### T-tests
+#### T-tests
 
 ```{r}
 df_vcftools %>%
@@ -737,5 +740,25 @@ df_vcftools %>%
   select_if(is.numeric) %>%
   map_df(~ broom::tidy(t.test(., mu = 1)), .id = 'var') %>%
   reactable()
+```
+
+### Recombination Rate
+
+```{r}
+rr_df_hapmap_bin <- rr_df_hapmap %>%
+  mutate(bin_id = ceiling(pos_n / 1e6)) %>%
+  group_by(bin_id) %>%
+  summarize(mean_rr = mean(combined, na.rm = T))
+
+df_eur_bin %>%
+  left_join(rr_df_hapmap_bin, by = "bin_id")
+
+p1 <- 239
+p2 <- 357
+
+df_vcftools %>%
+  filter(pair_id %!in% c(239, 357)) %>%
+  select(n_total_beagle, n_total_shapeit) %>%
+  summary()
 ```
 
