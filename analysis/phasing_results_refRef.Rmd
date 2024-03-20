@@ -455,6 +455,39 @@ df_vcftools %>%
   gtsummary::as_gt()
 ```
 
+### Percent Change Between Methods
+
+The idea here is to take the difference between methods that we looked at above and divide it by the number of errors in one of the methods, yielding a measure of difference that takes into account the "size" of the quantities being compared (errors).
+
+#### Switches
+
+```{r}
+df_vcftools %>%
+  mutate(Beagle_Eagle = (n_other_beagle - n_other_eagle) / n_other_beagle,
+         Eagle_Beagle = (n_other_eagle - n_other_beagle) / n_other_eagle,
+         Beagle_SHAPEIT = (n_other_beagle - n_other_shapeit) / n_other_beagle,
+         SHAPEIT_Beagle = (n_other_shapeit - n_other_beagle) / n_other_shapeit,
+         Eagle_SHAPEIT = (n_other_eagle - n_other_shapeit) / n_other_eagle,
+         SHAPEIT_Eagle = (n_other_shapeit - n_other_eagle) / n_other_shapeit) %>%
+  select(contains("Beagle", ignore.case = F), contains("Eagle", ignore.case=F)) %>%
+  gtsummary::tbl_summary()
+```
+
+#### Flips
+
+```{r}
+df_vcftools %>%
+  mutate(Beagle_Eagle = (n_flip_beagle - n_flip_eagle) / n_flip_beagle,
+         Eagle_Beagle = (n_flip_eagle - n_flip_beagle) / n_flip_eagle,
+         Beagle_SHAPEIT = (n_flip_beagle - n_flip_shapeit) / n_flip_beagle,
+         SHAPEIT_Beagle = (n_flip_shapeit - n_flip_beagle) / n_flip_shapeit,
+         Eagle_SHAPEIT = (n_flip_eagle - n_flip_shapeit) / n_flip_eagle,
+         SHAPEIT_Eagle = (n_flip_shapeit - n_flip_eagle) / n_flip_shapeit) %>%
+  select(contains("Beagle", ignore.case = F), contains("Eagle", ignore.case=F)) %>%
+  gtsummary::tbl_summary()
+```
+
+
 
 ## Re-writing the draft
 
