@@ -133,7 +133,7 @@ df_vcftools %>%
   reactable()
 ```
 
-We see that in all populations, Eagle has a higher mean number of switch errors per synthetic diploid than Beagle, which in turn has a higner number of switch errors per synthetic diploid than SHAPEIT. In contrast, SHAPEIT has a higher average number of flip errors per synthetic diploid than the other two methods. Below we report the same metrics, but on a per-MB scale:
+We see that in all populations, Eagle has a higher mean number of switch errors per synthetic diploid than Beagle, which in turn has a higher number of switch errors per synthetic diploid than SHAPEIT. In contrast, SHAPEIT has a higher average number of flip errors per synthetic diploid than the other two methods. Below we report the same metrics, but on a per-MB scale:
 
 ```{r}
 df_vcftools %>%
@@ -255,6 +255,206 @@ p3 <- scatterplot(df_vcftools, "n_flip_eagle", "n_flip_shapeit", "pop",  "Eagle"
 
 gridExtra::grid.arrange(p2, p3, p1, legend_obj, layout_matrix = matrix(c(1, 2, 3, 4), byrow = TRUE, ncol = 2))
 ```
+
+## Options for comparing the methods
+
+### Raw Counts of Errors
+
+This is the most straight-forward presentation of the results, and is what I've presented on many occasions. In essence, we simply count the type of each kind of error, and then report how many of each kind we see in each synthetic diploid. This lends itself nicely to figures, but the numbers themselves aren't readily interpretable (or atleast, less so than a rate, for example).
+
+Plots and tables can be found above in the document.
+
+### Errors per MB
+
+This is simply the number of errors in each synthetic diploid divided by the number of MB between the first and last heterozygous position within each SD.
+
+#### Switches
+
+```{r}
+df_vcftools %>%
+  mutate(Beagle = n_other_beagle / size_mb, 
+         Eagle = n_other_eagle / size_mb,
+         SHAPEIT = n_other_shapeit / size_mb) %>%
+  select(Beagle, Eagle, SHAPEIT) %>%
+  gtsummary::tbl_summary()
+
+p1 <- df_vcftools %>%
+  mutate(Beagle = n_other_beagle / size_mb, 
+         Eagle = n_other_eagle / size_mb,
+         SHAPEIT = n_other_shapeit / size_mb) %>%
+  scatterplot("Beagle", "Eagle", "pop", "Beagle", "Eagle") + labs(colour="Population")
+
+legend_obj <- cowplot::get_legend(p1)
+p1 <- p1 + guides(colour = "none")
+
+p2 <- df_vcftools %>%
+  mutate(Beagle = n_other_beagle / size_mb, 
+         Eagle = n_other_eagle / size_mb,
+         SHAPEIT = n_other_shapeit / size_mb) %>%
+  scatterplot("Beagle", "SHAPEIT", "pop", "Beagle", "SHAPEIT") + 
+  guides(colour="none") 
+
+p3 <- df_vcftools %>%
+  mutate(Beagle = n_other_beagle / size_mb, 
+         Eagle = n_other_eagle / size_mb,
+         SHAPEIT = n_other_shapeit / size_mb) %>%
+  scatterplot("Eagle", "SHAPEIT", "pop",  "Eagle", "SHAPEIT") + 
+  guides(colour="none") 
+
+gridExtra::grid.arrange(p2, p3, p1, legend_obj, layout_matrix = matrix(c(1, 2, 3, 4), byrow = TRUE, ncol = 2))
+```
+
+#### Flips
+
+```{r}
+df_vcftools %>%
+  mutate(Beagle = n_flip_beagle / size_mb, 
+         Eagle = n_flip_eagle / size_mb,
+         SHAPEIT = n_flip_shapeit / size_mb) %>%
+  select(Beagle, Eagle, SHAPEIT) %>%
+  gtsummary::tbl_summary()
+
+p1 <- df_vcftools %>%
+  mutate(Beagle = n_flip_beagle / size_mb, 
+         Eagle = n_flip_eagle / size_mb,
+         SHAPEIT = n_flip_shapeit / size_mb) %>%
+  scatterplot("Beagle", "Eagle", "pop", "Beagle", "Eagle") + labs(colour="Population")
+
+legend_obj <- cowplot::get_legend(p1)
+p1 <- p1 + guides(colour = "none")
+
+p2 <- df_vcftools %>%
+  mutate(Beagle = n_flip_beagle / size_mb, 
+         Eagle = n_flip_eagle / size_mb,
+         SHAPEIT = n_flip_shapeit / size_mb) %>%
+  scatterplot("Beagle", "SHAPEIT", "pop", "Beagle", "SHAPEIT") + 
+  guides(colour="none") 
+
+p3 <- df_vcftools %>%
+  mutate(Beagle = n_flip_beagle / size_mb, 
+         Eagle = n_flip_eagle / size_mb,
+         SHAPEIT = n_flip_shapeit / size_mb) %>%
+  scatterplot("Eagle", "SHAPEIT", "pop",  "Eagle", "SHAPEIT") + 
+  guides(colour="none") 
+
+gridExtra::grid.arrange(p2, p3, p1, legend_obj, layout_matrix = matrix(c(1, 2, 3, 4), byrow = TRUE, ncol = 2))
+```
+
+### Errors per Heterozygous Position
+
+For a given SD, the only location in the chromosome where errors can occur are at sites which are heterozygous. Thus we can think of each heterozygous location in the chromosome (other than the first) as a "trial", and compute the proportion of these.
+
+#### Switches
+
+```{r}
+df_vcftools %>%
+  mutate(Beagle = n_other_beagle / n_hets, 
+         Eagle = n_other_eagle / n_hets,
+         SHAPEIT = n_other_shapeit / n_hets) %>%
+  select(Beagle, Eagle, SHAPEIT) %>%
+  gtsummary::tbl_summary()
+
+p1 <- df_vcftools %>%
+  mutate(Beagle = n_other_beagle / n_hets, 
+         Eagle = n_other_eagle / n_hets,
+         SHAPEIT = n_other_shapeit / n_hets) %>%
+  scatterplot("Beagle", "Eagle", "pop", "Beagle", "Eagle") + labs(colour="Population")
+
+legend_obj <- cowplot::get_legend(p1)
+p1 <- p1 + guides(colour = "none")
+
+p2 <- df_vcftools %>%
+  mutate(Beagle = n_other_beagle / n_hets, 
+         Eagle = n_other_eagle / n_hets,
+         SHAPEIT = n_other_shapeit / n_hets) %>%
+  scatterplot("Beagle", "SHAPEIT", "pop", "Beagle", "SHAPEIT") + 
+  guides(colour="none") 
+
+p3 <- df_vcftools %>%
+  mutate(Beagle = n_other_beagle / n_hets, 
+         Eagle = n_other_eagle / n_hets,
+         SHAPEIT = n_other_shapeit / n_hets) %>%
+  scatterplot("Eagle", "SHAPEIT", "pop",  "Eagle", "SHAPEIT") + 
+  guides(colour="none") 
+
+gridExtra::grid.arrange(p2, p3, p1, legend_obj, layout_matrix = matrix(c(1, 2, 3, 4), byrow = TRUE, ncol = 2))
+```
+
+#### Flips
+
+```{r}
+df_vcftools %>%
+  mutate(Beagle = n_flip_beagle / n_hets, 
+         Eagle = n_flip_eagle / n_hets,
+         SHAPEIT = n_flip_shapeit / n_hets) %>%
+  select(Beagle, Eagle, SHAPEIT) %>%
+  gtsummary::tbl_summary()
+
+p1 <- df_vcftools %>%
+  mutate(Beagle = n_flip_beagle / n_hets, 
+         Eagle = n_flip_eagle / n_hets,
+         SHAPEIT = n_flip_shapeit / n_hets) %>%
+  scatterplot("Beagle", "Eagle", "pop", "Beagle", "Eagle") + labs(colour="Population")
+
+legend_obj <- cowplot::get_legend(p1)
+p1 <- p1 + guides(colour = "none")
+
+p2 <- df_vcftools %>%
+  mutate(Beagle = n_flip_beagle / n_hets, 
+         Eagle = n_flip_eagle / n_hets,
+         SHAPEIT = n_flip_shapeit / n_hets) %>%
+  scatterplot("Beagle", "SHAPEIT", "pop", "Beagle", "SHAPEIT") + 
+  guides(colour="none") 
+
+p3 <- df_vcftools %>%
+  mutate(Beagle = n_flip_beagle / n_hets, 
+         Eagle = n_flip_eagle / n_hets,
+         SHAPEIT = n_flip_shapeit / n_hets) %>%
+  scatterplot("Eagle", "SHAPEIT", "pop",  "Eagle", "SHAPEIT") + 
+  guides(colour="none") 
+
+gridExtra::grid.arrange(p2, p3, p1, legend_obj, layout_matrix = matrix(c(1, 2, 3, 4), byrow = TRUE, ncol = 2))
+```
+
+### Number more or less per SD
+
+Within each synthetic diploid, we can look at the number of each type of error by method, and simply compute the difference between any two of the methods. While this requires more than one number to summarize the results across the method, it does provide within each SD a comparison of any two methods. However, we are again in a setting where the number without context is not directly interpretable.
+
+#### Switches
+
+```{r}
+df_vcftools %>%
+  mutate(b_v_e = n_other_beagle - n_other_eagle,
+         b_v_s = n_other_beagle - n_other_shapeit,
+         e_v_s = n_other_eagle - n_other_shapeit) %>%
+  select(b_v_e, b_v_s, e_v_s) %>%
+  gtsummary::tbl_summary() %>%
+  gtsummary::as_gt()
+
+df_vcftools %>%
+  mutate(b_v_e = n_other_beagle - n_other_eagle,
+         b_v_s = n_other_beagle - n_other_shapeit,
+         e_v_s = n_other_eagle - n_other_shapeit) %>%
+  ggplot(aes(x = b_v_e, y = b_v_s, colour = pop)) +
+  geom_point() +
+  xlab("Beagle - Eagle") +
+  ylab("Beagle - SHAPEIT") +
+  theme_classic() +
+  scale_colour_manual(values = cbbPalette)
+```
+
+#### Flips
+
+```{r}
+df_vcftools %>%
+  mutate(b_v_e = n_flip_beagle - n_flip_eagle,
+         b_v_s = n_flip_beagle - n_flip_shapeit,
+         e_v_s = n_flip_eagle - n_flip_shapeit) %>%
+  select(b_v_e, b_v_s, e_v_s) %>%
+  gtsummary::tbl_summary() %>%
+  gtsummary::as_gt()
+```
+
 
 ## Re-writing the draft
 
